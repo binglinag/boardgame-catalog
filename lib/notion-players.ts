@@ -51,19 +51,36 @@ function mapPageToPlayer(page: PageObjectResponse): Player {
 
 export async function getAllPlayers(): Promise<Player[]> {
   const players: Player[] = [];
-  let cursor: string | null | undefined = undefined;
-  do {
-    const response = await notion.databases.query({
-      database_id: PLAYERS_DB_ID,
-      sorts: [{ property: "名称", direction: "ascending" }],
-      page_size: 100,
-      ...(cursor ? { start_cursor: cursor } : {}),
-    });
-    for (const page of response.results) {
-      if (isFullPage(page)) players.push(mapPageToPlayer(page));
-    }
-    cursor = response.next_cursor;
-  } while (cursor);
+
+  if (!PLAYERS_DB_ID || !process.env.NOTION_API_KEY) {
+    console.warn("[Notion Players] missing env vars");
+    return players;
+  }
+
+  try {
+    let cursor: string | null | undefined = undefined;
+    do {
+      const response = await notion.databases.query({
+        database_id: PLAYERS_DB_ID,
+        sorts: [{ property: "名称", direction: "ascending" }],
+        page_size: 100,
+        ...(cursor ? { start_cursor: cursor } : {}),
+      });
+      for (const page of response.results) {
+        if (isFullPage(page)) {
+          try {
+            players.push(mapPageToPlayer(page));
+          } catch {
+            // skip
+          }
+        }
+      }
+      cursor = response.next_cursor;
+    } while (cursor);
+  } catch (err) {
+    console.error("[Notion Players] getAllPlayers failed:", err);
+  }
+
   return players;
 }
 

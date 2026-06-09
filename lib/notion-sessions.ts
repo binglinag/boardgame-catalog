@@ -104,23 +104,37 @@ function mapPageToSession(page: PageObjectResponse): PlaySession {
  */
 export async function getAllSessions(): Promise<PlaySession[]> {
   const sessions: PlaySession[] = [];
-  let cursor: string | null | undefined = undefined;
 
-  do {
-    const response = await notion.databases.query({
-      database_id: SESSIONS_DB_ID,
-      sorts: [{ property: "日期", direction: "descending" }],
-      page_size: 100,
-      ...(cursor ? { start_cursor: cursor } : {}),
-    });
+  if (!SESSIONS_DB_ID || !process.env.NOTION_API_KEY) {
+    console.warn("[Notion Sessions] missing env vars");
+    return sessions;
+  }
 
-    for (const page of response.results) {
-      if (isFullPage(page)) {
-        sessions.push(mapPageToSession(page));
+  try {
+    let cursor: string | null | undefined = undefined;
+
+    do {
+      const response = await notion.databases.query({
+        database_id: SESSIONS_DB_ID,
+        sorts: [{ property: "日期", direction: "descending" }],
+        page_size: 100,
+        ...(cursor ? { start_cursor: cursor } : {}),
+      });
+
+      for (const page of response.results) {
+        if (isFullPage(page)) {
+          try {
+            sessions.push(mapPageToSession(page));
+          } catch {
+            // skip
+          }
+        }
       }
-    }
-    cursor = response.next_cursor;
-  } while (cursor);
+      cursor = response.next_cursor;
+    } while (cursor);
+  } catch (err) {
+    console.error("[Notion Sessions] getAllSessions failed:", err);
+  }
 
   return sessions;
 }

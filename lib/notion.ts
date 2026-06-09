@@ -165,24 +165,37 @@ function mapPageToGame(page: PageObjectResponse): BoardGame {
 export async function getAllGames(): Promise<BoardGame[]> {
   const games: BoardGame[] = [];
 
-  let cursor: string | null | undefined = undefined;
+  if (!DATABASE_ID || !process.env.NOTION_API_KEY) {
+    console.warn("[Notion] missing env vars");
+    return games;
+  }
 
-  do {
-    const response = await notion.databases.query({
-      database_id: DATABASE_ID,
-      sorts: [{ property: "评分", direction: "descending" }],
-      page_size: 100,
-      ...(cursor ? { start_cursor: cursor } : {}),
-    });
+  try {
+    let cursor: string | null | undefined = undefined;
 
-    for (const page of response.results) {
-      if (isFullPage(page)) {
-        games.push(mapPageToGame(page));
+    do {
+      const response = await notion.databases.query({
+        database_id: DATABASE_ID,
+        sorts: [{ property: "评分", direction: "descending" }],
+        page_size: 100,
+        ...(cursor ? { start_cursor: cursor } : {}),
+      });
+
+      for (const page of response.results) {
+        if (isFullPage(page)) {
+          try {
+            games.push(mapPageToGame(page));
+          } catch {
+            // 跳过解析失败的条目
+          }
+        }
       }
-    }
 
-    cursor = response.next_cursor;
-  } while (cursor);
+      cursor = response.next_cursor;
+    } while (cursor);
+  } catch (err) {
+    console.error("[Notion] getAllGames failed:", err);
+  }
 
   return games;
 }
