@@ -8,6 +8,7 @@ import type { BoardGame } from "@/types/game";
 
 const notion = new Client({
   auth: process.env.NOTION_API_KEY,
+  fetch,
 });
 
 const DATABASE_ID = process.env.NOTION_DATABASE_ID ?? "";

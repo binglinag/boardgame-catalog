@@ -4,6 +4,7 @@ import type { Player } from "@/types/player";
 
 const notion = new Client({
   auth: process.env.NOTION_API_KEY,
+  fetch,
 });
 
 const PLAYERS_DB_ID = process.env.NOTION_PLAYERS_DATABASE_ID ?? "";

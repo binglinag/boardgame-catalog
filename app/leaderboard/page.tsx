@@ -8,6 +8,7 @@ import type { PlaySession } from "@/types/session";
 import type { Player } from "@/types/player";
 
 export const dynamic = "force-dynamic";
+export const runtime = "edge";
 
 export const metadata: Metadata = {
   title: "玩家排行榜 - 壮壮的桌游图鉴",

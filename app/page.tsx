@@ -3,6 +3,7 @@ import { getAllSessions } from "@/lib/notion-sessions";
 import ClientHome from "@/components/client-home";
 
 export const dynamic = "force-dynamic";
+export const runtime = "edge";
 
 export default async function HomePage() {
   const [games, tags, allSessions] = await Promise.all([

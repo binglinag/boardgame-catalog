@@ -4,6 +4,7 @@ import type { PlaySession, PlayerScore } from "@/types/session";
 
 const notion = new Client({
   auth: process.env.NOTION_API_KEY,
+  fetch,
 });
 
 const SESSIONS_DB_ID = process.env.NOTION_SESSIONS_DATABASE_ID ?? "";

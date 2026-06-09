@@ -1,4 +1,5 @@
 "use server";
+export const runtime = "edge";
 
 import { createSession } from "@/lib/notion-sessions";
 import { revalidatePath } from "next/cache";
