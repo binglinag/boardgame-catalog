@@ -1,0 +1,226 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ================================================
+   Premium 基础样式
+   ================================================ */
+
+@layer base {
+  * {
+    @apply border-gray-200 dark:border-gray-700;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply text-gray-800 dark:text-gray-200;
+    font-family: "Nunito", "Chiron Sans HK WS", "LXGW WenKai", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+    letter-spacing: 0.01em;
+    font-weight: 400;
+    transition: background-color 0.5s ease, color 0.5s ease;
+    /* 梦幻渐变背景 */
+    background: linear-gradient(135deg, #fdf2f8 0%, #f0f4ff 30%, #faf5ff 60%, #eff6ff 100%);
+    background-attachment: fixed;
+  }
+
+  /* 标题使用更粗的字重保持层次 */
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+  }
+
+  /* 段落增加呼吸感 */
+  p {
+    line-height: 1.8;
+  }
+
+  .dark body,
+  body.dark {
+    background: linear-gradient(135deg, #0f0a1a 0%, #0d1117 30%, #110b1e 60%, #0a0f1a 100%);
+    background-attachment: fixed;
+  }
+
+  /* 自定义选中颜色 */
+  ::selection {
+    @apply bg-violet-200/60 dark:bg-violet-600/40;
+  }
+}
+
+/* ================================================
+   主题过渡
+   ================================================ */
+
+.theme-transition {
+  transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
+}
+
+/* ================================================
+   图片加载占位
+   ================================================ */
+
+img {
+  content-visibility: auto;
+}
+
+/* ================================================
+   滚动条美化
+   ================================================ */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-violet-300 dark:bg-violet-700 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-violet-400 dark:bg-violet-500;
+}
+
+/* ================================================
+   Glass morphism 工具类
+   ================================================ */
+
+@layer components {
+  .glass {
+    @apply bg-white/60 dark:bg-white/5 backdrop-blur-xl
+      border border-white/30 dark:border-white/10;
+  }
+
+  .glass-card {
+    @apply bg-white/70 dark:bg-gray-800/40 backdrop-blur-lg
+      border border-white/40 dark:border-gray-700/20
+      shadow-[0_8px_32px_rgba(139,92,246,0.08)]
+      dark:shadow-[0_8px_32px_rgba(139,92,246,0.06)];
+  }
+
+  /* 卡片悬浮效果 */
+  .card-hover {
+    @apply transition-all duration-500 ease-out
+      hover:-translate-y-2 hover:shadow-[0_16px_48px_rgba(139,92,246,0.15)]
+      dark:hover:shadow-[0_16px_48px_rgba(139,92,246,0.1)];
+  }
+
+  /* 磁性按钮 */
+  .magnetic {
+    @apply transition-transform duration-200 ease-out
+      hover:scale-105 active:scale-95;
+  }
+}
+
+/* ================================================
+   梦幻动画
+   ================================================ */
+
+@keyframes dreamyFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes dreamyPulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.15), 0 0 40px rgba(139, 92, 246, 0.05); }
+  50% { box-shadow: 0 0 30px rgba(139, 92, 246, 0.25), 0 0 60px rgba(139, 92, 246, 0.1); }
+}
+
+@keyframes borderGlow {
+  0%, 100% { border-color: rgba(139, 92, 246, 0.1); }
+  50% { border-color: rgba(139, 92, 246, 0.3); }
+}
+
+.dreamy-float {
+  animation: dreamyFloat 6s ease-in-out infinite;
+}
+
+.dreamy-pulse {
+  animation: dreamyPulse 4s ease-in-out infinite;
+}
+
+.dreamy-gradient {
+  background-size: 200% 200%;
+  animation: gradientShift 8s ease infinite;
+}
+
+.dreamy-glow {
+  animation: glowPulse 4s ease-in-out infinite;
+}
+
+.dreamy-border {
+  animation: borderGlow 4s ease-in-out infinite;
+}
+
+/* 卡片光扫效果 */
+.card-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.2) 45%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0.2) 55%,
+    transparent 60%
+  );
+  transform: translateX(-100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.card-shimmer:hover::after {
+  animation: shimmer 1.5s ease-in-out;
+}
+
+/* 梦幻标题渐变 */
+.dreamy-title {
+  background: linear-gradient(135deg, #a78bfa 0%, #818cf8 40%, #c084fc 70%, #a78bfa 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 6s ease infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 响应式调整 */
+@media (prefers-reduced-motion: reduce) {
+  .dreamy-float,
+  .dreamy-pulse,
+  .dreamy-gradient,
+  .dreamy-glow,
+  .dreamy-border,
+  .card-shimmer::after {
+    animation: none !important;
+  }
+}
