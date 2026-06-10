@@ -1,6 +1,6 @@
 import { Client } from "@notionhq/client";
 import type { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
-import type { PlaySession, PlayerScore } from "@/types/session";
+import type { PlaySession, PlayerScore, ScoringTemplate } from "@/types/session";
 
 const notion = new Client({
   auth: process.env.NOTION_API_KEY,
@@ -58,6 +58,14 @@ function getDate(prop: unknown): string {
   return "";
 }
 
+function getSelect(prop: unknown): string {
+  if (isPropType(prop, "select")) {
+    const sel = (prop as Record<string, { name: string } | null>).select;
+    return sel?.name ?? "";
+  }
+  return "";
+}
+
 // ============================================================
 // 解析 & 序列化玩家数据
 // ============================================================
@@ -69,6 +77,8 @@ function parsePlayers(raw: string): PlayerScore[] {
       return parsed.map((p: Record<string, unknown>) => ({
         name: String(p.name ?? ""),
         score: Number(p.score ?? 0),
+        result: (p.result as PlayerScore["result"]) ?? null,
+        rank: p.rank != null ? Number(p.rank) : null,
       }));
     }
   } catch {
@@ -87,12 +97,20 @@ function serializePlayers(players: PlayerScore[]): string {
 
 function mapPageToSession(page: PageObjectResponse): PlaySession {
   const props = page.properties as Record<string, unknown>;
+  const templateRaw = getSelect(props["计分模板"]);
+  const template: ScoringTemplate = (
+    ["标准计分", "胜负记录", "排名顺序", "单一赢家", "合作胜负"] as ScoringTemplate[]
+  ).includes(templateRaw as ScoringTemplate)
+    ? (templateRaw as ScoringTemplate)
+    : "标准计分";
+
   return {
     id: page.id,
     gameTitle: getTitle(props["桌游名称"]),
     date: getDate(props["日期"]),
     players: parsePlayers(getRichText(props["玩家数据"])),
     notes: getRichText(props["备注"]),
+    template,
   };
 }
 
@@ -145,29 +163,43 @@ export async function getAllSessions(): Promise<PlaySession[]> {
  */
 export async function getSessionsByGame(gameTitle: string): Promise<PlaySession[]> {
   const sessions: PlaySession[] = [];
-  let cursor: string | null | undefined = undefined;
 
-  do {
-    const response = await notion.databases.query({
-      database_id: SESSIONS_DB_ID,
-      filter: {
-        property: "桌游名称",
-        title: {
-          equals: gameTitle,
+  if (!SESSIONS_DB_ID || !process.env.NOTION_API_KEY) {
+    return sessions;
+  }
+
+  try {
+    let cursor: string | null | undefined = undefined;
+
+    do {
+      const response = await notion.databases.query({
+        database_id: SESSIONS_DB_ID,
+        filter: {
+          property: "桌游名称",
+          title: {
+            equals: gameTitle,
+          },
         },
-      },
-      sorts: [{ property: "日期", direction: "descending" }],
-      page_size: 100,
-      ...(cursor ? { start_cursor: cursor } : {}),
-    });
+        sorts: [{ property: "日期", direction: "descending" }],
+        page_size: 100,
+        ...(cursor ? { start_cursor: cursor } : {}),
+      });
 
-    for (const page of response.results) {
-      if (isFullPage(page)) {
-        sessions.push(mapPageToSession(page));
+      for (const page of response.results) {
+        if (isFullPage(page)) {
+          try {
+            sessions.push(mapPageToSession(page));
+          } catch {
+            // skip
+          }
+        }
       }
-    }
-    cursor = response.next_cursor;
-  } while (cursor);
+
+      cursor = response.next_cursor;
+    } while (cursor);
+  } catch (err) {
+    console.error("[Notion Sessions] getSessionsByGame failed:", err);
+  }
 
   return sessions;
 }
@@ -183,7 +215,8 @@ export async function createSession(
   gameTitle: string,
   date: string,
   players: PlayerScore[],
-  notes: string
+  notes: string,
+  template: ScoringTemplate = "标准计分"
 ): Promise<PlaySession | null> {
   try {
     const response = await notion.pages.create({
@@ -200,6 +233,9 @@ export async function createSession(
         },
         "备注": {
           rich_text: notes ? [{ text: { content: notes } }] : [],
+        },
+        "计分模板": {
+          select: { name: template },
         },
       },
     });
