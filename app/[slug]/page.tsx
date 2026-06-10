@@ -28,9 +28,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function GamePage({ params }: Props) {
   const { slug } = await params;
-  const [game, sessions, allPlayers] = await Promise.all([
+  const [game, allPlayers] = await Promise.all([
     getGameBySlug(slug),
-    getSessionsByGame(slug), // 先用 slug 做个临时取数，实际还是用 title 匹配
     getAllPlayers(),
   ]);
 
@@ -38,8 +37,12 @@ export default async function GamePage({ params }: Props) {
     notFound();
   }
 
-  // 重新用 title 取 sessions（因为 slug 是 page ID，不是 title）
+  // 用 title 取 sessions（slug 是 page ID，不是 title）
   const gameSessions = await getSessionsByGame(game.title);
+
+  // 调试：暂时在页面输出 bggUrl，验证是否被正确读取
+  // 上线后删除
+  console.log("[DEBUG] game.bggUrl:", game.bggUrl, "title:", game.title);
 
   return <GameDetail game={game} sessions={gameSessions} allPlayers={allPlayers} />;
 }
