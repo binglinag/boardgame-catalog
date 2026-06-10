@@ -76,6 +76,11 @@ export default function GameCard({ game, sessionCount }: { game: BoardGame; sess
                 {game.players}人
               </span>
             )}
+            {game.bestPlayers && (
+              <span className="text-xs text-emerald-500 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 rounded-md">
+                最佳 {game.bestPlayers}人
+              </span>
+            )}
             {game.playTime && (
               <span className="text-xs text-indigo-500 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 px-2 py-0.5 rounded-md">
                 {game.playTime}

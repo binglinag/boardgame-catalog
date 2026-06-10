@@ -139,6 +139,7 @@ function mapPageToGame(page: PageObjectResponse): BoardGame {
     title: getTitle(props["名称"]),
     nameEn: getRichText(props["英文名"]),
     players: getRichText(props["玩家人数"]),
+    bestPlayers: getRichText(props["最佳人数"]),
     playTime: getRichText(props["时长"]),
     year: getNumber(props["出版年份"]),
     designer: getRichText(props["设计师"]),

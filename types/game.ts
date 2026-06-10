@@ -4,7 +4,8 @@ export interface BoardGame {
   slug: string;
   title: string;
   nameEn: string;
-  players: string;
+  players: string;               // 支持人数
+  bestPlayers: string;            // 最佳人数
   playTime: string;
   year: number | null;
   designer: string;

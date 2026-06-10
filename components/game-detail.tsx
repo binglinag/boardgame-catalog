@@ -95,6 +95,7 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
           {/* 信息卡片 */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8">
             {game.players && <InfoItem icon="👥" label="玩家人数" value={game.players} />}
+            {game.bestPlayers && <InfoItem icon="⭐" label="最佳人数" value={game.bestPlayers} />}
             {game.playTime && <InfoItem icon="⏱️" label="游戏时长" value={game.playTime} />}
             {game.year && <InfoItem icon="📅" label="出版年份" value={String(game.year)} />}
             {game.designer && <InfoItem icon="🎨" label="设计师" value={game.designer} />}
