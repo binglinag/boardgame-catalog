@@ -85,7 +85,13 @@ function getMultiSelect(prop: unknown): string[] {
 
 function getUrl(prop: unknown): string | null {
   if (isPropType(prop, "url")) {
-    return typeof prop.url === "string" ? prop.url : null;
+    const raw = typeof prop.url === "string" ? prop.url : null;
+    if (!raw) return null;
+    // 自动补全协议，避免用户忘记加 https://
+    if (!/^https?:\/\//i.test(raw)) {
+      return `https://${raw}`;
+    }
+    return raw;
   }
   return null;
 }
