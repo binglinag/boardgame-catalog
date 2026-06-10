@@ -99,8 +99,8 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
             {game.playTime && <InfoItem icon="⏱️" label="游戏时长" value={game.playTime} />}
             {game.year && <InfoItem icon="📅" label="出版年份" value={String(game.year)} />}
             {game.designer && <InfoItem icon="🎨" label="设计师" value={game.designer} />}
-            {game.playCount !== null && (
-              <InfoItem icon="🎮" label="游玩次数" value={`${game.playCount} 次`} />
+            {sessions.length > 0 && (
+              <InfoItem icon="🎮" label="游玩次数" value={`${sessions.length} 次`} />
             )}
             {game.price !== null && <PriceItem price={game.price} notes={game.priceNotes} />}
           </div>

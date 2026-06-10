@@ -146,7 +146,7 @@ function mapPageToGame(page: PageObjectResponse): BoardGame {
     rating: getNumber(props["评分"]),
     weight: getNumber(props["重度"]),
     status: getMultiSelect(props["状态"]) as BoardGame["status"],
-    playCount: getNumber(props["游玩次数"]),
+    playCount: null, // 不再读取 Notion，改为根据对局记录自动统计
     tags: getMultiSelect(props["标签"]),
     coverUrl,
     extraImages: getAllFiles(props["相关图片"]),

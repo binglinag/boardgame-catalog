@@ -93,7 +93,11 @@ export default function ClientHome({
         case "weight": return (b.weight ?? 0) - (a.weight ?? 0);
         case "year": return (b.year ?? 0) - (a.year ?? 0);
         case "title": return a.title.localeCompare(b.title, "zh");
-        case "playCount": return (b.playCount ?? 0) - (a.playCount ?? 0);
+        case "playCount": {
+          const aCount = sessionCountByGame[a.title] ?? 0;
+          const bCount = sessionCountByGame[b.title] ?? 0;
+          return bCount - aCount;
+        }
         default: return 0;
       }
     });
