@@ -28,6 +28,7 @@ export type GameStatus = "已收藏" | "想玩" | "已玩过" | "不好玩";
 export interface GameFilters {
   status: GameStatus | "全部";
   tag: string | null;
+  playerCount: number | "全部";   // 玩家人数筛选
   sortBy: SortOption;
 }
 

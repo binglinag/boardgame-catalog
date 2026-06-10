@@ -18,6 +18,30 @@ interface Props {
   sessionCountByGame: Record<string, number>;
 }
 
+/** 解析人数范围，如 "2-5" → [2,5], "3" → [3,3], "1-6" → [1,6] */
+function parsePlayerRange(str: string): [number, number] | null {
+  if (!str) return null;
+  const clean = str.replace(/[^0-9\-]/g, "");
+  if (clean.includes("-")) {
+    const [min, max] = clean.split("-").map(Number);
+    if (!isNaN(min) && !isNaN(max)) return [min, max];
+  }
+  const n = Number(clean);
+  if (!isNaN(n)) return [n, n];
+  return null;
+}
+
+/** 判断目标人数是否匹配游戏的人数范围（支持或最佳） */
+function matchesPlayerCount(game: BoardGame, target: number): boolean {
+  // 支持人数
+  const playersRange = parsePlayerRange(game.players);
+  if (playersRange && target >= playersRange[0] && target <= playersRange[1]) return true;
+  // 最佳人数
+  const bestRange = parsePlayerRange(game.bestPlayers);
+  if (bestRange && target >= bestRange[0] && target <= bestRange[1]) return true;
+  return false;
+}
+
 export default function ClientHome({
   initialGames,
   initialTags,
@@ -28,6 +52,7 @@ export default function ClientHome({
   const [tags] = useState<string[]>(initialTags);
   const [status, setStatus] = useState<GameStatus | "全部">("全部");
   const [tag, setTag] = useState<string | null>(null);
+  const [playerCount, setPlayerCount] = useState<number | "全部">("全部");
   const [sortBy, setSortBy] = useState<SortOption>("rating");
   const [searchQuery, setSearchQuery] = useState("");
   const [mounted, setMounted] = useState(false);
@@ -59,6 +84,9 @@ export default function ClientHome({
 
     if (status !== "全部") result = result.filter((g) => g.status.includes(status));
     if (tag) result = result.filter((g) => g.tags.includes(tag));
+    if (playerCount !== "全部") {
+      result = result.filter((g) => matchesPlayerCount(g, playerCount));
+    }
     result.sort((a, b) => {
       switch (sortBy) {
         case "rating": return (b.rating ?? 0) - (a.rating ?? 0);
@@ -70,7 +98,7 @@ export default function ClientHome({
       }
     });
     return result;
-  }, [games, status, tag, sortBy, searchQuery]);
+  }, [games, status, tag, playerCount, sortBy, searchQuery]);
 
   const isSearching = searchQuery.trim().length > 0;
 
@@ -88,6 +116,7 @@ export default function ClientHome({
                 : `${filteredGames.length} 款桌游`}
               {!isSearching && status !== "全部" && ` · ${status}`}
               {!isSearching && tag && ` · #${tag}`}
+              {!isSearching && playerCount !== "全部" && ` · ${playerCount}人`}
             </p>
             <div className="flex items-center gap-3">
               <button
@@ -124,10 +153,12 @@ export default function ClientHome({
           <FilterBar
             status={status}
             tag={tag}
+            playerCount={playerCount}
             sortBy={sortBy}
             allTags={tags}
             onStatusChange={setStatus}
             onTagChange={setTag}
+            onPlayerCountChange={setPlayerCount}
             onSortChange={setSortBy}
           />
         </div>
