@@ -1,5 +1,4 @@
 "use server";
-export const runtime = "edge";
 
 import { createPlayer } from "@/lib/notion-players";
 import { revalidatePath } from "next/cache";
