@@ -96,6 +96,20 @@ function getUrl(prop: unknown): string | null {
   return null;
 }
 
+/**
+ * 容错读 URL：按候选名依次尝试，找到第一个非空的 url 属性
+ * 用于应对 Notion 列名实际是 "BGG 链接"（带空格）/"bgg链接" 等变体
+ */
+function getUrlByNames(props: Record<string, unknown>, names: string[]): string | null {
+  for (const name of names) {
+    if (name in props) {
+      const v = getUrl(props[name]);
+      if (v) return v;
+    }
+  }
+  return null;
+}
+
 function getFiles(prop: unknown): string | null {
   if (isPropType(prop, "files")) {
     const files = (prop.files ?? []) as Array<{
@@ -156,7 +170,7 @@ function mapPageToGame(page: PageObjectResponse): BoardGame {
     tags: getMultiSelect(props["标签"]),
     coverUrl,
     extraImages: getAllFiles(props["相关图片"]),
-    bggUrl: getUrl(props["BGG链接"]),
+    bggUrl: getUrlByNames(props, ["BGG链接", "BGG 链接", "BGG连接", "BGG地址", "bgg链接", "BGG"]),
     price: getNumber(props["购买价格"]),
     priceNotes: getRichText(props["价格备注"]),
     review: getRichText(props["个人评价"]),
