@@ -140,15 +140,43 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl
-                bg-gray-100 dark:bg-gray-800 text-sm font-medium
-                text-gray-700 dark:text-gray-300
-                hover:bg-gray-200 dark:hover:bg-gray-700
+                bg-gradient-to-r from-violet-50 to-indigo-50
+                dark:from-violet-900/20 dark:to-indigo-900/20
+                text-sm font-medium
+                text-violet-700 dark:text-violet-300
+                border border-violet-200/50 dark:border-violet-700/30
+                hover:from-violet-100 hover:to-indigo-100
+                dark:hover:from-violet-900/30 dark:hover:to-indigo-900/30
+                hover:shadow-md hover:shadow-violet-500/10
+                hover:scale-[1.02]
                 transition-all duration-200"
             >
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 0C5.372 0 0 5.373 0 12s5.372 12 12 12 12-5.373 12-12S18.628 0 12 0zm6.066 8.855c.3 0 .543.242.543.543v5.204c0 .3-.243.543-.543.543a.546.546 0 01-.543-.543V9.941l-7.248 7.248a.537.537 0 01-.768 0 .545.545 0 010-.768l7.248-7.248h-4.661a.546.546 0 01-.543-.543c0-.3.243-.543.543-.543h5.972z" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <path d="M14 3h7v7" />
+                <path d="M21 3l-9 9" />
+                <path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5" />
               </svg>
               查看 BGG 页面
+              <svg
+                className="w-3 h-3 opacity-60"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2.5}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <path d="M7 17L17 7" />
+                <path d="M7 7h10v10" />
+              </svg>
             </a>
           )}
 
