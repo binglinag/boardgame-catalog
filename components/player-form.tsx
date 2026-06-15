@@ -8,6 +8,7 @@ export default function PlayerForm() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [notes, setNotes] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -18,7 +19,7 @@ export default function PlayerForm() {
       return;
     }
     setLoading(true);
-    const result = await addPlayer(name, phone, notes);
+    const result = await addPlayer(name, phone, notes, password);
     setMessage(result.message);
     setLoading(false);
     if (result.success) {
@@ -26,6 +27,7 @@ export default function PlayerForm() {
       setName("");
       setPhone("");
       setNotes("");
+      setPassword("");
       setMessage("");
       window.location.reload();
     }
@@ -85,6 +87,17 @@ export default function PlayerForm() {
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="选填"
+                  className="w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-violet-500/30 outline-none transition-all text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">🔐 管理员密码</label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="输入密码确认操作"
                   className="w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-violet-500/30 outline-none transition-all text-sm"
                 />
               </div>

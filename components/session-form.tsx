@@ -23,6 +23,7 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
     { name: "", score: 0, id: "", result: null, rank: null },
   ]);
   const [notes, setNotes] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -98,7 +99,7 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
 
     setLoading(true);
     setMessage("");
-    const result = await addPlaySession(gameTitle, gameSlug, date, valid, notes, template);
+    const result = await addPlaySession(gameTitle, gameSlug, date, valid, notes, template, password);
     setMessage(result.message);
     setLoading(false);
 
@@ -275,6 +276,17 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="例如：新手局、加扩..."
+                  className="w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-violet-500/30 outline-none text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">🔐 管理员密码</label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="输入密码确认操作"
                   className="w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-violet-500/30 outline-none text-sm"
                 />
               </div>

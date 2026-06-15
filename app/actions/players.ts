@@ -3,11 +3,23 @@
 import { createPlayer, getAllPlayers } from "@/lib/notion-players";
 import { revalidatePath } from "next/cache";
 
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "";
+
+function verifyPassword(password: string): boolean {
+  if (!ADMIN_PASSWORD) return true;
+  return password === ADMIN_PASSWORD;
+}
+
 export async function addPlayer(
   name: string,
   phone: string,
-  notes: string
+  notes: string,
+  password: string = ""
 ): Promise<{ success: boolean; message: string }> {
+  if (!verifyPassword(password)) {
+    return { success: false, message: "密码错误" };
+  }
+
   const trimmedName = name.trim();
   if (!trimmedName) {
     return { success: false, message: "玩家名称不能为空" };
