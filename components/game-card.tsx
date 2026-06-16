@@ -95,12 +95,12 @@ export default function GameCard({ game, sessionCount }: { game: BoardGame; sess
           {/* 元数据 Token 行 */}
           <div className="flex items-center gap-2 flex-wrap">
             {game.players && (
-              <span className="token token-indigo text-[0.6rem] min-w-[auto] h-5 px-1.5">
+              <span className="token token-indigo text-[0.68rem] min-w-[auto] h-[1.35rem] px-1.5">
                 {game.players}人
               </span>
             )}
             {game.bestPlayers && (
-              <span className="token token-emerald text-[0.6rem] min-w-[auto] h-5 px-1.5">
+              <span className="token token-emerald text-[0.68rem] min-w-[auto] h-[1.35rem] px-1.5">
                 最佳{game.bestPlayers}人
               </span>
             )}
@@ -133,7 +133,7 @@ export default function GameCard({ game, sessionCount }: { game: BoardGame; sess
           <div className="flex items-center justify-between pt-1">
             <StatusBadge status={game.status} />
             {plays > 0 && (
-              <span className="token token-violet text-[0.6rem] min-w-[auto] h-5 px-2">
+              <span className="token token-violet text-[0.68rem] min-w-[auto] h-[1.35rem] px-2">
                 已玩{plays}次
               </span>
             )}
