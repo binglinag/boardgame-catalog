@@ -220,7 +220,7 @@ img {
 .weight-bar-fill {
   height: 100%;
   border-radius: 9999px;
-  background: linear-gradient(90deg, #c4b5fd, #fcd34d);
+  background: linear-gradient(90deg, #e9d5ff, #fbcfe8);
   transition: width 0.8s cubic-bezier(0.16,1,0.3,1);
 }
 
