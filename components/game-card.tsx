@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { BoardGame } from "@/types/game";
 
 function StatusBadge({ status }: { status: string[] }) {
@@ -33,11 +34,12 @@ export default function GameCard({ game, sessionCount }: { game: BoardGame; sess
         {/* 封面图区域 */}
         <div className="relative aspect-[4/5] overflow-hidden bg-gradient-to-br from-violet-50 to-indigo-50 dark:from-violet-950/20 dark:to-indigo-950/20">
           {game.coverUrl ? (
-            <img
+            <Image
               src={game.coverUrl}
               alt={game.title}
+              fill
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
               className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-              loading="lazy"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-violet-100 via-indigo-50 to-pink-50 dark:from-violet-900/20 dark:via-indigo-900/10 dark:to-pink-900/10">

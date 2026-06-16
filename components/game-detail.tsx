@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { BoardGame, GameStatus } from "@/types/game";
 import type { PlaySession } from "@/types/session";
 import type { Player } from "@/types/player";
@@ -36,11 +37,16 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
         {/* 左侧：封面图 */}
         <div className="animate-scale-in">
           {game.coverUrl ? (
-            <img
-              src={game.coverUrl}
-              alt={game.title}
-              className="w-full rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700/50"
-            />
+            <div className="relative aspect-[4/5] w-full">
+              <Image
+                src={game.coverUrl}
+                alt={game.title}
+                fill
+                sizes="(max-width: 768px) 100vw, 360px"
+                className="rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700/50 object-cover"
+                priority
+              />
+            </div>
           ) : (
             <div className="aspect-[4/5] rounded-2xl bg-gradient-to-br from-primary-100 to-primary-50 dark:from-primary-900/20 dark:to-primary-800/10 flex items-center justify-center">
               <span className="text-8xl font-bold text-primary-300 dark:text-primary-700">
@@ -188,12 +194,13 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {game.extraImages.map((url, i) => (
-                  <a key={i} href={url} target="_blank" rel="noopener noreferrer">
-                    <img
+                  <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="relative aspect-[4/3]">
+                    <Image
                       src={url}
                       alt={`${game.title} 图片 ${i + 1}`}
-                      className="w-full aspect-[4/3] object-cover rounded-xl border border-gray-100 dark:border-gray-700/50 hover:scale-105 transition-transform duration-300"
-                      loading="lazy"
+                      fill
+                      sizes="(max-width: 640px) 50vw, 33vw"
+                      className="rounded-xl border border-gray-100 dark:border-gray-700/50 object-cover hover:scale-105 transition-transform duration-300"
                     />
                   </a>
                 ))}
