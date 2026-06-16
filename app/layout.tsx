@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import ThemeToggle from "@/components/theme-toggle";
+import ExportButton from "@/components/export-button";
 import "./globals.css";
 
 const siteName = "壮壮的桌游图鉴";
@@ -82,7 +83,10 @@ export default function RootLayout({
                 玩家排行
               </a>
             </div>
-            <ThemeToggle />
+            <div className="flex items-center gap-2">
+              <ExportButton />
+              <ThemeToggle />
+            </div>
           </div>
         </header>
 
