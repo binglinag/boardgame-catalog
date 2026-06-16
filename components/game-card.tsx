@@ -115,9 +115,9 @@ export default function GameCard({ game, sessionCount }: { game: BoardGame; sess
           <div className="flex items-center gap-2.5">
             {game.weight !== null && (
               <div className="flex items-center gap-1.5">
-                <span className="text-[0.62rem] font-medium text-amber-600/70 dark:text-amber-400/70 uppercase tracking-wider">重度</span>
+                <span className="text-[0.66rem] font-medium text-amber-700/60 dark:text-amber-300/60 uppercase tracking-wider">重度</span>
                 <WeightBar weight={game.weight} />
-                <span className="text-[0.62rem] font-semibold text-amber-700/80 dark:text-amber-300/80 tabular-nums">
+                <span className="text-[0.66rem] font-semibold text-amber-800/70 dark:text-amber-200/70 tabular-nums">
                   {game.weight.toFixed(1)}
                 </span>
               </div>
