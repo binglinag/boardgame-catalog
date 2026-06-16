@@ -108,13 +108,13 @@ img {
     height: 1.75rem;
     padding: 0 0.55rem;
     border-radius: 9999px;
-    font-weight: 700;
-    font-size: 0.75rem;
+    font-weight: 600;
+    font-size: 0.72rem;
     line-height: 1;
     letter-spacing: 0.02em;
     box-shadow:
-      inset 0 -2px 0 rgba(0,0,0,0.1),
-      0 2px 4px rgba(0,0,0,0.08),
+      inset 0 -2px 0 rgba(0,0,0,0.08),
+      0 2px 3px rgba(0,0,0,0.06),
       0 0 0 1px rgba(255,255,255,0.15) inset;
     user-select: none;
     transition: transform 0.2s cubic-bezier(0.16,1,0.3,1), box-shadow 0.2s ease;
@@ -126,48 +126,48 @@ img {
 
   /* Token 颜色变体 */
   .token-violet {
-    background: linear-gradient(135deg, #a78bfa, #8b5cf6);
+    background: linear-gradient(135deg, #c4b5fd, #a78bfa);
     color: #fff;
     box-shadow:
-      inset 0 -2px 0 rgba(0,0,0,0.12),
-      0 3px 6px rgba(139,92,246,0.25),
-      0 0 0 1px rgba(255,255,255,0.15) inset;
+      inset 0 -2px 0 rgba(0,0,0,0.1),
+      0 2px 5px rgba(139,92,246,0.2),
+      0 0 0 1px rgba(255,255,255,0.12) inset;
   }
 
   .token-amber {
-    background: linear-gradient(135deg, #fcd34d, #f59e0b);
-    color: #78350f;
+    background: linear-gradient(135deg, #fde68a, #fcd34d);
+    color: #92400e;
     box-shadow:
-      inset 0 -2px 0 rgba(0,0,0,0.1),
-      0 3px 6px rgba(245,158,11,0.3),
-      0 0 0 1px rgba(255,255,255,0.2) inset;
-  }
-
-  .token-emerald {
-    background: linear-gradient(135deg, #6ee7b7, #10b981);
-    color: #064e3b;
-    box-shadow:
-      inset 0 -2px 0 rgba(0,0,0,0.08),
-      0 3px 6px rgba(16,185,129,0.25),
+      inset 0 -2px 0 rgba(0,0,0,0.07),
+      0 2px 5px rgba(245,158,11,0.2),
       0 0 0 1px rgba(255,255,255,0.18) inset;
   }
 
-  .token-rose {
-    background: linear-gradient(135deg, #fda4af, #f43f5e);
-    color: #fff;
+  .token-emerald {
+    background: linear-gradient(135deg, #a7f3d0, #6ee7b7);
+    color: #065f46;
     box-shadow:
-      inset 0 -2px 0 rgba(0,0,0,0.12),
-      0 3px 6px rgba(244,63,94,0.25),
+      inset 0 -2px 0 rgba(0,0,0,0.06),
+      0 2px 5px rgba(16,185,129,0.18),
       0 0 0 1px rgba(255,255,255,0.15) inset;
   }
 
-  .token-indigo {
-    background: linear-gradient(135deg, #a5b4fc, #6366f1);
+  .token-rose {
+    background: linear-gradient(135deg, #fecdd3, #fb7185);
     color: #fff;
     box-shadow:
       inset 0 -2px 0 rgba(0,0,0,0.1),
-      0 3px 6px rgba(99,102,241,0.25),
-      0 0 0 1px rgba(255,255,255,0.15) inset;
+      0 2px 5px rgba(244,63,94,0.18),
+      0 0 0 1px rgba(255,255,255,0.12) inset;
+  }
+
+  .token-indigo {
+    background: linear-gradient(135deg, #c7d2fe, #a5b4fc);
+    color: #3730a3;
+    box-shadow:
+      inset 0 -2px 0 rgba(0,0,0,0.07),
+      0 2px 5px rgba(99,102,241,0.18),
+      0 0 0 1px rgba(255,255,255,0.12) inset;
   }
 
   /* 大型 Token（用于分数展示） */
@@ -310,41 +310,41 @@ img {
   gap: 0.35rem;
   padding: 0.2rem 0.65rem;
   border-radius: 9999px;
-  font-size: 0.65rem;
-  font-weight: 700;
+  font-size: 0.62rem;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   border: 1.5px solid;
 }
 
 .status-token-collected {
-  background: rgba(139,92,246,0.1);
+  background: rgba(139,92,246,0.08);
   color: #7c3aed;
-  border-color: rgba(139,92,246,0.25);
+  border-color: rgba(139,92,246,0.2);
 }
 
 .status-token-want {
-  background: rgba(244,63,94,0.08);
+  background: rgba(244,63,94,0.06);
   color: #e11d48;
-  border-color: rgba(244,63,94,0.2);
+  border-color: rgba(244,63,94,0.16);
 }
 
 .status-token-played {
-  background: rgba(79,70,229,0.08);
+  background: rgba(79,70,229,0.06);
   color: #4f46e5;
-  border-color: rgba(79,70,229,0.2);
+  border-color: rgba(79,70,229,0.16);
 }
 
 .status-token-bad {
-  background: rgba(220,38,38,0.08);
+  background: rgba(220,38,38,0.06);
   color: #dc2626;
-  border-color: rgba(220,38,38,0.2);
+  border-color: rgba(220,38,38,0.16);
 }
 
 .dark .status-token-collected { color: #c4b5fd; }
-.dark .status-token-want      { color: #fda4af; }
-.dark .status-token-played     { color: #a5b4fc; }
-.dark .status-token-bad        { color: #fca5a5; }
+.dark .status-token-want      { color: #fecdd3; }
+.dark .status-token-played     { color: #c7d2fe; }
+.dark .status-token-bad        { color: #fecaca; }
 
 /* ================================================
    Glass morphism 工具类

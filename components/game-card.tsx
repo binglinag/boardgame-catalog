@@ -82,7 +82,7 @@ export default function GameCard({ game, sessionCount }: { game: BoardGame; sess
 
         {/* ─ 信息区 ─ */}
         <div className="p-4 pt-3.5 space-y-2">
-          <h3 className="font-bold text-[0.95rem] text-gray-900 dark:text-white leading-snug line-clamp-2">
+          <h3 className="font-semibold text-[0.92rem] text-gray-900 dark:text-white leading-snug line-clamp-2">
             {game.title}
           </h3>
 
@@ -115,9 +115,9 @@ export default function GameCard({ game, sessionCount }: { game: BoardGame; sess
           <div className="flex items-center gap-2.5">
             {game.weight !== null && (
               <div className="flex items-center gap-1.5">
-                <span className="text-[0.62rem] font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider">重度</span>
+                <span className="text-[0.62rem] font-medium text-amber-600/70 dark:text-amber-400/70 uppercase tracking-wider">重度</span>
                 <WeightBar weight={game.weight} />
-                <span className="text-[0.62rem] font-bold text-amber-700 dark:text-amber-300 tabular-nums">
+                <span className="text-[0.62rem] font-semibold text-amber-700/80 dark:text-amber-300/80 tabular-nums">
                   {game.weight.toFixed(1)}
                 </span>
               </div>
