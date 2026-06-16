@@ -34,6 +34,47 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: "playCount", label: "游玩次数" },
 ];
 
+/* ── 小 Token 按钮 ── */
+function ChipButton({
+  active,
+  onClick,
+  children,
+  color = "violet",
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+  color?: "violet" | "amber" | "emerald";
+}) {
+  const colorMap = {
+    violet: {
+      active: "bg-violet-100 text-violet-700 border-violet-300 dark:bg-violet-900/40 dark:text-violet-200 dark:border-violet-700/30",
+      idle:  "bg-white/50 text-gray-500 border-white/40 hover:border-violet-300/60 dark:bg-white/5 dark:text-gray-400 dark:border-white/10 dark:hover:border-violet-700/40",
+    },
+    amber: {
+      active: "bg-amber-100 text-amber-700 border-amber-300 dark:bg-amber-900/40 dark:text-amber-200 dark:border-amber-700/30",
+      idle:  "bg-white/50 text-gray-500 border-white/40 hover:border-amber-300/60 dark:bg-white/5 dark:text-gray-400 dark:border-white/10 dark:hover:border-amber-700/40",
+    },
+    emerald: {
+      active: "bg-emerald-100 text-emerald-700 border-emerald-300 dark:bg-emerald-900/40 dark:text-emerald-200 dark:border-emerald-700/30",
+      idle:  "bg-white/50 text-gray-500 border-white/40 hover:border-emerald-300/60 dark:bg-white/5 dark:text-gray-400 dark:border-white/10 dark:hover:border-emerald-700/40",
+    },
+  };
+
+  const cls = colorMap[color];
+
+  return (
+    <button
+      onClick={onClick}
+      className={`px-3 py-1 rounded-xl text-sm font-medium border backdrop-blur-sm transition-all duration-300 ${
+        active ? cls.active + " shadow-sm" : cls.idle
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
+
 export default function FilterBar({
   status, tag, playerCount, sortBy, allTags,
   onStatusChange, onTagChange, onPlayerCountChange, onSortChange,
@@ -43,51 +84,41 @@ export default function FilterBar({
       {/* 第一行：状态 + 人数 + 排序 */}
       <div className="flex flex-wrap items-center gap-2">
         {/* 状态筛选 */}
-        <div className="flex rounded-2xl bg-white/50 dark:bg-gray-800/30 backdrop-blur-sm border border-white/40 dark:border-white/5 p-1 gap-0.5">
+        <div className="flex gap-1.5 flex-wrap">
           {STATUS_OPTIONS.map((s) => (
-            <button
-              key={s}
-              onClick={() => onStatusChange(s)}
-              className={`px-4 py-1.5 rounded-xl text-sm font-medium transition-all duration-300 ${
-                status === s
-                  ? "bg-white dark:bg-violet-600/20 text-violet-700 dark:text-violet-300 shadow-[0_2px_8px_rgba(139,92,246,0.15)]"
-                  : "text-gray-500 dark:text-gray-400 hover:text-violet-600 dark:hover:text-violet-300"
-              }`}
-            >
+            <ChipButton key={s} active={status === s} onClick={() => onStatusChange(s)}>
               {s}
-            </button>
+            </ChipButton>
           ))}
         </div>
 
-        <span className="text-violet-300 dark:text-violet-700 mx-1 hidden sm:inline">|</span>
+        <span className="text-violet-200 dark:text-violet-800 mx-1 hidden sm:inline font-bold">•</span>
 
         {/* 人数筛选 */}
-        <div className="flex rounded-2xl bg-white/50 dark:bg-gray-800/30 backdrop-blur-sm border border-white/40 dark:border-white/5 p-1 gap-0.5">
+        <div className="flex gap-1.5 flex-wrap">
           {PLAYER_COUNT_OPTIONS.map((opt) => (
-            <button
+            <ChipButton
               key={opt.label}
+              active={playerCount === opt.value}
               onClick={() => onPlayerCountChange(opt.value)}
-              className={`px-3 py-1.5 rounded-xl text-sm font-medium transition-all duration-300 ${
-                playerCount === opt.value
-                  ? "bg-white dark:bg-violet-600/20 text-violet-700 dark:text-violet-300 shadow-[0_2px_8px_rgba(139,92,246,0.15)]"
-                  : "text-gray-500 dark:text-gray-400 hover:text-violet-600 dark:hover:text-violet-300"
-              }`}
+              color="emerald"
             >
               {opt.label}
-            </button>
+            </ChipButton>
           ))}
         </div>
 
-        <span className="text-violet-300 dark:text-violet-700 mx-1 hidden sm:inline">|</span>
+        <span className="text-violet-200 dark:text-violet-800 mx-1 hidden sm:inline font-bold">•</span>
 
         {/* 排序 */}
         <select
           value={sortBy}
           onChange={(e) => onSortChange(e.target.value as SortOption)}
           className="px-4 py-1.5 rounded-xl text-sm font-medium
-            bg-white/50 dark:bg-gray-800/30 backdrop-blur-sm text-violet-700 dark:text-violet-300
-            border border-white/40 dark:border-white/5 outline-none cursor-pointer
-            focus:ring-2 focus:ring-violet-400/30 transition-all"
+            bg-white/50 dark:bg-white/5 backdrop-blur-sm text-violet-700 dark:text-violet-300
+            border border-white/40 dark:border-white/10 outline-none cursor-pointer
+            focus:ring-2 focus:ring-amber-400/30 transition-all
+            hover:border-amber-300/60 dark:hover:border-amber-700/40"
         >
           {SORT_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>
@@ -100,28 +131,18 @@ export default function FilterBar({
       {/* 第二行：标签筛选 */}
       {allTags.length > 0 && (
         <div className="flex flex-wrap gap-1.5">
-          <button
-            onClick={() => onTagChange(null)}
-            className={`px-3 py-1 rounded-lg text-xs font-medium transition-all duration-300 ${
-              tag === null
-                ? "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300 shadow-[0_2px_8px_rgba(139,92,246,0.1)]"
-                : "bg-white/40 dark:bg-gray-800/20 text-gray-500 dark:text-gray-400 hover:bg-violet-50 dark:hover:bg-violet-900/20"
-            }`}
-          >
+          <ChipButton active={tag === null} onClick={() => onTagChange(null)} color="amber">
             全部标签
-          </button>
+          </ChipButton>
           {allTags.map((t) => (
-            <button
+            <ChipButton
               key={t}
+              active={tag === t}
               onClick={() => onTagChange(tag === t ? null : t)}
-              className={`px-3 py-1 rounded-lg text-xs font-medium transition-all duration-300 ${
-                tag === t
-                  ? "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300 shadow-[0_2px_8px_rgba(139,92,246,0.1)]"
-                  : "bg-white/40 dark:bg-gray-800/20 text-gray-500 dark:text-gray-400 hover:bg-violet-50 dark:hover:bg-violet-900/20"
-              }`}
+              color="amber"
             >
               {t}
-            </button>
+            </ChipButton>
           ))}
         </div>
       )}

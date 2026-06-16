@@ -68,7 +68,7 @@ export default function RootLayout({
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
             <div className="flex items-baseline gap-5">
               <a href="/" className="font-bold text-lg text-gray-900 dark:text-white">
-                <span className="bg-gradient-to-r from-violet-500 via-indigo-400 to-purple-400 bg-clip-text text-transparent bg-[length:200%_200%] animate-gradientShift">
+                <span className="bg-gradient-to-r from-amber-400 via-violet-400 to-amber-300 bg-clip-text text-transparent bg-[length:200%_200%] animate-gradientShift">
                   壮壮的桌游图鉴
                 </span>
               </a>

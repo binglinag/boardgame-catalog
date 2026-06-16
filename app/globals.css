@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* ================================================
-   Premium 基础样式
+   Premium Board Game 主题样式
    ================================================ */
 
 @layer base {
@@ -25,32 +25,35 @@
     letter-spacing: 0.01em;
     font-weight: 400;
     transition: background-color 0.5s ease, color 0.5s ease;
-    /* 梦幻渐变背景 */
-    background: linear-gradient(135deg, #fdf2f8 0%, #f0f4ff 30%, #faf5ff 60%, #eff6ff 100%);
+    /* 桌布纹理背景 */
+    background:
+      /* 微妙噪点 */
+      repeating-conic-gradient(rgba(139,92,246,0.02) 0% 25%, transparent 0% 50%) 0 0 / 4px 4px,
+      /* 渐变基底 */
+      linear-gradient(150deg, #fef3c7 0%, #fdf2f8 25%, #f0f4ff 55%, #ecfdf5 80%, #fef3c7 100%);
     background-attachment: fixed;
   }
 
-  /* 标题使用更粗的字重保持层次 */
   h1, h2, h3, h4, h5, h6 {
     font-weight: 700;
     line-height: 1.35;
     letter-spacing: -0.01em;
   }
 
-  /* 段落增加呼吸感 */
   p {
     line-height: 1.8;
   }
 
   .dark body,
   body.dark {
-    background: linear-gradient(135deg, #0f0a1a 0%, #0d1117 30%, #110b1e 60%, #0a0f1a 100%);
+    background:
+      repeating-conic-gradient(rgba(139,92,246,0.03) 0% 25%, transparent 0% 50%) 0 0 / 4px 4px,
+      linear-gradient(150deg, #0f0a1a 0%, #0d1117 30%, #110b1e 60%, #061812 85%, #0f0a1a 100%);
     background-attachment: fixed;
   }
 
-  /* 自定义选中颜色 */
   ::selection {
-    @apply bg-violet-200/60 dark:bg-violet-600/40;
+    @apply bg-amber-200/50 dark:bg-amber-700/40 text-gray-900 dark:text-amber-100;
   }
 }
 
@@ -84,12 +87,264 @@ img {
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-violet-300 dark:bg-violet-700 rounded-full;
+  @apply bg-amber-300/60 dark:bg-amber-700/40 rounded-full;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-violet-400 dark:bg-violet-500;
+  @apply bg-amber-400/80 dark:bg-amber-600/60;
 }
+
+/* ================================================
+   🔴 Token 样式 — 桌游计分圆片
+   ================================================ */
+
+@layer components {
+  /* 基础 Token 圆片 */
+  .token {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.75rem;
+    height: 1.75rem;
+    padding: 0 0.55rem;
+    border-radius: 9999px;
+    font-weight: 700;
+    font-size: 0.75rem;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    box-shadow:
+      inset 0 -2px 0 rgba(0,0,0,0.1),
+      0 2px 4px rgba(0,0,0,0.08),
+      0 0 0 1px rgba(255,255,255,0.15) inset;
+    user-select: none;
+    transition: transform 0.2s cubic-bezier(0.16,1,0.3,1), box-shadow 0.2s ease;
+  }
+
+  .token:hover {
+    transform: translateY(-1px);
+  }
+
+  /* Token 颜色变体 */
+  .token-violet {
+    background: linear-gradient(135deg, #a78bfa, #8b5cf6);
+    color: #fff;
+    box-shadow:
+      inset 0 -2px 0 rgba(0,0,0,0.12),
+      0 3px 6px rgba(139,92,246,0.25),
+      0 0 0 1px rgba(255,255,255,0.15) inset;
+  }
+
+  .token-amber {
+    background: linear-gradient(135deg, #fcd34d, #f59e0b);
+    color: #78350f;
+    box-shadow:
+      inset 0 -2px 0 rgba(0,0,0,0.1),
+      0 3px 6px rgba(245,158,11,0.3),
+      0 0 0 1px rgba(255,255,255,0.2) inset;
+  }
+
+  .token-emerald {
+    background: linear-gradient(135deg, #6ee7b7, #10b981);
+    color: #064e3b;
+    box-shadow:
+      inset 0 -2px 0 rgba(0,0,0,0.08),
+      0 3px 6px rgba(16,185,129,0.25),
+      0 0 0 1px rgba(255,255,255,0.18) inset;
+  }
+
+  .token-rose {
+    background: linear-gradient(135deg, #fda4af, #f43f5e);
+    color: #fff;
+    box-shadow:
+      inset 0 -2px 0 rgba(0,0,0,0.12),
+      0 3px 6px rgba(244,63,94,0.25),
+      0 0 0 1px rgba(255,255,255,0.15) inset;
+  }
+
+  .token-indigo {
+    background: linear-gradient(135deg, #a5b4fc, #6366f1);
+    color: #fff;
+    box-shadow:
+      inset 0 -2px 0 rgba(0,0,0,0.1),
+      0 3px 6px rgba(99,102,241,0.25),
+      0 0 0 1px rgba(255,255,255,0.15) inset;
+  }
+
+  /* 大型 Token（用于分数展示） */
+  .token-lg {
+    min-width: 2.35rem;
+    height: 2.35rem;
+    font-size: 0.95rem;
+  }
+
+  .token-xl {
+    min-width: 3rem;
+    height: 3rem;
+    font-size: 1.15rem;
+  }
+}
+
+/* ================================================
+   ⭐ 评分星标
+   ================================================ */
+
+.rating-stars {
+  display: inline-flex;
+  gap: 2px;
+  align-items: center;
+}
+
+.rating-star {
+  width: 14px;
+  height: 14px;
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.rating-star.filled {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+}
+
+.rating-star.empty {
+  background: rgba(139,92,246,0.15);
+}
+
+.dark .rating-star.empty {
+  background: rgba(255,255,255,0.08);
+}
+
+/* ================================================
+   📊 重度进度条
+   ================================================ */
+
+.weight-bar {
+  position: relative;
+  height: 6px;
+  border-radius: 9999px;
+  background: rgba(139,92,246,0.1);
+  overflow: hidden;
+}
+
+.dark .weight-bar {
+  background: rgba(255,255,255,0.06);
+}
+
+.weight-bar-fill {
+  height: 100%;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #a78bfa, #f59e0b);
+  transition: width 0.8s cubic-bezier(0.16,1,0.3,1);
+}
+
+/* ================================================
+   🃏 卡牌倾斜 + 阴影
+   ================================================ */
+
+.game-card {
+  position: relative;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  background: theme('colors.white / 70%');
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.3);
+  box-shadow:
+    0 1px 3px rgba(0,0,0,0.06),
+    0 6px 20px rgba(139,92,246,0.08),
+    0 0 0 1px rgba(0,0,0,0.03) inset;
+  transition:
+    transform 0.5s cubic-bezier(0.16,1,0.3,1),
+    box-shadow 0.5s ease,
+    border-color 0.3s ease;
+}
+
+.dark .game-card {
+  background: rgba(30,30,40,0.7);
+  border-color: rgba(255,255,255,0.06);
+  box-shadow:
+    0 1px 3px rgba(0,0,0,0.12),
+    0 6px 20px rgba(139,92,246,0.06),
+    0 0 0 1px rgba(255,255,255,0.02) inset;
+}
+
+.game-card:hover {
+  transform: translateY(-6px) rotateY(-2deg) rotateX(1deg);
+  box-shadow:
+    0 2px 6px rgba(0,0,0,0.08),
+    0 12px 40px rgba(139,92,246,0.2),
+    0 0 0 1px rgba(0,0,0,0.04) inset;
+  border-color: rgba(245,158,11,0.3);
+}
+
+.dark .game-card:hover {
+  border-color: rgba(245,158,11,0.15);
+  box-shadow:
+    0 2px 6px rgba(0,0,0,0.2),
+    0 12px 40px rgba(139,92,246,0.15),
+    0 0 0 1px rgba(255,255,255,0.04) inset;
+}
+
+/* 卡牌色调条 */
+.game-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #8b5cf6, #6366f1, #a78bfa);
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.game-card:hover::before {
+  opacity: 1;
+}
+
+/* ================================================
+   🎭 状态 Token 徽章
+   ================================================ */
+
+.status-token {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1.5px solid;
+}
+
+.status-token-collected {
+  background: rgba(139,92,246,0.1);
+  color: #7c3aed;
+  border-color: rgba(139,92,246,0.25);
+}
+
+.status-token-want {
+  background: rgba(244,63,94,0.08);
+  color: #e11d48;
+  border-color: rgba(244,63,94,0.2);
+}
+
+.status-token-played {
+  background: rgba(79,70,229,0.08);
+  color: #4f46e5;
+  border-color: rgba(79,70,229,0.2);
+}
+
+.status-token-bad {
+  background: rgba(220,38,38,0.08);
+  color: #dc2626;
+  border-color: rgba(220,38,38,0.2);
+}
+
+.dark .status-token-collected { color: #c4b5fd; }
+.dark .status-token-want      { color: #fda4af; }
+.dark .status-token-played     { color: #a5b4fc; }
+.dark .status-token-bad        { color: #fca5a5; }
 
 /* ================================================
    Glass morphism 工具类
@@ -108,14 +363,12 @@ img {
       dark:shadow-[0_8px_32px_rgba(139,92,246,0.06)];
   }
 
-  /* 卡片悬浮效果 */
   .card-hover {
     @apply transition-all duration-500 ease-out
       hover:-translate-y-2 hover:shadow-[0_16px_48px_rgba(139,92,246,0.15)]
       dark:hover:shadow-[0_16px_48px_rgba(139,92,246,0.1)];
   }
 
-  /* 磁性按钮 */
   .magnetic {
     @apply transition-transform duration-200 ease-out
       hover:scale-105 active:scale-95;
@@ -189,9 +442,9 @@ img {
   background: linear-gradient(
     105deg,
     transparent 40%,
-    rgba(255, 255, 255, 0.2) 45%,
-    rgba(255, 255, 255, 0.3) 50%,
-    rgba(255, 255, 255, 0.2) 55%,
+    rgba(255, 255, 255, 0.15) 45%,
+    rgba(255, 255, 255, 0.22) 50%,
+    rgba(255, 255, 255, 0.15) 55%,
     transparent 60%
   );
   transform: translateX(-100%);
@@ -205,7 +458,7 @@ img {
 
 /* 梦幻标题渐变 */
 .dreamy-title {
-  background: linear-gradient(135deg, #a78bfa 0%, #818cf8 40%, #c084fc 70%, #a78bfa 100%);
+  background: linear-gradient(135deg, #f59e0b 0%, #a78bfa 30%, #fbbf24 50%, #8b5cf6 70%, #f59e0b 100%);
   background-size: 200% 200%;
   animation: gradientShift 6s ease infinite;
   -webkit-background-clip: text;
@@ -220,7 +473,9 @@ img {
   .dreamy-gradient,
   .dreamy-glow,
   .dreamy-border,
-  .card-shimmer::after {
+  .card-shimmer::after,
+  .game-card {
     animation: none !important;
+    transform: none !important;
   }
 }
