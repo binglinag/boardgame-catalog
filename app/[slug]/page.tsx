@@ -20,9 +20,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: "未找到" };
   }
 
+  const description = game.review || `${game.title} · ${game.players || ""}人 · ${game.playTime || ""}${game.rating !== null ? ` · 评分 ${game.rating}/10` : ""}`;
+
   return {
-    title: `${game.title} - 壮壮的桌游图鉴`,
-    description: game.review || `${game.title} - ${game.players || ""}人 · ${game.playTime || ""}`,
+    title: game.title,
+    description,
+    openGraph: {
+      title: game.title,
+      description,
+      images: game.coverUrl ? [{ url: game.coverUrl, width: 800, height: 1000 }] : [],
+    },
+    twitter: {
+      title: game.title,
+      description,
+      images: game.coverUrl ? [game.coverUrl] : [],
+    },
   };
 }
 

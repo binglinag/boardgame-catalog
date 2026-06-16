@@ -4,9 +4,28 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import ThemeToggle from "@/components/theme-toggle";
 import "./globals.css";
 
+const siteName = "壮壮的桌游图鉴";
+const siteUrl = "https://www.zzboardgamecatalog.xyz";
+
 export const metadata: Metadata = {
-  title: "壮壮的桌游图鉴",
-  description: "个人桌游收藏与游玩记录",
+  title: {
+    default: siteName,
+    template: `%s - ${siteName}`,
+  },
+  description: "记录玩过的每一款桌游：收藏、评分、对局、排行榜",
+  metadataBase: new URL(siteUrl),
+  openGraph: {
+    type: "website",
+    locale: "zh_CN",
+    siteName,
+    title: siteName,
+    description: "记录玩过的每一款桌游：收藏、评分、对局、排行榜",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteName,
+    description: "记录玩过的每一款桌游：收藏、评分、对局、排行榜",
+  },
 };
 
 export default function RootLayout({

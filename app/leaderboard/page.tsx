@@ -11,7 +11,7 @@ export const runtime = "edge";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "玩家排行榜 - 壮壮的桌游图鉴",
+  title: "玩家排行榜",
 };
 
 interface PlayerRank {
