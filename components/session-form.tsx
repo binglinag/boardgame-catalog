@@ -27,6 +27,11 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
+  // 战役叙事模板专用
+  const [scenario, setScenario] = useState("");
+  const [narrative, setNarrative] = useState("");
+  const [completion, setCompletion] = useState<"完整通关" | "中途放弃" | null>(null);
+
   const tpl = SCORING_TEMPLATES.find((t) => t.id === template)!;
 
   function updatePlayer(index: number, patch: Partial<PlayerRow>) {
@@ -57,10 +62,19 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
     setPlayers([{ name: "", score: 0, id: "", result: null, rank: null }]);
     setNotes("");
     setMessage("");
+    setScenario("");
+    setNarrative("");
+    setCompletion(null);
   }
 
   // 不同模板的提交前预处理
   function buildSubmitData(): PlayerScore[] {
+    if (template === "战役叙事") {
+      // 仅收集参与者，不设分数/排名
+      return players
+        .filter((p) => p.id !== "")
+        .map((p) => ({ ...p, score: 0, result: null, rank: null }));
+    }
     if (template === "排名顺序") {
       // 自动按当前顺序分配名次
       return players
@@ -99,7 +113,12 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
 
     setLoading(true);
     setMessage("");
-    const result = await addPlaySession(gameTitle, gameSlug, date, valid, notes, template, password);
+    const result = await addPlaySession(
+      gameTitle, gameSlug, date, valid, notes, template, password,
+      template === "战役叙事" ? scenario : undefined,
+      template === "战役叙事" ? narrative : undefined,
+      template === "战役叙事" ? completion : undefined
+    );
     setMessage(result.message);
     setLoading(false);
 
@@ -174,6 +193,77 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
                 </div>
               </div>
 
+              {/* 战役叙事模板 - 场景/叙事输入 */}
+              {tpl.inputType === "narrative" && (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                      📍 场景/章节名称
+                    </label>
+                    <input
+                      type="text"
+                      value={scenario}
+                      onChange={(e) => setScenario(e.target.value)}
+                      placeholder="例如：第一章·午夜面具"
+                      className="w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-violet-500/30 outline-none text-sm"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                      📝 叙事记录
+                    </label>
+                    <textarea
+                      value={narrative}
+                      onChange={(e) => setNarrative(e.target.value)}
+                      placeholder="记录发生了什么：获得物品、触发事件、角色状态变化..."
+                      rows={4}
+                      className="w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-violet-500/30 outline-none text-sm resize-y"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                      🏁 完成标记（可选）
+                    </label>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setCompletion(null)}
+                        className={`flex-1 px-3 py-2 rounded-xl border text-sm font-medium transition-all ${
+                          completion === null
+                            ? "border-violet-500 bg-violet-50 dark:bg-violet-900/20 text-violet-700 dark:text-violet-300"
+                            : "border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-violet-300"
+                        }`}
+                      >
+                        不标记
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setCompletion("完整通关")}
+                        className={`flex-1 px-3 py-2 rounded-xl border text-sm font-medium transition-all ${
+                          completion === "完整通关"
+                            ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300"
+                            : "border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-emerald-300"
+                        }`}
+                      >
+                        完整通关
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setCompletion("中途放弃")}
+                        className={`flex-1 px-3 py-2 rounded-xl border text-sm font-medium transition-all ${
+                          completion === "中途放弃"
+                            ? "border-amber-500 bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300"
+                            : "border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-amber-300"
+                        }`}
+                      >
+                        中途放弃
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+
               {/* 玩家输入 - 按模板动态切换 */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
@@ -187,7 +277,7 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
                     return (
                       <div key={i} className="flex gap-2 items-center">
                         <span className="w-6 h-6 flex-shrink-0 flex items-center justify-center rounded-full bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 text-xs font-bold">
-                          {tpl.inputType === "rank" ? i + 1 : ""}
+                          {tpl.inputType === "rank" ? i + 1 : tpl.inputType === "narrative" ? "👤" : ""}
                         </span>
                         <select
                           value={p.id}

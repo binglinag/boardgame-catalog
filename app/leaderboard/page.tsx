@@ -4,7 +4,7 @@ import { getAllSessions } from "@/lib/notion-sessions";
 import { getAllPlayers } from "@/lib/notion-players";
 import PlayerLeaderboard from "@/components/player-leaderboard";
 import type { BoardGame } from "@/types/game";
-import type { PlaySession } from "@/types/session";
+import type { PlaySession, PlayerScore, ScoringTemplate } from "@/types/session";
 import type { Player } from "@/types/player";
 
 export const runtime = "edge";
@@ -14,14 +14,79 @@ export const metadata: Metadata = {
   title: "玩家排行榜",
 };
 
+// ============================================================
+// 变现系数计算
+// ============================================================
+
+function getPerformanceCoefficient(
+  template: ScoringTemplate,
+  playerScore: PlayerScore,
+  allPlayersInSession: PlayerScore[],
+  completion?: "完整通关" | "中途放弃" | null
+): number {
+  switch (template) {
+    case "标准计分": {
+      const maxScore = Math.max(...allPlayersInSession.map((p) => p.score), 1);
+      return playerScore.score / maxScore;
+    }
+    case "胜负记录": {
+      if (playerScore.result === "胜") return 1.0;
+      if (playerScore.result === "平") return 0.7;
+      return 0.4;
+    }
+    case "排名顺序": {
+      if (!playerScore.rank) return 0.5;
+      const totalPlayers = allPlayersInSession.length;
+      return (totalPlayers - playerScore.rank + 1) / totalPlayers;
+    }
+    case "单一赢家": {
+      if (playerScore.result === "胜" || playerScore.result === "冠军") return 1.0;
+      return 0.6;
+    }
+    case "合作胜负": {
+      if (playerScore.result === "合作胜") return 1.0;
+      return 0.5;
+    }
+    case "战役叙事": {
+      if (completion === "完整通关") return 1.0;
+      if (completion === "中途放弃") return 0.5;
+      return 1.0; // 不标记默认 1.0
+    }
+    default:
+      return 1.0;
+  }
+}
+
+// 竞技模板列表
+const COMPETITIVE_TEMPLATES: ScoringTemplate[] = [
+  "标准计分", "胜负记录", "排名顺序", "单一赢家", "合作胜负",
+];
+
 interface PlayerRank {
   player: Player;
-  bgScore: number;       // 桌游度
-  gamesPlayed: number;   // 玩过款数
+  bgScore: number;       // 综合桌游度 = 竞技分 + 战役分
+  compScore: number;     // 竞技分
+  campScore: number;     // 战役分
+  compGames: number;     // 竞技款数
+  campGames: number;     // 战役款数
   totalSessions: number; // 总对局数
   avgWeight: number;     // 平均重度
   bestGame: string;      // 玩过最重的游戏
-  maxWeight: number;     // 最重游戏的重度
+  maxWeight: number;     // 最重游戏重度
+}
+
+interface PlayerStats {
+  // 竞技
+  compWeighted: number;    // Σ(重度 × 变现系数)
+  compSessionCount: number;
+  compGameSet: Set<string>;
+  // 战役
+  campWeighted: number;    // Σ(重度 × 可选标记系数)
+  campSessionCount: number;
+  campGameSet: Set<string>;
+  // 通用
+  maxWeight: number;
+  bestGame: string;
 }
 
 export default async function LeaderboardPage() {
@@ -38,38 +103,52 @@ export default async function LeaderboardPage() {
   }
 
   // 玩家名 → 统计
-  const statsMap = new Map<
-    string,
-    {
-      totalWeight: number;
-      sessionCount: number;
-      gameSet: Set<string>;
-      maxWeight: number;
-      bestGame: string;
-    }
-  >();
+  const statsMap = new Map<string, PlayerStats>();
 
   for (const session of allSessions) {
     const weight = gameWeightMap[session.gameTitle] ?? 2.5;
-    for (const player of session.players) {
-      const name = player.name.trim();
+    const isCompetitive = COMPETITIVE_TEMPLATES.includes(session.template);
+
+    for (const playerScore of session.players) {
+      const name = playerScore.name.trim();
       if (!name) continue;
 
       let entry = statsMap.get(name);
       if (!entry) {
         entry = {
-          totalWeight: 0,
-          sessionCount: 0,
-          gameSet: new Set(),
+          compWeighted: 0,
+          compSessionCount: 0,
+          compGameSet: new Set(),
+          campWeighted: 0,
+          campSessionCount: 0,
+          campGameSet: new Set(),
           maxWeight: 0,
           bestGame: "",
         };
         statsMap.set(name, entry);
       }
 
-      entry.totalWeight += weight;
-      entry.sessionCount++;
-      entry.gameSet.add(session.gameTitle);
+      if (isCompetitive) {
+        const coeff = getPerformanceCoefficient(
+          session.template,
+          playerScore,
+          session.players
+        );
+        entry.compWeighted += weight * coeff;
+        entry.compSessionCount++;
+        entry.compGameSet.add(session.gameTitle);
+      } else {
+        // 战役叙事
+        const coeff = getPerformanceCoefficient(
+          session.template,
+          playerScore,
+          session.players,
+          session.completion
+        );
+        entry.campWeighted += weight * coeff;
+        entry.campSessionCount++;
+        entry.campGameSet.add(session.gameTitle);
+      }
 
       if (weight > entry.maxWeight) {
         entry.maxWeight = weight;
@@ -83,11 +162,13 @@ export default async function LeaderboardPage() {
   for (const player of allPlayers) {
     const stat = statsMap.get(player.name);
     if (!stat) {
-      // 未参与过对局的玩家
       rankings.push({
         player,
         bgScore: 0,
-        gamesPlayed: 0,
+        compScore: 0,
+        campScore: 0,
+        compGames: 0,
+        campGames: 0,
         totalSessions: 0,
         avgWeight: 0,
         bestGame: "",
@@ -96,16 +177,29 @@ export default async function LeaderboardPage() {
       continue;
     }
 
-    // 桌游度 = Σ(重度 × 场次) + 款数 × 0.5
-    const gameTypes = stat.gameSet.size;
-    const bgScore = Math.round((stat.totalWeight + gameTypes * 0.5) * 10) / 10;
+    // 竞技分 = Σ(重度 × 变现系数) + 竞技款数 × 2
+    const compScore = Math.round((stat.compWeighted + stat.compGameSet.size * 2) * 10) / 10;
+    // 战役分 = Σ(重度 × 可选标记系数) + 战役款数 × 3
+    const campScore = Math.round((stat.campWeighted + stat.campGameSet.size * 3) * 10) / 10;
+    // 综合 = 竞技分 + 战役分
+    const bgScore = Math.round((compScore + campScore) * 10) / 10;
 
     rankings.push({
       player,
       bgScore,
-      gamesPlayed: gameTypes,
-      totalSessions: stat.sessionCount,
-      avgWeight: gameTypes > 0 ? Math.round((stat.totalWeight / stat.sessionCount) * 10) / 10 : 0,
+      compScore,
+      campScore,
+      compGames: stat.compGameSet.size,
+      campGames: stat.campGameSet.size,
+      totalSessions: stat.compSessionCount + stat.campSessionCount,
+      avgWeight:
+        stat.compSessionCount + stat.campSessionCount > 0
+          ? Math.round(
+              ((stat.compWeighted + stat.campWeighted) /
+                (stat.compSessionCount + stat.campSessionCount)) *
+                10
+            ) / 10
+          : 0,
       bestGame: stat.bestGame,
       maxWeight: stat.maxWeight,
     });

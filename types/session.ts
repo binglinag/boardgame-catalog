@@ -6,6 +6,10 @@ export interface PlaySession {
   players: PlayerScore[];
   notes: string;
   template: ScoringTemplate;
+  // 战役叙事模板专用
+  scenario?: string;                           // 场景/章节名称
+  narrative?: string;                          // 叙事记录
+  completion?: "完整通关" | "中途放弃" | null; // 可选完成标记
 }
 
 export type ScoringTemplate =
@@ -13,7 +17,8 @@ export type ScoringTemplate =
   | "胜负记录"
   | "排名顺序"
   | "单一赢家"
-  | "合作胜负";
+  | "合作胜负"
+  | "战役叙事";
 
 export interface PlayerScore {
   name: string;
@@ -31,12 +36,28 @@ export interface LeaderboardEntry {
   averageScore: number;
 }
 
+// 玩家全局排名条目
+export interface PlayerRankEntry {
+  player: { name: string; id: string };
+  bgScore: number;       // 综合桌游度
+  compScore: number;     // 竞技分
+  campScore: number;     // 战役分
+  gamesPlayed: number;   // 玩过款数（竞技）
+  campGames: number;     // 战役款数
+  totalSessions: number; // 总对局数
+  avgWeight: number;     // 平均重度
+  bestGame: string;      // 玩过最重的游戏
+  maxWeight: number;     // 最重游戏重度
+  campHardest: string;   // 最重战役游戏
+  campMaxWeight: number; // 最重战役重度
+}
+
 // 计分模板配置
 export const SCORING_TEMPLATES: {
   id: ScoringTemplate;
   label: string;
   description: string;
-  inputType: "score" | "winloss" | "rank" | "singleWinner" | "coop";
+  inputType: "score" | "winloss" | "rank" | "singleWinner" | "coop" | "narrative";
   emoji: string;
 }[] = [
   {
@@ -73,5 +94,12 @@ export const SCORING_TEMPLATES: {
     description: "全体玩家共同胜/负",
     inputType: "coop",
     emoji: "🤝",
+  },
+  {
+    id: "战役叙事",
+    label: "战役叙事",
+    description: "传承/战役类游戏，记录剧情推进与状态变化",
+    inputType: "narrative",
+    emoji: "📖",
   },
 ];

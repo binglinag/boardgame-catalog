@@ -18,7 +18,10 @@ export async function addPlaySession(
   players: PlayerScore[],
   notes: string,
   template: ScoringTemplate = "标准计分",
-  password: string = ""
+  password: string = "",
+  scenario?: string,
+  narrative?: string,
+  completion?: "完整通关" | "中途放弃" | null
 ): Promise<{ success: boolean; message: string }> {
   if (!verifyPassword(password)) {
     return { success: false, message: "密码错误" };
@@ -28,7 +31,7 @@ export async function addPlaySession(
     return { success: false, message: "请至少添加一名玩家" };
   }
 
-  const result = await createSession(gameTitle, date, players, notes, template);
+  const result = await createSession(gameTitle, date, players, notes, template, scenario, narrative, completion);
 
   if (result) {
     revalidatePath(`/${gameSlug}`);
