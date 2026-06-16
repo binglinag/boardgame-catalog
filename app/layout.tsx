@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import ThemeToggle from "@/components/theme-toggle";
 import "./globals.css";
 
@@ -72,6 +73,7 @@ export default function RootLayout({
             Built with Next.js · Powered by Notion · {new Date().getFullYear()}
           </div>
         </footer>
+        <Analytics />
       </body>
     </html>
   );
