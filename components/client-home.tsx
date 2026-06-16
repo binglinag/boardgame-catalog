@@ -8,6 +8,7 @@ import SearchBar from "@/components/search-bar";
 import StatsPanel from "@/components/stats-panel";
 import RandomPicker from "@/components/random-picker";
 import ParticleBackground from "@/components/particle-background";
+import { exportBackup } from "@/app/actions/export";
 import type { BoardGame, GameStatus, SortOption } from "@/types/game";
 import type { PlaySession } from "@/types/session";
 
@@ -57,6 +58,7 @@ export default function ClientHome({
   const [searchQuery, setSearchQuery] = useState("");
   const [mounted, setMounted] = useState(false);
   const [showStats, setShowStats] = useState(false);
+  const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -64,6 +66,35 @@ export default function ClientHome({
 
   const handleSearch = useCallback((query: string) => {
     setSearchQuery(query);
+  }, []);
+
+  const handleExport = useCallback(async () => {
+    const password = window.prompt("请输入管理员密码以导出备份");
+    if (password === null) return; // 用户取消
+
+    setExporting(true);
+    try {
+      const result = await exportBackup(password);
+      if (result.success && result.data) {
+        const blob = new Blob([JSON.stringify(result.data, null, 2)], {
+          type: "application/json",
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        const date = new Date().toISOString().slice(0, 10);
+        a.download = `boardgame-backup-${date}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+      alert(result.message);
+    } catch {
+      alert("导出失败，请重试");
+    } finally {
+      setExporting(false);
+    }
   }, []);
 
   const filteredGames = useMemo(() => {
@@ -132,6 +163,18 @@ export default function ClientHome({
                 }`}
               >
                 {showStats ? "收起统计" : "查看统计"}
+              </button>
+              <button
+                onClick={handleExport}
+                disabled={exporting}
+                className="px-5 py-2 rounded-2xl text-sm font-medium whitespace-nowrap min-w-[90px] transition-all duration-300
+                  bg-white/40 dark:bg-gray-800/20 text-gray-500 dark:text-gray-400
+                  hover:bg-emerald-50 dark:hover:bg-emerald-900/20
+                  hover:text-emerald-600 dark:hover:text-emerald-400
+                  backdrop-blur-sm border border-white/40 dark:border-white/5
+                  disabled:opacity-50"
+              >
+                {exporting ? "导出中..." : "📥 导出备份"}
               </button>
               <SearchBar onSearch={handleSearch} />
             </div>
