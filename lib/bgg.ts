@@ -58,9 +58,14 @@ function attrsAll(xml: string, tag: string, filterAttr?: string, filterVal?: str
 /** 调用 BGG API 获取游戏数据 */
 export async function fetchBggData(bggId: number): Promise<BggData | null> {
   const url = `https://boardgamegeek.com/xmlapi2/thing?id=${bggId}&stats=1`;
+  const token = process.env.BGG_API_TOKEN ?? "";
 
   try {
-    const res = await fetch(url, { next: { revalidate: 3600 } });
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+    const res = await fetch(url, { headers, next: { revalidate: 3600 } });
     if (!res.ok) return null;
     const xml = await res.text();
 
