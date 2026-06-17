@@ -24,7 +24,8 @@ const PLAYER_COUNT_OPTIONS: Array<{ value: number | "全部"; label: string }> =
   { value: 3, label: "3人" },
   { value: 4, label: "4人" },
   { value: 5, label: "5人" },
-  { value: 6, label: "6人+" },
+  { value: 6, label: "6人" },
+  { value: 7, label: "7人+" },
 ];
 
 const SORT_OPTIONS: { value: SortOption; label: string }[] = [
