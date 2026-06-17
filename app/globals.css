@@ -335,6 +335,124 @@ img {
 .dark .status-token-bad        { color: #fecaca; }
 
 /* ================================================
+   🎨 自定义表单控件
+   ================================================ */
+
+/* 自定义 Select 包装器（隐藏原生箭头 + 替换图标） */
+.custom-select {
+  position: relative;
+  display: inline-flex;
+}
+
+.custom-select select {
+  @apply w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600
+    bg-white/60 dark:bg-gray-700/40 backdrop-blur-sm
+    text-gray-900 dark:text-white text-sm
+    focus:ring-2 focus:ring-violet-400/30 outline-none
+    transition-all duration-200;
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 2.25rem;
+  cursor: pointer;
+}
+
+.custom-select select:hover {
+  @apply border-violet-300/60 dark:border-violet-700/40;
+}
+
+.custom-select::after {
+  content: '';
+  position: absolute;
+  right: 0.6rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0.85rem;
+  height: 0.85rem;
+  pointer-events: none;
+  background: currentColor;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238b5cf6' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  background-color: #a78bfa;
+  transition: background-color 0.2s;
+}
+
+.dark .custom-select::after {
+  background-color: #8b5cf6;
+}
+
+.custom-select:hover::after {
+  background-color: #7c3aed;
+}
+
+/* 自定义 Date 输入包装器 */
+.custom-date {
+  position: relative;
+  display: flex;
+}
+
+.custom-date input[type="date"] {
+  @apply w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600
+    bg-white/60 dark:bg-gray-700/40 backdrop-blur-sm
+    text-gray-900 dark:text-white text-sm
+    focus:ring-2 focus:ring-violet-400/30 outline-none
+    transition-all duration-200;
+  padding-right: 2.25rem;
+  cursor: pointer;
+  color-scheme: light;
+}
+
+.dark .custom-date input[type="date"] {
+  color-scheme: dark;
+}
+
+.custom-date input[type="date"]:hover {
+  @apply border-violet-300/60 dark:border-violet-700/40;
+}
+
+/* 隐藏浏览器默认的日期图标，用自己的 */
+.custom-date input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  width: 2rem;
+  height: 100%;
+  position: absolute;
+  right: 0;
+  cursor: pointer;
+}
+
+.custom-date::after {
+  content: '';
+  position: absolute;
+  right: 0.65rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1rem;
+  height: 1rem;
+  pointer-events: none;
+  background-color: #a78bfa;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238b5cf6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'%3E%3C/rect%3E%3Cline x1='16' y1='2' x2='16' y2='6'%3E%3C/line%3E%3Cline x1='8' y1='2' x2='8' y2='6'%3E%3C/line%3E%3Cline x1='3' y1='10' x2='21' y2='10'%3E%3C/line%3E%3C/svg%3E");
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  transition: background-color 0.2s;
+}
+
+.dark .custom-date::after {
+  background-color: #8b5cf6;
+}
+
+.custom-date:hover::after {
+  background-color: #7c3aed;
+}
+
+/* 表单聚焦时的公共效果 */
+.custom-select select:focus,
+.custom-date input[type="date"]:focus {
+  @apply border-violet-400 dark:border-violet-600;
+  box-shadow: 0 0 0 3px rgba(139,92,246,0.12);
+}
+
+/* ================================================
    Glass morphism 工具类
    ================================================ */
 
