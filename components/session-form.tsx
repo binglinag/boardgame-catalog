@@ -76,10 +76,10 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
         .map((p) => ({ ...p, score: 0, result: null, rank: null }));
     }
     if (template === "排名顺序") {
-      // 自动按当前顺序分配名次
+      // 使用手动输入的名次
       return players
         .filter((p) => p.id !== "")
-        .map((p, idx) => ({ ...p, rank: idx + 1, score: 0, result: "冠军" as const }));
+        .map((p) => ({ ...p, score: 0, result: null }));
     }
     if (template === "单一赢家") {
       return players
@@ -267,7 +267,7 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
               {/* 玩家输入 - 按模板动态切换 */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                  玩家 {tpl.inputType === "rank" && <span className="text-xs text-gray-400">（按名次 1/2/3 排序）</span>}
+                  玩家 {tpl.inputType === "rank" && <span className="text-xs text-gray-400">（输入名次，并列输入相同数字）</span>}
                 </label>
                 <div className="space-y-2">
                   {players.map((p, i) => {
@@ -277,7 +277,7 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
                     return (
                       <div key={i} className="flex gap-2 items-center">
                         <span className="w-6 h-6 flex-shrink-0 flex items-center justify-center rounded-full bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 text-xs font-bold">
-                          {tpl.inputType === "rank" ? i + 1 : tpl.inputType === "narrative" ? "👤" : ""}
+                          {tpl.inputType === "rank" ? (p.rank ?? "?") : tpl.inputType === "narrative" ? "👤" : ""}
                         </span>
                         <select
                           value={p.id}
@@ -312,6 +312,17 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
                             <option value="平">平</option>
                             <option value="负">负</option>
                           </select>
+                        )}
+
+                        {tpl.inputType === "rank" && (
+                          <input
+                            type="number"
+                            min={1}
+                            placeholder="名次"
+                            value={p.rank ?? ""}
+                            onChange={(e) => updatePlayer(i, { rank: e.target.value ? Number(e.target.value) : null })}
+                            className="w-20 px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-violet-500/30 outline-none text-sm"
+                          />
                         )}
 
                         {tpl.inputType === "singleWinner" && (

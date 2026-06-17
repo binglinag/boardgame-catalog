@@ -37,6 +37,16 @@ function getPerformanceCoefficient(
     case "排名顺序": {
       if (!playerScore.rank) return 0.5;
       const totalPlayers = allPlayersInSession.length;
+      // 检测并列：统计同名的玩家数
+      const tiedCount = allPlayersInSession.filter((p) => p.rank === playerScore.rank).length;
+      if (tiedCount > 1) {
+        // Modified Competition：并列玩家平分所占名次的分数总和
+        let sum = 0;
+        for (let pos = playerScore.rank; pos < playerScore.rank + tiedCount; pos++) {
+          sum += (totalPlayers - pos + 1) / totalPlayers;
+        }
+        return sum / tiedCount;
+      }
       return (totalPlayers - playerScore.rank + 1) / totalPlayers;
     }
     case "单一赢家": {
