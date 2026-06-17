@@ -1,5 +1,6 @@
 "use client";
 
+import CustomSelect from "./custom-select";
 import type { GameStatus, SortOption } from "@/types/game";
 
 interface FilterBarProps {
@@ -111,21 +112,12 @@ export default function FilterBar({
         <span className="text-violet-200 dark:text-violet-800 mx-1 hidden sm:inline font-bold">•</span>
 
         {/* 排序 */}
-        <select
+        <CustomSelect
           value={sortBy}
-          onChange={(e) => onSortChange(e.target.value as SortOption)}
-          className="px-4 py-1.5 rounded-xl text-sm font-medium
-            bg-white/50 dark:bg-white/5 backdrop-blur-sm text-violet-700 dark:text-violet-300
-            border border-white/40 dark:border-white/10 outline-none cursor-pointer
-            focus:ring-2 focus:ring-amber-400/30 transition-all
-            hover:border-amber-300/60 dark:hover:border-amber-700/40"
-        >
-          {SORT_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              按{opt.label}排序
-            </option>
-          ))}
-        </select>
+          options={SORT_OPTIONS.map((opt) => ({ value: opt.value, label: `按${opt.label}排序` }))}
+          onChange={(v) => onSortChange(v as SortOption)}
+          className="w-32"
+        />
       </div>
 
       {/* 第二行：标签筛选 */}
