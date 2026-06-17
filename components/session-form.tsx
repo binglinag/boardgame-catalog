@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { addPlaySession } from "@/app/actions/sessions";
 import PlayerForm from "./player-form";
+import CustomDatePicker from "./custom-date-picker";
+import CustomSelect from "./custom-select";
 import type { PlayerScore, ScoringTemplate } from "@/types/session";
 import { SCORING_TEMPLATES } from "@/types/session";
 import type { Player } from "@/types/player";
@@ -159,14 +161,7 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">日期</label>
-                <div className="custom-date">
-                  <input
-                    type="date"
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                    required
-                  />
-                </div>
+                <CustomDatePicker value={date} onChange={setDate} />
               </div>
 
               {/* 计分模板选择 */}
@@ -280,17 +275,13 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
                         <span className="w-6 h-6 flex-shrink-0 flex items-center justify-center rounded-full bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 text-xs font-bold">
                           {tpl.inputType === "rank" ? (p.rank ?? "?") : tpl.inputType === "narrative" ? "👤" : ""}
                         </span>
-                        <div className="custom-select flex-1 min-w-0">
-                          <select
-                            value={p.id}
-                            onChange={(e) => handleSelectPlayer(i, e.target.value)}
-                          >
-                            <option value="">选择玩家</option>
-                            {available.map((ap) => (
-                              <option key={ap.id} value={ap.id}>{ap.name}</option>
-                            ))}
-                          </select>
-                        </div>
+                        <CustomSelect
+                          value={p.id}
+                          options={available.map((ap) => ({ value: ap.id, label: ap.name }))}
+                          onChange={(v) => handleSelectPlayer(i, v)}
+                          placeholder="选择玩家"
+                          className="flex-1 min-w-0"
+                        />
 
                         {/* 不同模板的输入控件 */}
                         {tpl.inputType === "score" && (
@@ -304,17 +295,17 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
                         )}
 
                         {tpl.inputType === "winloss" && (
-                          <div className="custom-select w-24">
-                            <select
-                              value={p.result ?? ""}
-                              onChange={(e) => updatePlayer(i, { result: (e.target.value || null) as PlayerScore["result"] })}
-                            >
-                              <option value="">-</option>
-                              <option value="胜">胜</option>
-                              <option value="平">平</option>
-                              <option value="负">负</option>
-                            </select>
-                          </div>
+                          <CustomSelect
+                            value={p.result ?? ""}
+                            options={[
+                              { value: "", label: "-" },
+                              { value: "胜", label: "胜" },
+                              { value: "平", label: "平" },
+                              { value: "负", label: "负" },
+                            ]}
+                            onChange={(v) => updatePlayer(i, { result: (v || null) as PlayerScore["result"] })}
+                            className="w-24"
+                          />
                         )}
 
                         {tpl.inputType === "rank" && (
@@ -350,16 +341,16 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
                         )}
 
                         {tpl.inputType === "coop" && (
-                          <div className="custom-select w-24">
-                            <select
-                              value={p.result ?? "合作胜"}
-                              onChange={(e) => updatePlayer(i, { result: e.target.value as PlayerScore["result"] })}
-                              disabled={i > 0}
-                            >
-                              <option value="合作胜">合作胜</option>
-                              <option value="合作败">合作败</option>
-                            </select>
-                          </div>
+                          <CustomSelect
+                            value={p.result ?? "合作胜"}
+                            options={[
+                              { value: "合作胜", label: "合作胜" },
+                              { value: "合作败", label: "合作败" },
+                            ]}
+                            onChange={(v) => updatePlayer(i, { result: v as PlayerScore["result"] })}
+                            disabled={i > 0}
+                            className="w-24"
+                          />
                         )}
 
                         {players.length > 1 && (
