@@ -8,7 +8,6 @@ import SearchBar from "@/components/search-bar";
 import StatsPanel from "@/components/stats-panel";
 import RandomPicker from "@/components/random-picker";
 import ParticleBackground from "@/components/particle-background";
-import { syncBgg } from "@/app/actions/sync";
 import type { BoardGame, GameStatus, SortOption } from "@/types/game";
 import type { PlaySession } from "@/types/session";
 
@@ -58,7 +57,6 @@ export default function ClientHome({
   const [searchQuery, setSearchQuery] = useState("");
   const [mounted, setMounted] = useState(false);
   const [showStats, setShowStats] = useState(false);
-  const [syncing, setSyncing] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -66,32 +64,6 @@ export default function ClientHome({
 
   const handleSearch = useCallback((query: string) => {
     setSearchQuery(query);
-  }, []);
-
-  const handleSync = useCallback(async () => {
-    const password = window.prompt("请输入管理员密码以同步 BGG 数据");
-    if (password === null) return;
-
-    setSyncing(true);
-    try {
-      const result = await syncBgg(password);
-      const lines: string[] = [];
-      lines.push(`共 ${result.total} 款游戏`);
-      lines.push(`已更新 ${result.updated} 款`);
-      if (result.skipped > 0) lines.push(`跳过 ${result.skipped} 款（无链接或已完整）`);
-      for (const d of result.details) {
-        if (d.error) lines.push(`❌ ${d.title}: ${d.error}`);
-        else if (d.changes.length > 0) lines.push(`✅ ${d.title}: ${d.changes.join("、")}`);
-        else lines.push(`⏭ ${d.title}: 无需更新`);
-      }
-      if (result.errors.length > 0) lines.push(`\n错误: ${result.errors.length} 条`);
-      if (result.updated > 0) lines.push("\n请刷新页面查看更新。");
-      alert(lines.join("\n"));
-    } catch {
-      alert("同步失败，请重试");
-    } finally {
-      setSyncing(false);
-    }
   }, []);
 
   const filteredGames = useMemo(() => {
@@ -160,18 +132,6 @@ export default function ClientHome({
                 }`}
               >
                 {showStats ? "收起统计" : "查看统计"}
-              </button>
-              <button
-                onClick={handleSync}
-                disabled={syncing}
-                className="px-5 py-2 rounded-2xl text-sm font-medium whitespace-nowrap min-w-[90px] transition-all duration-300
-                  bg-white/40 dark:bg-gray-800/20 text-gray-500 dark:text-gray-400
-                  hover:bg-violet-50 dark:hover:bg-violet-900/20
-                  hover:text-violet-600 dark:hover:text-violet-400
-                  backdrop-blur-sm border border-white/40 dark:border-white/5
-                  disabled:opacity-50"
-              >
-                {syncing ? "同步中..." : "🔄 同步BGG"}
               </button>
               <SearchBar onSearch={handleSearch} />
             </div>
