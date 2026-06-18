@@ -1,3 +1,6 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import type { BoardGame } from "@/types/game";
@@ -46,10 +49,16 @@ function WeightBar({ weight }: { weight: number }) {
 }
 
 export default function GameCard({ game, sessionCount }: { game: BoardGame; sessionCount?: number }) {
+  const router = useRouter();
   const plays = sessionCount ?? 0;
 
   return (
-    <Link href={`/${game.id}`} className="group block [perspective:1000px]">
+    <Link
+      href={`/${game.id}`}
+      prefetch={true}
+      onMouseEnter={() => router.prefetch(`/${game.id}`)}
+      className="group block [perspective:1000px]"
+    >
       <article className="game-card card-shimmer animate-[card-deal]">
         {/* ─ 封面图 ─ */}
         <div className="relative aspect-[4/5] overflow-hidden bg-gradient-to-br from-violet-100 via-amber-50/30 to-emerald-50 dark:from-violet-950/20 dark:via-amber-950/5 dark:to-emerald-950/10">
