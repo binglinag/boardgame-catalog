@@ -82,6 +82,12 @@ export async function syncBgg(password: string): Promise<SyncResult> {
         continue;
       }
 
+      // 已有英文名 = 已同步过，跳过
+      if (getRichText(page.props["英文名"])) {
+        skipped++;
+        continue;
+      }
+
       const bgg = await fetchBggData(bggId);
       if (!bgg) {
         details.push({ title: getTitleFromProps(page.props), changes: [], error: `BGG ${bggId} 抓取失败` });
