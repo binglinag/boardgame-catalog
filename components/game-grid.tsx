@@ -31,7 +31,7 @@ export default function GameGrid({ games, sessionCountByGame }: Props) {
           className="animate-fade-in"
           style={{ animationDelay: `${index * 50}ms`, animationFillMode: "both" }}
         >
-          <GameCard game={game} sessionCount={sessionCountByGame?.[game.title]} />
+          <GameCard game={game} sessionCount={sessionCountByGame?.[game.title]} priority={index < 4} />
         </div>
       ))}
     </div>
