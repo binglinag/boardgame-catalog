@@ -1,4 +1,5 @@
 import Link from "next/link";
+import PlayerForm from "./player-form";
 import type { Player } from "@/types/player";
 
 interface PlayerRank {
@@ -23,8 +24,23 @@ interface Props {
 export default function PlayerLeaderboard({ rankings, totalGames, totalSessions }: Props) {
   if (rankings.length === 0) {
     return (
-      <div className="text-center py-20">
-        <p className="text-violet-400 dark:text-violet-500">暂无玩家数据</p>
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <Link href="/" className="inline-flex items-center gap-2 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors mb-8 group">
+          <svg className="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          返回首页
+        </Link>
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">玩家排行榜</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400">暂无玩家数据</p>
+          </div>
+          <PlayerForm />
+        </div>
+        <div className="text-center py-20">
+          <p className="text-violet-400 dark:text-violet-500">添加第一位玩家后，排行榜会在这里显示</p>
+        </div>
       </div>
     );
   }
@@ -38,13 +54,16 @@ export default function PlayerLeaderboard({ rankings, totalGames, totalSessions 
         返回首页
       </Link>
 
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          玩家排行榜
-        </h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          {rankings.length} 位玩家 · {totalGames} 款桌游 · {totalSessions} 场对局
-        </p>
+      <div className="mb-8 flex items-start justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            玩家排行榜
+          </h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            {rankings.length} 位玩家 · {totalGames} 款桌游 · {totalSessions} 场对局
+          </p>
+        </div>
+        <PlayerForm />
       </div>
 
       {/* 算法说明 */}
