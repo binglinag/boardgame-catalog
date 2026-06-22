@@ -5,10 +5,13 @@
 export interface BggData {
   bggId: number;
   titleEn: string;
+  titleCn: string | null;        // 中文名（从 BGG alternate name 中提取）
   yearPublished: number | null;
   minPlayers: number | null;
   maxPlayers: number | null;
   playingTime: number | null;
+  minPlayTime: number | null;
+  maxPlayTime: number | null;
   weight: number | null;
   rating: number | null;
   designers: string[];
@@ -55,6 +58,14 @@ function attrsAll(xml: string, tag: string, filterAttr?: string, filterVal?: str
   return results;
 }
 
+/** 从 BGG alternate name 中检测含中文的名称 */
+function findChineseName(names: string[]): string | null {
+  for (const n of names) {
+    if (/[\u4e00-\u9fff]/.test(n)) return n;
+  }
+  return null;
+}
+
 /** 调用 BGG API 获取游戏数据 */
 export async function fetchBggData(bggId: number): Promise<BggData | null> {
   const url = `https://boardgamegeek.com/xmlapi2/thing?id=${bggId}&stats=1`;
@@ -75,6 +86,8 @@ export async function fetchBggData(bggId: number): Promise<BggData | null> {
     const minPlayers = Number(attr(xml, "minplayers", "value")) || null;
     const maxPlayers = Number(attr(xml, "maxplayers", "value")) || null;
     const playingTime = Number(attr(xml, "playingtime", "value")) || null;
+    const minPlayTime = Number(attr(xml, "minplaytime", "value")) || null;
+    const maxPlayTime = Number(attr(xml, "maxplaytime", "value")) || null;
 
     // 评分 & 重度（嵌套在 statistics/ratings 中）
     const ratingRaw = xml.match(/<average\b[^>]*?value\s*=\s*"([^"]*)"[^>]*\/>/i);
@@ -86,6 +99,10 @@ export async function fetchBggData(bggId: number): Promise<BggData | null> {
     // 设计师
     const designers = attrsAll(xml, "link", "type", "boardgamedesigner");
 
+    // 中文名（从 alternate name 中检测含汉字的名称）
+    const altNames = attrsAll(xml, "name", "type", "alternate");
+    const nameCn = findChineseName(altNames);
+
     // 图片
     const image = tagContent(xml, "image");
     const thumbnail = tagContent(xml, "thumbnail");
@@ -93,10 +110,13 @@ export async function fetchBggData(bggId: number): Promise<BggData | null> {
     return {
       bggId,
       titleEn: titleEn || "",
+      titleCn: nameCn || null,
       yearPublished,
       minPlayers,
       maxPlayers,
       playingTime,
+      minPlayTime,
+      maxPlayTime,
       weight: weight ? Math.round(weight * 100) / 100 : null,
       rating: rating ? Math.round(rating * 10) / 10 : null,
       designers,

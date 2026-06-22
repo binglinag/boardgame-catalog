@@ -18,13 +18,14 @@ function formatPlayers(min: number | null, max: number | null): string | null {
   return `${min ?? max}`;
 }
 
-/** 格式化时长 */
-function formatTime(minutes: number | null): string | null {
-  if (!minutes) return null;
-  if (minutes < 60) return `${minutes} 分钟`;
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
-  return m > 0 ? `${h}h ${m}m` : `${h}h`;
+/** 格式化时长：BGG 原始格式 "60-120min" */
+function formatTime(bgg: { playingTime: number | null; minPlayTime: number | null; maxPlayTime: number | null }): string | null {
+  const min = bgg.minPlayTime;
+  const max = bgg.maxPlayTime;
+  if (min && max && min !== max) return `${min}-${max}min`;
+  if (bgg.playingTime) return `${bgg.playingTime}min`;
+  if (min) return `${min}min`;
+  return null;
 }
 
 export interface SyncResult {
@@ -106,10 +107,16 @@ export async function syncBgg(password: string): Promise<SyncResult> {
       }
 
       // 时长
-      const time = formatTime(bgg.playingTime);
+      const time = formatTime(bgg);
       if (time && !getRichText(page.props["时长"])) {
         properties["时长"] = { rich_text: [{ text: { content: time } }] };
         changes.push(`时长 → ${time}`);
+      }
+
+      // 中文名（BGG alternate name 中含中文的）
+      if (bgg.titleCn && !getTitle(page.props["名称"])) {
+        properties["名称"] = { title: [{ text: { content: bgg.titleCn } }] };
+        changes.push(`名称 → ${bgg.titleCn}`);
       }
 
       // 出版年份
