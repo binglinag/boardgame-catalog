@@ -35,6 +35,7 @@ export async function addPlaySession(
 
   if (result) {
     revalidatePath(`/${gameSlug}`);
+    revalidatePath("/");
     revalidatePath("/leaderboard");
     return { success: true, message: "对局记录已添加" };
   }

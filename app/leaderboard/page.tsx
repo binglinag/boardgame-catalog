@@ -8,7 +8,7 @@ import type { PlaySession, PlayerScore, ScoringTemplate } from "@/types/session"
 import type { Player } from "@/types/player";
 
 export const runtime = "edge";
-export const revalidate = 60;
+export const revalidate = 86400;
 
 export const metadata: Metadata = {
   title: "玩家排行榜",

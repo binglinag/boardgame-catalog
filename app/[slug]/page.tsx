@@ -6,7 +6,7 @@ import { getAllPlayers } from "@/lib/notion-players";
 import GameDetail from "@/components/game-detail";
 
 export const runtime = "edge";
-export const revalidate = 60;
+export const revalidate = 86400;
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -51,10 +51,6 @@ export default async function GamePage({ params }: Props) {
 
   // 用 title 取 sessions（slug 是 page ID，不是 title）
   const gameSessions = await getSessionsByGame(game.title);
-
-  // 调试：暂时在页面输出 bggUrl，验证是否被正确读取
-  // 上线后删除
-  console.log("[DEBUG] game.bggUrl:", game.bggUrl, "title:", game.title);
 
   return <GameDetail game={game} sessions={gameSessions} allPlayers={allPlayers} />;
 }
