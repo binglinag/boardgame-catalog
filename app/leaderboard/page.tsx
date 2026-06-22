@@ -95,6 +95,7 @@ interface PlayerStats {
   campSessionCount: number;
   campGameSet: Set<string>;
   // 通用
+  totalRawWeight: number;  // Σ(原始重度)，用于均重度
   maxWeight: number;
   bestGame: string;
 }
@@ -132,6 +133,7 @@ export default async function LeaderboardPage() {
           campWeighted: 0,
           campSessionCount: 0,
           campGameSet: new Set(),
+          totalRawWeight: 0,
           maxWeight: 0,
           bestGame: "",
         };
@@ -159,6 +161,8 @@ export default async function LeaderboardPage() {
         entry.campSessionCount++;
         entry.campGameSet.add(session.gameTitle);
       }
+
+      entry.totalRawWeight += weight;
 
       if (weight > entry.maxWeight) {
         entry.maxWeight = weight;
@@ -203,12 +207,8 @@ export default async function LeaderboardPage() {
       campGames: stat.campGameSet.size,
       totalSessions: stat.compSessionCount + stat.campSessionCount,
       avgWeight:
-        stat.compSessionCount + stat.campSessionCount > 0
-          ? Math.round(
-              ((stat.compWeighted + stat.campWeighted) /
-                (stat.compSessionCount + stat.campSessionCount)) *
-                10
-            ) / 10
+        stat.totalRawWeight > 0 && stat.compSessionCount + stat.campSessionCount > 0
+          ? Math.round((stat.totalRawWeight / (stat.compSessionCount + stat.campSessionCount)) * 10) / 10
           : 0,
       bestGame: stat.bestGame,
       maxWeight: stat.maxWeight,
