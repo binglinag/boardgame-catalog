@@ -21,8 +21,12 @@ export interface BggData {
 
 /** 从 BGG URL 中提取数字 ID */
 export function extractBggId(url: string): number | null {
-  const m = url.match(/boardgamegeek\.com\/boardgame\/(\d+)/i);
-  return m ? Number(m[1]) : null;
+  // /boardgame/{id}/... 或 /boardgameexpansion/{id}/...
+  const m = url.match(/boardgamegeek\.com\/(?:boardgame|boardgameexpansion)\/(\d+)/i);
+  if (m) return Number(m[1]);
+  // 兜底: 链接中最后一个 ≥4 位的数字
+  const fallback = url.match(/\/(\d{4,})\b/);
+  return fallback ? Number(fallback[1]) : null;
 }
 
 /** 提取 XML 标签属性值 */

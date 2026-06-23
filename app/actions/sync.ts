@@ -214,12 +214,22 @@ function getTitle(prop: unknown): string {
 }
 
 function getUrlFromProps(props: Record<string, unknown>): string | null {
-  const names = ["BGG链接", "BGG 链接", "BGG连接", "BGG地址", "bgg链接", "BGG"];
+  const names = ["BGG链接", "BGG 链接", "BGG连接", "BGG地址", "bgg链接", "BGG", "链接"];
   for (const n of names) {
     if (n in props) {
       const prop = props[n];
-      if (prop && typeof prop === "object" && "url" in prop) {
-        return (prop as { url: string | null }).url || null;
+      if (prop && typeof prop === "object") {
+        // url 类型属性
+        if ("url" in prop) {
+          return (prop as { url: string | null }).url || null;
+        }
+        // rich_text 类型属性（纯文本链接）
+        if ("rich_text" in prop) {
+          const text = ((prop as { rich_text: Array<{ plain_text: string }> }).rich_text ?? [])
+            .map((t) => t.plain_text)
+            .join("");
+          if (text) return text;
+        }
       }
     }
   }
