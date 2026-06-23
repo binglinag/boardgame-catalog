@@ -7,9 +7,6 @@ import SessionForm from "./session-form";
 import Leaderboard from "./leaderboard";
 import PriceToggle from "./price-toggle";
 
-const BLUR_PLACEHOLDER =
-  "data:image/jpeg;base64,/9j/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAf/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdADmwAAAAA//9k=";
-
 interface Props {
   game: BoardGame;
   sessions: PlaySession[];
@@ -47,8 +44,6 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
                 fill
                 sizes="(max-width: 768px) 100vw, 360px"
                 className="rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700/50 object-cover"
-                placeholder="blur"
-                blurDataURL={BLUR_PLACEHOLDER}
                 priority
               />
             </div>
@@ -206,8 +201,6 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
                       fill
                       sizes="(max-width: 640px) 50vw, 33vw"
                       className="rounded-xl border border-gray-100 dark:border-gray-700/50 object-cover hover:scale-105 transition-transform duration-300"
-                      placeholder="blur"
-                      blurDataURL={BLUR_PLACEHOLDER}
                     />
                   </a>
                 ))}

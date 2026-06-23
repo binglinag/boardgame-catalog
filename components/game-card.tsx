@@ -48,10 +48,6 @@ function WeightBar({ weight }: { weight: number }) {
   );
 }
 
-// 内联低质量占位图: 1px violet/amber 渐变 base64
-const BLUR_PLACEHOLDER =
-  "data:image/jpeg;base64,/9j/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAf/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdADmwAAAAA//9k=";
-
 export default function GameCard({ game, sessionCount, priority }: { game: BoardGame; sessionCount?: number; priority?: boolean }) {
   const router = useRouter();
   const plays = sessionCount ?? 0;
@@ -73,8 +69,6 @@ export default function GameCard({ game, sessionCount, priority }: { game: Board
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
               className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-              placeholder="blur"
-              blurDataURL={BLUR_PLACEHOLDER}
               priority={priority}
             />
           ) : (
