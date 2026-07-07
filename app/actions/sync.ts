@@ -2,6 +2,7 @@
 
 import { Client } from "@notionhq/client";
 import { extractBggId, fetchBggData } from "@/lib/bgg";
+import { uploadCoverToBlob } from "@/lib/blob";
 
 const notion = new Client({ auth: process.env.NOTION_API_KEY, fetch });
 const DATABASE_ID = process.env.NOTION_DATABASE_ID ?? "";
@@ -149,11 +150,18 @@ export async function syncBgg(password: string): Promise<SyncResult> {
         changes.push(`重度 → ${bgg.weight}`);
       }
 
-      // 封面图
+      // 封面图 — 下载后转存到 Vercel Blob（稳定 URL + CDN 加速）
       const coverUrl = bgg.image || bgg.thumbnail;
       if (coverUrl && !getFilesProperty(page.props["封面图"])) {
-        properties["封面图"] = { files: [{ external: { url: coverUrl }, name: "bgg-cover" }] };
-        changes.push("封面图");
+        const blobUrl = await uploadCoverToBlob(coverUrl, getTitleFromProps(page.props));
+        if (blobUrl) {
+          properties["封面图"] = { files: [{ external: { url: blobUrl }, name: "cover" }] };
+          changes.push("封面图 → Blob");
+        } else {
+          // 兜底：Blob 上传失败则直接用 BGG 原始 URL
+          properties["封面图"] = { files: [{ external: { url: coverUrl }, name: "bgg-cover" }] };
+          changes.push("封面图 → BGG");
+        }
       }
 
       if (changes.length === 0) {
