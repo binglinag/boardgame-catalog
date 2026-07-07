@@ -1,6 +1,7 @@
 import { Client } from "@notionhq/client";
 import type { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import type { PlaySession, PlayerScore, ScoringTemplate } from "@/types/session";
+import { SESSION_PROPS } from "@/lib/notion-schema";
 
 const notion = new Client({
   auth: process.env.NOTION_API_KEY,
@@ -121,20 +122,20 @@ function serializeSessionData(data: SessionData): string {
 
 function mapPageToSession(page: PageObjectResponse): PlaySession {
   const props = page.properties as Record<string, unknown>;
-  const templateRaw = getSelect(props["计分模板"]);
+  const templateRaw = getSelect(props[SESSION_PROPS.template]);
   const validTemplates: ScoringTemplate[] = ["标准计分", "胜负记录", "排名顺序", "单一赢家", "合作胜负", "战役叙事"];
   const template: ScoringTemplate = validTemplates.includes(templateRaw as ScoringTemplate)
     ? (templateRaw as ScoringTemplate)
     : "标准计分";
 
-  const sessionData = parseSessionData(getRichText(props["玩家数据"]));
+  const sessionData = parseSessionData(getRichText(props[SESSION_PROPS.playersData]));
 
   return {
     id: page.id,
-    gameTitle: getTitle(props["桌游名称"]),
-    date: getDate(props["日期"]),
+    gameTitle: getTitle(props[SESSION_PROPS.gameTitle]),
+    date: getDate(props[SESSION_PROPS.date]),
     players: sessionData.players,
-    notes: getRichText(props["备注"]),
+    notes: getRichText(props[SESSION_PROPS.notes]),
     template,
     scenario: sessionData.scenario,
     narrative: sessionData.narrative,
@@ -163,7 +164,7 @@ export async function getAllSessions(): Promise<PlaySession[]> {
     do {
       const response = await notion.databases.query({
         database_id: SESSIONS_DB_ID,
-        sorts: [{ property: "日期", direction: "descending" }],
+        sorts: [{ property: SESSION_PROPS.date, direction: "descending" }],
         page_size: 100,
         ...(cursor ? { start_cursor: cursor } : {}),
       });
@@ -203,12 +204,12 @@ export async function getSessionsByGame(gameTitle: string): Promise<PlaySession[
       const response = await notion.databases.query({
         database_id: SESSIONS_DB_ID,
         filter: {
-          property: "桌游名称",
+          property: SESSION_PROPS.gameTitle,
           title: {
             equals: gameTitle,
           },
         },
-        sorts: [{ property: "日期", direction: "descending" }],
+        sorts: [{ property: SESSION_PROPS.date, direction: "descending" }],
         page_size: 100,
         ...(cursor ? { start_cursor: cursor } : {}),
       });
@@ -260,19 +261,19 @@ export async function createSession(
     const response = await notion.pages.create({
       parent: { database_id: SESSIONS_DB_ID },
       properties: {
-        "桌游名称": {
+        [SESSION_PROPS.gameTitle]: {
           title: [{ text: { content: gameTitle } }],
         },
-        "日期": {
+        [SESSION_PROPS.date]: {
           date: { start: date },
         },
-        "玩家数据": {
+        [SESSION_PROPS.playersData]: {
           rich_text: [{ text: { content: sessionData } }],
         },
-        "备注": {
+        [SESSION_PROPS.notes]: {
           rich_text: notes ? [{ text: { content: notes } }] : [],
         },
-        "计分模板": {
+        [SESSION_PROPS.template]: {
           select: { name: template },
         },
       },

@@ -1,0 +1,76 @@
+{
+  "games": {
+    "name": "桌游图鉴",
+    "env": "NOTION_DATABASE_ID",
+    "properties": {
+      "title": "名称",
+      "nameEn": "英文名",
+      "players": "玩家人数",
+      "bestPlayers": "最佳人数",
+      "playTime": "时长",
+      "year": "出版年份",
+      "designer": "设计师",
+      "rating": "评分",
+      "weight": "重度",
+      "status": "状态",
+      "tags": "标签",
+      "cover": "封面图",
+      "extraImages": "相关图片",
+      "bggUrl": "BGG链接",
+      "price": "购买价格",
+      "priceNotes": "价格备注",
+      "review": "个人评价"
+    },
+    "bggUrlAliases": ["BGG链接", "BGG 链接", "BGG连接", "BGG地址", "bgg链接", "BGG", "链接"],
+    "requiredTypes": {
+      "名称": "title",
+      "英文名": "rich_text",
+      "玩家人数": "rich_text",
+      "最佳人数": "rich_text",
+      "时长": "rich_text",
+      "出版年份": "number",
+      "设计师": "rich_text",
+      "评分": "number",
+      "重度": "number",
+      "状态": "multi_select",
+      "标签": "multi_select",
+      "封面图": "files",
+      "相关图片": "files",
+      "购买价格": "number",
+      "价格备注": "rich_text",
+      "个人评价": "rich_text"
+    }
+  },
+  "sessions": {
+    "name": "对局记录",
+    "env": "NOTION_SESSIONS_DATABASE_ID",
+    "properties": {
+      "gameTitle": "桌游名称",
+      "date": "日期",
+      "playersData": "玩家数据",
+      "notes": "备注",
+      "template": "计分模板"
+    },
+    "requiredTypes": {
+      "桌游名称": "title",
+      "日期": "date",
+      "玩家数据": "rich_text",
+      "备注": "rich_text",
+      "计分模板": "select"
+    }
+  },
+  "players": {
+    "name": "玩家",
+    "env": "NOTION_PLAYERS_DATABASE_ID",
+    "properties": {
+      "name": "名称",
+      "phone": "手机号",
+      "notes": "备注"
+    },
+    "requiredTypes": {
+      "名称": "title",
+      "手机号": "rich_text",
+      "备注": "rich_text"
+    }
+  }
+}

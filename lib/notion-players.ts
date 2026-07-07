@@ -1,6 +1,7 @@
 import { Client } from "@notionhq/client";
 import type { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import type { Player } from "@/types/player";
+import { PLAYER_PROPS } from "@/lib/notion-schema";
 
 const notion = new Client({
   auth: process.env.NOTION_API_KEY,
@@ -40,9 +41,9 @@ function mapPageToPlayer(page: PageObjectResponse): Player {
   const props = page.properties as Record<string, unknown>;
   return {
     id: page.id,
-    name: getTitle(props["名称"]),
-    phone: getRichText(props["手机号"]),
-    notes: getRichText(props["备注"]),
+    name: getTitle(props[PLAYER_PROPS.name]),
+    phone: getRichText(props[PLAYER_PROPS.phone]),
+    notes: getRichText(props[PLAYER_PROPS.notes]),
   };
 }
 
@@ -63,7 +64,7 @@ export async function getAllPlayers(): Promise<Player[]> {
     do {
       const response = await notion.databases.query({
         database_id: PLAYERS_DB_ID,
-        sorts: [{ property: "名称", direction: "ascending" }],
+        sorts: [{ property: PLAYER_PROPS.name, direction: "ascending" }],
         page_size: 100,
         ...(cursor ? { start_cursor: cursor } : {}),
       });
@@ -94,9 +95,9 @@ export async function createPlayer(name: string, phone: string, notes: string): 
     const response = await notion.pages.create({
       parent: { database_id: PLAYERS_DB_ID },
       properties: {
-        "名称": { title: [{ text: { content: name } }] },
-        "手机号": { rich_text: phone ? [{ text: { content: phone } }] : [] },
-        "备注": { rich_text: notes ? [{ text: { content: notes } }] : [] },
+        [PLAYER_PROPS.name]: { title: [{ text: { content: name } }] },
+        [PLAYER_PROPS.phone]: { rich_text: phone ? [{ text: { content: phone } }] : [] },
+        [PLAYER_PROPS.notes]: { rich_text: notes ? [{ text: { content: notes } }] : [] },
       },
     });
     if (isFullPage(response)) return mapPageToPlayer(response);

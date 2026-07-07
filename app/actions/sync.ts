@@ -3,6 +3,7 @@
 import { Client } from "@notionhq/client";
 import { extractBggId, fetchBggData } from "@/lib/bgg";
 import { uploadCoverToBlob } from "@/lib/blob";
+import { BGG_URL_ALIASES, GAME_PROPS } from "@/lib/notion-schema";
 
 const notion = new Client({ auth: process.env.NOTION_API_KEY, fetch });
 const DATABASE_ID = process.env.NOTION_DATABASE_ID ?? "";
@@ -84,7 +85,7 @@ export async function syncBgg(password: string): Promise<SyncResult> {
       }
 
       // 已有英文名 = 已同步过，跳过
-      if (getRichText(page.props["英文名"])) {
+      if (getRichText(page.props[GAME_PROPS.nameEn])) {
         skipped++;
         continue;
       }
@@ -101,65 +102,65 @@ export async function syncBgg(password: string): Promise<SyncResult> {
       const changes: string[] = [];
 
       // 英文名
-      if (bgg.titleEn && !getRichText(page.props["英文名"])) {
-        properties["英文名"] = { rich_text: [{ text: { content: bgg.titleEn } }] };
+      if (bgg.titleEn && !getRichText(page.props[GAME_PROPS.nameEn])) {
+        properties[GAME_PROPS.nameEn] = { rich_text: [{ text: { content: bgg.titleEn } }] };
         changes.push(`英文名 → ${bgg.titleEn}`);
       }
 
       // 玩家人数
       const players = formatPlayers(bgg.minPlayers, bgg.maxPlayers);
-      if (players && !getRichText(page.props["玩家人数"])) {
-        properties["玩家人数"] = { rich_text: [{ text: { content: players } }] };
+      if (players && !getRichText(page.props[GAME_PROPS.players])) {
+        properties[GAME_PROPS.players] = { rich_text: [{ text: { content: players } }] };
         changes.push(`人数 → ${players}`);
       }
 
       // 时长
       const time = formatTime(bgg);
-      if (time && !getRichText(page.props["时长"])) {
-        properties["时长"] = { rich_text: [{ text: { content: time } }] };
+      if (time && !getRichText(page.props[GAME_PROPS.playTime])) {
+        properties[GAME_PROPS.playTime] = { rich_text: [{ text: { content: time } }] };
         changes.push(`时长 → ${time}`);
       }
 
       // 中文名（BGG alternate name 中含中文的）
-      if (bgg.titleCn && !getTitle(page.props["名称"])) {
-        properties["名称"] = { title: [{ text: { content: bgg.titleCn } }] };
+      if (bgg.titleCn && !getTitle(page.props[GAME_PROPS.title])) {
+        properties[GAME_PROPS.title] = { title: [{ text: { content: bgg.titleCn } }] };
         changes.push(`名称 → ${bgg.titleCn}`);
       }
 
       // 出版年份
-      if (bgg.yearPublished && !getNumber(page.props["出版年份"])) {
-        properties["出版年份"] = { number: bgg.yearPublished };
+      if (bgg.yearPublished && !getNumber(page.props[GAME_PROPS.year])) {
+        properties[GAME_PROPS.year] = { number: bgg.yearPublished };
         changes.push(`年份 → ${bgg.yearPublished}`);
       }
 
       // 设计师
-      if (bgg.designers.length > 0 && !getRichText(page.props["设计师"])) {
-        properties["设计师"] = { rich_text: [{ text: { content: bgg.designers.join("、") } }] };
+      if (bgg.designers.length > 0 && !getRichText(page.props[GAME_PROPS.designer])) {
+        properties[GAME_PROPS.designer] = { rich_text: [{ text: { content: bgg.designers.join("、") } }] };
         changes.push(`设计师 → ${bgg.designers.join("、")}`);
       }
 
       // 评分
-      if (bgg.rating !== null && !getNumber(page.props["评分"])) {
-        properties["评分"] = { number: bgg.rating };
+      if (bgg.rating !== null && !getNumber(page.props[GAME_PROPS.rating])) {
+        properties[GAME_PROPS.rating] = { number: bgg.rating };
         changes.push(`评分 → ${bgg.rating}`);
       }
 
       // 重度
-      if (bgg.weight !== null && !getNumber(page.props["重度"])) {
-        properties["重度"] = { number: bgg.weight };
+      if (bgg.weight !== null && !getNumber(page.props[GAME_PROPS.weight])) {
+        properties[GAME_PROPS.weight] = { number: bgg.weight };
         changes.push(`重度 → ${bgg.weight}`);
       }
 
       // 封面图 — 下载后转存到 Vercel Blob（稳定 URL + CDN 加速）
       const coverUrl = bgg.image || bgg.thumbnail;
-      if (coverUrl && !getFilesProperty(page.props["封面图"])) {
+      if (coverUrl && !getFilesProperty(page.props[GAME_PROPS.cover])) {
         const blobUrl = await uploadCoverToBlob(coverUrl, getTitleFromProps(page.props));
         if (blobUrl) {
-          properties["封面图"] = { files: [{ external: { url: blobUrl }, name: "cover" }] };
+          properties[GAME_PROPS.cover] = { files: [{ external: { url: blobUrl }, name: "cover" }] };
           changes.push("封面图 → Blob");
         } else {
           // 兜底：Blob 上传失败则直接用 BGG 原始 URL
-          properties["封面图"] = { files: [{ external: { url: coverUrl }, name: "bgg-cover" }] };
+          properties[GAME_PROPS.cover] = { files: [{ external: { url: coverUrl }, name: "bgg-cover" }] };
           changes.push("封面图 → BGG");
         }
       }
@@ -209,7 +210,7 @@ function getNumber(prop: unknown): number | null {
 }
 
 function getTitleFromProps(props: Record<string, unknown>): string {
-  return getTitle(props["名称"]);
+  return getTitle(props[GAME_PROPS.title]);
 }
 
 function getTitle(prop: unknown): string {
@@ -222,8 +223,7 @@ function getTitle(prop: unknown): string {
 }
 
 function getUrlFromProps(props: Record<string, unknown>): string | null {
-  const names = ["BGG链接", "BGG 链接", "BGG连接", "BGG地址", "bgg链接", "BGG", "链接"];
-  for (const n of names) {
+  for (const n of BGG_URL_ALIASES) {
     if (n in props) {
       const prop = props[n];
       if (prop && typeof prop === "object") {

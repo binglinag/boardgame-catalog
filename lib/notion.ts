@@ -1,6 +1,7 @@
 import { Client } from "@notionhq/client";
 import type { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import type { BoardGame } from "@/types/game";
+import { BGG_URL_ALIASES, GAME_PROPS } from "@/lib/notion-schema";
 
 // ============================================================
 // Notion 客户端初始化
@@ -146,7 +147,7 @@ function mapPageToGame(page: PageObjectResponse): BoardGame {
 
   // 封面图优先级: Files & media 列 > Notion 页面封面
   const coverUrl =
-    getFiles(props["封面图"]) ??
+    getFiles(props[GAME_PROPS.cover]) ??
     (page.cover?.type === "external"
       ? page.cover.external.url
       : page.cover?.type === "file"
@@ -156,24 +157,24 @@ function mapPageToGame(page: PageObjectResponse): BoardGame {
   return {
     id: page.id,
     slug: page.id,
-    title: getTitle(props["名称"]),
-    nameEn: getRichText(props["英文名"]),
-    players: getRichText(props["玩家人数"]),
-    bestPlayers: getRichText(props["最佳人数"]),
-    playTime: getRichText(props["时长"]),
-    year: getNumber(props["出版年份"]),
-    designer: getRichText(props["设计师"]),
-    rating: getNumber(props["评分"]),
-    weight: getNumber(props["重度"]),
-    status: getMultiSelect(props["状态"]) as BoardGame["status"],
+    title: getTitle(props[GAME_PROPS.title]),
+    nameEn: getRichText(props[GAME_PROPS.nameEn]),
+    players: getRichText(props[GAME_PROPS.players]),
+    bestPlayers: getRichText(props[GAME_PROPS.bestPlayers]),
+    playTime: getRichText(props[GAME_PROPS.playTime]),
+    year: getNumber(props[GAME_PROPS.year]),
+    designer: getRichText(props[GAME_PROPS.designer]),
+    rating: getNumber(props[GAME_PROPS.rating]),
+    weight: getNumber(props[GAME_PROPS.weight]),
+    status: getMultiSelect(props[GAME_PROPS.status]) as BoardGame["status"],
     playCount: null, // 不再读取 Notion，改为根据对局记录自动统计
-    tags: getMultiSelect(props["标签"]),
+    tags: getMultiSelect(props[GAME_PROPS.tags]),
     coverUrl,
-    extraImages: getAllFiles(props["相关图片"]),
-    bggUrl: getUrlByNames(props, ["BGG链接", "BGG 链接", "BGG连接", "BGG地址", "bgg链接", "BGG"]),
-    price: getNumber(props["购买价格"]),
-    priceNotes: getRichText(props["价格备注"]),
-    review: getRichText(props["个人评价"]),
+    extraImages: getAllFiles(props[GAME_PROPS.extraImages]),
+    bggUrl: getUrlByNames(props, BGG_URL_ALIASES),
+    price: getNumber(props[GAME_PROPS.price]),
+    priceNotes: getRichText(props[GAME_PROPS.priceNotes]),
+    review: getRichText(props[GAME_PROPS.review]),
   };
 }
 
@@ -198,7 +199,7 @@ export async function getAllGames(): Promise<BoardGame[]> {
     do {
       const response = await notion.databases.query({
         database_id: DATABASE_ID,
-        sorts: [{ property: "评分", direction: "descending" }],
+        sorts: [{ property: GAME_PROPS.rating, direction: "descending" }],
         page_size: 100,
         ...(cursor ? { start_cursor: cursor } : {}),
       });
