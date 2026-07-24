@@ -10,36 +10,13 @@ import RandomPicker from "@/components/random-picker";
 import ParticleBackground from "@/components/particle-background";
 import type { BoardGame, GameStatus, SortOption } from "@/types/game";
 import type { PlaySession } from "@/types/session";
+import { matchesPlayerCount } from "@/lib/player-count";
 
 interface Props {
   initialGames: BoardGame[];
   initialTags: string[];
   allSessions: PlaySession[];
   sessionCountByGame: Record<string, number>;
-}
-
-/** 解析人数范围，如 "2-5" → [2,5], "3" → [3,3], "1-6" → [1,6] */
-function parsePlayerRange(str: string): [number, number] | null {
-  if (!str) return null;
-  const clean = str.replace(/[^0-9\-]/g, "");
-  if (clean.includes("-")) {
-    const [min, max] = clean.split("-").map(Number);
-    if (!isNaN(min) && !isNaN(max)) return [min, max];
-  }
-  const n = Number(clean);
-  if (!isNaN(n)) return [n, n];
-  return null;
-}
-
-/** 判断目标人数是否匹配游戏的人数范围（支持或最佳） */
-function matchesPlayerCount(game: BoardGame, target: number): boolean {
-  // 支持人数
-  const playersRange = parsePlayerRange(game.players);
-  if (playersRange && target >= playersRange[0] && target <= playersRange[1]) return true;
-  // 最佳人数
-  const bestRange = parsePlayerRange(game.bestPlayers);
-  if (bestRange && target >= bestRange[0] && target <= bestRange[1]) return true;
-  return false;
 }
 
 export default function ClientHome({

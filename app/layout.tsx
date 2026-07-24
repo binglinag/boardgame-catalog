@@ -3,6 +3,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import ThemeToggle from "@/components/theme-toggle";
 import SyncBggButton from "@/components/sync-bgg-button";
+import AddGameButton from "@/components/add-game-button";
 import ExportButton from "@/components/export-button";
 import "./globals.css";
 
@@ -85,6 +86,7 @@ export default function RootLayout({
               </a>
             </div>
             <div className="flex items-center gap-2">
+              <AddGameButton />
               <SyncBggButton />
               <ExportButton />
               <ThemeToggle />

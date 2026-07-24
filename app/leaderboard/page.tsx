@@ -3,9 +3,8 @@ import { getAllGames } from "@/lib/notion";
 import { getAllSessions } from "@/lib/notion-sessions";
 import { getAllPlayers } from "@/lib/notion-players";
 import PlayerLeaderboard from "@/components/player-leaderboard";
-import type { BoardGame } from "@/types/game";
-import type { PlaySession, PlayerScore, ScoringTemplate } from "@/types/session";
 import type { Player } from "@/types/player";
+import { COMPETITIVE_TEMPLATES, getPerformanceCoefficient } from "@/lib/leaderboard-scoring";
 
 export const runtime = "edge";
 export const revalidate = 86400;
@@ -13,64 +12,6 @@ export const revalidate = 86400;
 export const metadata: Metadata = {
   title: "玩家排行榜",
 };
-
-// ============================================================
-// 变现系数计算
-// ============================================================
-
-function getPerformanceCoefficient(
-  template: ScoringTemplate,
-  playerScore: PlayerScore,
-  allPlayersInSession: PlayerScore[],
-  completion?: "完整通关" | "中途放弃" | null
-): number {
-  switch (template) {
-    case "标准计分": {
-      const maxScore = Math.max(...allPlayersInSession.map((p) => p.score), 1);
-      return playerScore.score / maxScore;
-    }
-    case "胜负记录": {
-      if (playerScore.result === "胜") return 1.0;
-      if (playerScore.result === "平") return 0.7;
-      return 0.4;
-    }
-    case "排名顺序": {
-      if (!playerScore.rank) return 0.5;
-      const totalPlayers = allPlayersInSession.length;
-      // 检测并列：统计同名的玩家数
-      const tiedCount = allPlayersInSession.filter((p) => p.rank === playerScore.rank).length;
-      if (tiedCount > 1) {
-        // Modified Competition：并列玩家平分所占名次的分数总和
-        let sum = 0;
-        for (let pos = playerScore.rank; pos < playerScore.rank + tiedCount; pos++) {
-          sum += (totalPlayers - pos + 1) / totalPlayers;
-        }
-        return sum / tiedCount;
-      }
-      return (totalPlayers - playerScore.rank + 1) / totalPlayers;
-    }
-    case "单一赢家": {
-      if (playerScore.result === "胜" || playerScore.result === "冠军") return 1.0;
-      return 0.6;
-    }
-    case "合作胜负": {
-      if (playerScore.result === "合作胜") return 1.0;
-      return 0.5;
-    }
-    case "战役叙事": {
-      if (completion === "完整通关") return 1.0;
-      if (completion === "中途放弃") return 0.5;
-      return 1.0; // 不标记默认 1.0
-    }
-    default:
-      return 1.0;
-  }
-}
-
-// 竞技模板列表
-const COMPETITIVE_TEMPLATES: ScoringTemplate[] = [
-  "标准计分", "胜负记录", "排名顺序", "单一赢家", "合作胜负",
-];
 
 interface PlayerRank {
   player: Player;

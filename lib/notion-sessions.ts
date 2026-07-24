@@ -2,6 +2,7 @@ import { Client } from "@notionhq/client";
 import type { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import type { PlaySession, PlayerScore, ScoringTemplate } from "@/types/session";
 import { SESSION_PROPS } from "@/lib/notion-schema";
+import { parseSessionData, serializeSessionData } from "@/lib/session-data";
 
 const notion = new Client({
   auth: process.env.NOTION_API_KEY,
@@ -65,55 +66,6 @@ function getSelect(prop: unknown): string {
     return sel?.name ?? "";
   }
   return "";
-}
-
-// ============================================================
-// 解析 & 序列化玩家数据（含战役元数据）
-// ============================================================
-
-interface SessionData {
-  players: PlayerScore[];
-  scenario?: string;
-  narrative?: string;
-  completion?: "完整通关" | "中途放弃" | null;
-}
-
-function parseSessionData(raw: string): SessionData {
-  try {
-    const parsed = JSON.parse(raw);
-    // 新格式：{ players: [...], scenario, narrative, completion }
-    if (parsed && typeof parsed === "object" && !Array.isArray(parsed) && Array.isArray(parsed.players)) {
-      return {
-        players: parsed.players.map((p: Record<string, unknown>) => ({
-          name: String(p.name ?? ""),
-          score: Number(p.score ?? 0),
-          result: (p.result as PlayerScore["result"]) ?? null,
-          rank: p.rank != null ? Number(p.rank) : null,
-        })),
-        scenario: typeof parsed.scenario === "string" ? parsed.scenario : undefined,
-        narrative: typeof parsed.narrative === "string" ? parsed.narrative : undefined,
-        completion: (parsed.completion === "完整通关" || parsed.completion === "中途放弃") ? parsed.completion : null,
-      };
-    }
-    // 旧格式：直接是玩家数组
-    if (Array.isArray(parsed)) {
-      return {
-        players: parsed.map((p: Record<string, unknown>) => ({
-          name: String(p.name ?? ""),
-          score: Number(p.score ?? 0),
-          result: (p.result as PlayerScore["result"]) ?? null,
-          rank: p.rank != null ? Number(p.rank) : null,
-        })),
-      };
-    }
-  } catch {
-    return { players: [] };
-  }
-  return { players: [] };
-}
-
-function serializeSessionData(data: SessionData): string {
-  return JSON.stringify(data);
 }
 
 // ============================================================
