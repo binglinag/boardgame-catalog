@@ -59,15 +59,45 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
         {/* 右侧：信息 */}
         <div className="animate-slide-up">
           {/* 标题区 */}
-          <div className="mb-6">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-              {game.title}
-            </h1>
-            {game.nameEn && (
-              <p className="text-lg text-gray-400 dark:text-gray-500 italic">
-                {game.nameEn}
-              </p>
-            )}
+          <div className="mb-6 flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                {game.title}
+              </h1>
+              {game.nameEn && (
+                <p className="text-lg text-gray-400 dark:text-gray-500 italic">
+                  {game.nameEn}
+                </p>
+              )}
+            </div>
+
+            {/* 编辑入口 */}
+            <Link
+              href={`/${game.id}/edit`}
+              className="flex-shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl
+                bg-white/50 dark:bg-gray-800/40 backdrop-blur-sm
+                border border-white/50 dark:border-white/10
+                text-sm font-medium text-violet-600 dark:text-violet-400
+                hover:bg-violet-50 dark:hover:bg-violet-900/20
+                hover:border-violet-200 dark:hover:border-violet-700/40
+                hover:shadow-md hover:shadow-violet-500/10
+                hover:scale-[1.03] active:scale-[0.98]
+                transition-all duration-200"
+            >
+              <svg
+                className="w-3.5 h-3.5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <path d="M12 20h9" />
+                <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+              </svg>
+              编辑
+            </Link>
           </div>
 
           {/* 状态 + 重度 + 评分 */}
