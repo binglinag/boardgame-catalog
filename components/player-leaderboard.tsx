@@ -96,7 +96,7 @@ export default function PlayerLeaderboard({ rankings, totalGames, totalSessions 
       </div>
 
       {/* 算法说明 */}
-      <div className="mb-8 p-4 rounded-2xl bg-gradient-to-br from-violet-50/50 to-white dark:from-violet-950/10 dark:to-gray-800/20 border border-white/50 dark:border-white/5 backdrop-blur-sm text-xs text-gray-500 dark:text-gray-400 leading-relaxed space-y-1.5">
+      <div className="r-panel mb-8 p-4 rounded-2xl bg-gradient-to-br from-violet-50/50 to-white dark:from-violet-950/10 dark:to-gray-800/20 border border-white/50 dark:border-white/5 backdrop-blur-sm text-xs text-gray-500 dark:text-gray-400 leading-relaxed space-y-1.5">
         <div>
           <span className="font-semibold text-violet-600 dark:text-violet-400">桌游度</span>
           {" = "}
@@ -127,7 +127,7 @@ export default function PlayerLeaderboard({ rankings, totalGames, totalSessions 
           <button
             type="button"
             onClick={clearSelection}
-            className={`px-3 py-1.5 rounded-xl text-sm font-medium border backdrop-blur-sm transition-all duration-200 ${
+            className={`r-chip-sm px-3 py-1.5 rounded-xl text-sm font-medium border backdrop-blur-sm transition-all duration-200 ${
               selected.size === 0
                 ? "bg-violet-100 text-violet-700 border-violet-300 dark:bg-violet-900/40 dark:text-violet-200 dark:border-violet-700/30 shadow-sm"
                 : "bg-white/50 text-gray-500 border-white/40 hover:border-violet-300/60 dark:bg-white/5 dark:text-gray-400 dark:border-white/10 dark:hover:border-violet-700/40"
@@ -143,7 +143,7 @@ export default function PlayerLeaderboard({ rankings, totalGames, totalSessions 
                 key={r.player.id}
                 type="button"
                 onClick={() => toggle(r.player.id)}
-                className={`px-3 py-1.5 rounded-xl text-sm font-medium border backdrop-blur-sm transition-all duration-200 ${
+                className={`r-chip-sm px-3 py-1.5 rounded-xl text-sm font-medium border backdrop-blur-sm transition-all duration-200 ${
                   active
                     ? "bg-violet-100 text-violet-700 border-violet-300 dark:bg-violet-900/40 dark:text-violet-200 dark:border-violet-700/30 shadow-sm"
                     : "bg-white/50 text-gray-500 border-white/40 hover:border-violet-300/60 dark:bg-white/5 dark:text-gray-400 dark:border-white/10 dark:hover:border-violet-700/40"
@@ -163,7 +163,7 @@ export default function PlayerLeaderboard({ rankings, totalGames, totalSessions 
       </div>
 
       {/* 排行榜表格 */}
-      <div className="overflow-hidden rounded-2xl border border-white/50 dark:border-white/5 backdrop-blur-sm">
+      <div className="r-table overflow-hidden rounded-2xl border border-white/50 dark:border-white/5 backdrop-blur-sm">
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-white/40 dark:bg-gray-800/30">

@@ -14,7 +14,7 @@ import {
 const PW_KEY = "zz_admin_pw";
 
 const inputCls =
-  "w-full px-3.5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 " +
+  "r-input w-full px-3.5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 " +
   "bg-gray-50/80 dark:bg-gray-700/40 text-gray-900 dark:text-white " +
   "placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm " +
   "focus:ring-2 focus:ring-violet-500/25 focus:border-violet-300 dark:focus:border-violet-600 " +
@@ -161,7 +161,7 @@ export default function GameEditor({ game }: { game: BoardGame }) {
       </div>
 
       {/* 权限 */}
-      <section className="rounded-2xl border border-white/50 dark:border-white/5 bg-white/50 dark:bg-gray-800/30 backdrop-blur-sm p-5 mb-6">
+      <section className="r-panel rounded-2xl border border-white/50 dark:border-white/5 bg-white/50 dark:bg-gray-800/30 backdrop-blur-sm p-5 mb-6">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>
             <h2 className="text-sm font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
@@ -474,7 +474,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border border-white/50 dark:border-white/5 bg-white/50 dark:bg-gray-800/30 backdrop-blur-sm p-5 mb-6">
+    <section className="r-panel rounded-2xl border border-white/50 dark:border-white/5 bg-white/50 dark:bg-gray-800/30 backdrop-blur-sm p-5 mb-6">
       <div className="mb-4">
         <h2 className="text-sm font-semibold text-gray-800 dark:text-gray-200">{title}</h2>
         {desc && <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{desc}</p>}

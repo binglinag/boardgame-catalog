@@ -34,7 +34,7 @@ export default function RandomPicker({ games }: Props) {
       <button
         onClick={pick}
         disabled={games.length === 0 || picking}
-        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl
+        className="r-btn r-btn-primary inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl
           bg-gradient-to-r from-violet-500 via-indigo-500 to-purple-500
           text-white font-medium text-sm
           shadow-lg shadow-violet-500/25
@@ -50,7 +50,7 @@ export default function RandomPicker({ games }: Props) {
       </button>
 
       {picked && (
-        <div className="mt-4 p-4 rounded-2xl bg-gradient-to-br from-violet-50 to-indigo-50 dark:from-violet-950/20 dark:to-indigo-950/10 border border-violet-200/50 dark:border-violet-700/20 backdrop-blur-sm animate-scale-in">
+        <div className="r-card mt-4 p-4 rounded-2xl bg-gradient-to-br from-violet-50 to-indigo-50 dark:from-violet-950/20 dark:to-indigo-950/10 border border-violet-200/50 dark:border-violet-700/20 backdrop-blur-sm animate-scale-in">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-lg font-bold text-violet-700 dark:text-violet-300">

@@ -329,6 +329,19 @@
     0 12px 20px -8px rgba(0, 0, 0, 0.5) !important;
 }
 
+/* 统计卡内的文字层级 */
+[data-skin="retro"] .r-card > p:first-child {
+  color: var(--muted) !important;
+  font-family: var(--font-zh);
+  letter-spacing: 0.06em;
+}
+
+[data-skin="retro"] .r-card > p:last-child {
+  color: var(--ink) !important;
+  font-family: var(--font-num) !important;
+  font-weight: 700 !important;
+}
+
 /* 空白 / 错误状态 */
 [data-skin="retro"] .r-empty {
   color: var(--muted) !important;
@@ -520,6 +533,15 @@
 [data-skin="retro"] .r-overlay {
   background: rgba(20, 32, 24, 0.72) !important;
   backdrop-filter: none !important;
+}
+
+/* ---------- 底部固定操作栏 ---------- */
+[data-skin="retro"] .r-bar {
+  background: var(--paper) !important;
+  border-top: 1.5px solid var(--ink) !important;
+  backdrop-filter: none !important;
+  box-shadow: 0 -8px 18px -10px rgba(0, 0, 0, 0.45) !important;
+  color: var(--ink) !important;
 }
 
 /* ---------- 表格 ---------- */

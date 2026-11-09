@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { uploadGameImage } from "@/app/actions/upload";
 
 const inputCls =
-  "w-full px-3.5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 " +
+  "r-input w-full px-3.5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 " +
   "bg-gray-50/80 dark:bg-gray-700/40 text-gray-900 dark:text-white " +
   "placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm " +
   "focus:ring-2 focus:ring-violet-500/25 focus:border-violet-300 dark:focus:border-violet-600 " +

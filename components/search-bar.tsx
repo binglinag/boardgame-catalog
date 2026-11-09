@@ -40,7 +40,7 @@ export default function SearchBar({ onSearch }: Props) {
         value={value}
         onChange={handleChange}
         placeholder="搜索桌游名称..."
-        className="w-full pl-11 pr-10 py-2.5 rounded-2xl
+        className="r-input w-full pl-11 pr-10 py-2.5 rounded-2xl
           bg-white/50 dark:bg-gray-800/30 backdrop-blur-md
           border border-white/40 dark:border-white/5
           text-sm text-gray-900 dark:text-white

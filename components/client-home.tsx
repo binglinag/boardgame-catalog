@@ -113,7 +113,7 @@ export default function ClientHome({
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setShowStats(!showStats)}
-                className={`px-5 py-2 rounded-2xl text-sm font-medium whitespace-nowrap min-w-[90px] transition-all duration-300 ${
+                className={`r-btn px-5 py-2 rounded-2xl text-sm font-medium whitespace-nowrap min-w-[90px] transition-all duration-300 ${
                   showStats
                     ? "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300"
                     : "bg-white/40 dark:bg-gray-800/20 text-gray-500 dark:text-gray-400 hover:bg-violet-50 dark:hover:bg-violet-900/20 backdrop-blur-sm border border-white/40 dark:border-white/5"
@@ -168,7 +168,7 @@ export default function ClientHome({
 
         {mounted && filteredGames.length === 0 && games.length > 0 && (
           <div className="text-center py-20">
-            <p className="text-violet-400 dark:text-violet-500 text-lg">
+            <p className="r-empty text-violet-400 dark:text-violet-500 text-lg">
               {isSearching
                 ? `没有找到包含 "${searchQuery}" 的桌游`
                 : "没有匹配的桌游，试试换一个筛选条件"}

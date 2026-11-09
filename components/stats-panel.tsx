@@ -161,7 +161,7 @@ function StatCard({
   };
 
   return (
-    <div className={`rounded-2xl bg-gradient-to-br ${colorMap[color] ?? colorMap.violet} border backdrop-blur-sm p-4`}>
+    <div className={`r-card rounded-2xl bg-gradient-to-br ${colorMap[color] ?? colorMap.violet} border backdrop-blur-sm p-4`}>
       <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{label}</p>
       <p className={`text-2xl font-bold ${textColorMap[color] ?? ""}`}>
         {value}

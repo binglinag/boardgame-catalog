@@ -11,7 +11,7 @@ import type { FieldDef } from "@/lib/notion-fields";
 const PW_KEY = "zz_admin_pw";
 
 const inputCls =
-  "w-full px-3.5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 " +
+  "r-input w-full px-3.5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 " +
   "bg-gray-50/80 dark:bg-gray-700/40 text-gray-900 dark:text-white " +
   "placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm " +
   "focus:ring-2 focus:ring-violet-500/25 focus:border-violet-300 dark:focus:border-violet-600 " +
@@ -307,7 +307,7 @@ export default function GameCreateForm({ fields }: { fields: FieldDef[] }) {
       </div>
 
       {/* 权限 */}
-      <section className="rounded-2xl border border-white/50 dark:border-white/5 bg-white/50 dark:bg-gray-800/30 backdrop-blur-sm p-5 mb-6">
+      <section className="r-panel rounded-2xl border border-white/50 dark:border-white/5 bg-white/50 dark:bg-gray-800/30 backdrop-blur-sm p-5 mb-6">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>
             <h2 className="text-sm font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
@@ -331,7 +331,7 @@ export default function GameCreateForm({ fields }: { fields: FieldDef[] }) {
       </section>
 
       {/* 动态字段 */}
-      <section className="rounded-2xl border border-white/50 dark:border-white/5 bg-white/50 dark:bg-gray-800/30 backdrop-blur-sm p-5 mb-6">
+      <section className="r-panel rounded-2xl border border-white/50 dark:border-white/5 bg-white/50 dark:bg-gray-800/30 backdrop-blur-sm p-5 mb-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {fields.map(renderField)}
         </div>
@@ -339,7 +339,7 @@ export default function GameCreateForm({ fields }: { fields: FieldDef[] }) {
 
       {/* 底部保存栏 */}
       <div
-        className="fixed bottom-0 left-0 right-0 z-30 border-t border-gray-200/70 dark:border-gray-700/50
+        className="r-bar fixed bottom-0 left-0 right-0 z-30 border-t border-gray-200/70 dark:border-gray-700/50
           bg-white/85 dark:bg-gray-900/85 backdrop-blur-md"
       >
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
@@ -377,7 +377,7 @@ export default function GameCreateForm({ fields }: { fields: FieldDef[] }) {
                 setOk(false);
               }}
               disabled={!dirty || saving}
-              className="px-4 py-2 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-300
+              className="r-btn px-4 py-2 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-300
                 border border-gray-200 dark:border-gray-600
                 hover:bg-gray-50 dark:hover:bg-gray-700/40 transition-all
                 disabled:opacity-40 disabled:cursor-not-allowed"
@@ -388,7 +388,7 @@ export default function GameCreateForm({ fields }: { fields: FieldDef[] }) {
               type="button"
               onClick={handleSave}
               disabled={saving || !dirty}
-              className="px-6 py-2 rounded-xl text-sm font-semibold text-white
+              className="r-btn r-btn-primary px-6 py-2 rounded-xl text-sm font-semibold text-white
                 bg-gradient-to-r from-violet-600 to-indigo-600
                 hover:from-violet-500 hover:to-indigo-500
                 shadow-lg shadow-violet-500/20 hover:shadow-violet-500/30

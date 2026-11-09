@@ -85,7 +85,7 @@ export default function CustomDatePicker({ value, onChange }: Props) {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center gap-2 px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600
+        className="r-input w-full flex items-center gap-2 px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600
           bg-white/60 dark:bg-gray-700/40 backdrop-blur-sm
           text-gray-900 dark:text-white text-sm
           hover:border-violet-300/60 dark:hover:border-violet-700/40
