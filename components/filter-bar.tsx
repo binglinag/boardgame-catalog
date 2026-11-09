@@ -9,12 +9,14 @@ interface FilterBarProps {
   status: GameStatus | "全部";
   tag: string | null;
   playerCount: number | "全部";
+  bestPlayerCount: number | "全部";
   weightFilter: WeightFilter;
   sortBy: SortOption;
   allTags: string[];
   onStatusChange: (status: GameStatus | "全部") => void;
   onTagChange: (tag: string | null) => void;
   onPlayerCountChange: (count: number | "全部") => void;
+  onBestPlayerCountChange: (count: number | "全部") => void;
   onWeightChange: (weight: WeightFilter) => void;
   onSortChange: (sort: SortOption) => void;
 }
@@ -30,6 +32,12 @@ const PLAYER_COUNT_OPTIONS: Array<{ value: number | "全部"; label: string }> =
   { value: 5, label: "5人" },
   { value: 6, label: "6人" },
   { value: 7, label: "7人+" },
+];
+
+// 最佳人数沿用同一批人数档位，只把「全部」的文案换掉以示区分
+const BEST_COUNT_OPTIONS: Array<{ value: number | "全部"; label: string }> = [
+  { value: "全部", label: "全部最佳" },
+  ...PLAYER_COUNT_OPTIONS.slice(1),
 ];
 
 const SORT_OPTIONS: { value: SortOption; label: string }[] = [
@@ -50,7 +58,7 @@ function ChipButton({
   active: boolean;
   onClick: () => void;
   children: React.ReactNode;
-  color?: "violet" | "amber" | "emerald" | "rose";
+  color?: "violet" | "amber" | "emerald" | "rose" | "indigo";
 }) {
   const colorMap = {
     violet: {
@@ -69,6 +77,10 @@ function ChipButton({
       active: "bg-rose-100 text-rose-700 border-rose-300 dark:bg-rose-900/40 dark:text-rose-200 dark:border-rose-700/30",
       idle:  "bg-white/50 text-gray-500 border-white/40 hover:border-rose-300/60 dark:bg-white/5 dark:text-gray-400 dark:border-white/10 dark:hover:border-rose-700/40",
     },
+    indigo: {
+      active: "bg-indigo-100 text-indigo-700 border-indigo-300 dark:bg-indigo-900/40 dark:text-indigo-200 dark:border-indigo-700/30",
+      idle:  "bg-white/50 text-gray-500 border-white/40 hover:border-indigo-300/60 dark:bg-white/5 dark:text-gray-400 dark:border-white/10 dark:hover:border-indigo-700/40",
+    },
   };
 
   const cls = colorMap[color];
@@ -86,8 +98,9 @@ function ChipButton({
 }
 
 export default function FilterBar({
-  status, tag, playerCount, weightFilter, sortBy, allTags,
-  onStatusChange, onTagChange, onPlayerCountChange, onWeightChange, onSortChange,
+  status, tag, playerCount, bestPlayerCount, weightFilter, sortBy, allTags,
+  onStatusChange, onTagChange, onPlayerCountChange, onBestPlayerCountChange,
+  onWeightChange, onSortChange,
 }: FilterBarProps) {
   // 移动端默认折叠，桌面端始终展开（由 sm: 断点控制，不依赖此状态）
   const [expanded, setExpanded] = useState(false);
@@ -95,6 +108,7 @@ export default function FilterBar({
   const activeCount =
     (status !== "全部" ? 1 : 0) +
     (playerCount !== "全部" ? 1 : 0) +
+    (bestPlayerCount !== "全部" ? 1 : 0) +
     (weightFilter !== "全部" ? 1 : 0) +
     (tag !== null ? 1 : 0);
 
@@ -176,6 +190,22 @@ export default function FilterBar({
                 active={playerCount === opt.value}
                 onClick={() => onPlayerCountChange(opt.value)}
                 color="emerald"
+              >
+                {opt.label}
+              </ChipButton>
+            ))}
+          </div>
+
+          <span className="text-violet-200 dark:text-violet-800 mx-1 hidden sm:inline font-bold">•</span>
+
+          {/* 最佳人数筛选（只看 bestPlayers，不看支持人数范围） */}
+          <div className="flex gap-1.5 flex-wrap">
+            {BEST_COUNT_OPTIONS.map((opt) => (
+              <ChipButton
+                key={`best-${opt.label}`}
+                active={bestPlayerCount === opt.value}
+                onClick={() => onBestPlayerCountChange(opt.value)}
+                color="indigo"
               >
                 {opt.label}
               </ChipButton>

@@ -31,3 +31,17 @@ export function matchesPlayerCount(
 
   return false;
 }
+
+/**
+ * 只看「最佳人数」是否包含目标人数，不看支持人数范围
+ * 用于「最佳人数」筛选维度：想找 4 人局最合适的那几款
+ * 最佳人数为空的游戏不匹配任何具体人数（只在「全部最佳」下显示）
+ */
+export function matchesBestPlayerCount(
+  game: Pick<BoardGame, "bestPlayers">,
+  target: number
+): boolean {
+  const bestRange = parsePlayerRange(game.bestPlayers);
+  if (!bestRange) return false;
+  return target >= bestRange[0] && target <= bestRange[1];
+}

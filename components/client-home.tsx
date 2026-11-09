@@ -10,7 +10,7 @@ import RandomPicker from "@/components/random-picker";
 import ParticleBackground from "@/components/particle-background";
 import type { BoardGame, GameStatus, SortOption, WeightFilter } from "@/types/game";
 import type { PlaySession } from "@/types/session";
-import { matchesPlayerCount } from "@/lib/player-count";
+import { matchesPlayerCount, matchesBestPlayerCount } from "@/lib/player-count";
 import { matchesWeight } from "@/lib/weight-filter";
 
 interface Props {
@@ -31,6 +31,7 @@ export default function ClientHome({
   const [status, setStatus] = useState<GameStatus | "全部">("全部");
   const [tag, setTag] = useState<string | null>(null);
   const [playerCount, setPlayerCount] = useState<number | "全部">("全部");
+  const [bestPlayerCount, setBestPlayerCount] = useState<number | "全部">("全部");
   const [weightFilter, setWeightFilter] = useState<WeightFilter>("全部");
   const [sortBy, setSortBy] = useState<SortOption>("rating");
   const [searchQuery, setSearchQuery] = useState("");
@@ -66,6 +67,9 @@ export default function ClientHome({
     if (playerCount !== "全部") {
       result = result.filter((g) => matchesPlayerCount(g, playerCount));
     }
+    if (bestPlayerCount !== "全部") {
+      result = result.filter((g) => matchesBestPlayerCount(g, bestPlayerCount));
+    }
     if (weightFilter !== "全部") {
       result = result.filter((g) => matchesWeight(g, weightFilter));
     }
@@ -84,7 +88,7 @@ export default function ClientHome({
       }
     });
     return result;
-  }, [games, status, tag, playerCount, weightFilter, sortBy, searchQuery]);
+  }, [games, status, tag, playerCount, bestPlayerCount, weightFilter, sortBy, searchQuery]);
 
   const isSearching = searchQuery.trim().length > 0;
 
@@ -103,6 +107,7 @@ export default function ClientHome({
               {!isSearching && status !== "全部" && ` · ${status}`}
               {!isSearching && tag && ` · #${tag}`}
               {!isSearching && playerCount !== "全部" && ` · ${playerCount}人`}
+              {!isSearching && bestPlayerCount !== "全部" && ` · 最佳${bestPlayerCount}人`}
               {!isSearching && weightFilter !== "全部" && ` · ${weightFilter}度策略`}
             </p>
             <div className="flex items-center gap-3">
@@ -141,12 +146,14 @@ export default function ClientHome({
             status={status}
             tag={tag}
             playerCount={playerCount}
+            bestPlayerCount={bestPlayerCount}
             weightFilter={weightFilter}
             sortBy={sortBy}
             allTags={tags}
             onStatusChange={setStatus}
             onTagChange={setTag}
             onPlayerCountChange={setPlayerCount}
+            onBestPlayerCountChange={setBestPlayerCount}
             onWeightChange={setWeightFilter}
             onSortChange={setSortBy}
           />
