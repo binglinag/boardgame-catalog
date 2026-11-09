@@ -1,3 +1,6 @@
+"use client";
+
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import PlayerForm from "./player-form";
 import type { Player } from "@/types/player";
@@ -22,6 +25,32 @@ interface Props {
 }
 
 export default function PlayerLeaderboard({ rankings, totalGames, totalSessions }: Props) {
+  // 空集合 = 不筛选（显示全部）
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+
+  const rankOf = useMemo(
+    () => new Map(rankings.map((r, i) => [r.player.id, i + 1])),
+    [rankings],
+  );
+
+  const visible = useMemo(
+    () => (selected.size === 0 ? rankings : rankings.filter((r) => selected.has(r.player.id))),
+    [rankings, selected],
+  );
+
+  function toggle(id: string) {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  function clearSelection() {
+    setSelected(new Set());
+  }
+
   if (rankings.length === 0) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-8">
@@ -88,6 +117,51 @@ export default function PlayerLeaderboard({ rankings, totalGames, totalSessions 
         </div>
       </div>
 
+      {/* 玩家筛选 */}
+      <div className="mb-6">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-xs font-medium text-gray-400 dark:text-gray-500 mr-0.5">
+            选择玩家
+          </span>
+
+          <button
+            type="button"
+            onClick={clearSelection}
+            className={`px-3 py-1.5 rounded-xl text-sm font-medium border backdrop-blur-sm transition-all duration-200 ${
+              selected.size === 0
+                ? "bg-violet-100 text-violet-700 border-violet-300 dark:bg-violet-900/40 dark:text-violet-200 dark:border-violet-700/30 shadow-sm"
+                : "bg-white/50 text-gray-500 border-white/40 hover:border-violet-300/60 dark:bg-white/5 dark:text-gray-400 dark:border-white/10 dark:hover:border-violet-700/40"
+            }`}
+          >
+            全部
+          </button>
+
+          {rankings.map((r) => {
+            const active = selected.has(r.player.id);
+            return (
+              <button
+                key={r.player.id}
+                type="button"
+                onClick={() => toggle(r.player.id)}
+                className={`px-3 py-1.5 rounded-xl text-sm font-medium border backdrop-blur-sm transition-all duration-200 ${
+                  active
+                    ? "bg-violet-100 text-violet-700 border-violet-300 dark:bg-violet-900/40 dark:text-violet-200 dark:border-violet-700/30 shadow-sm"
+                    : "bg-white/50 text-gray-500 border-white/40 hover:border-violet-300/60 dark:bg-white/5 dark:text-gray-400 dark:border-white/10 dark:hover:border-violet-700/40"
+                }`}
+              >
+                {r.player.name}
+              </button>
+            );
+          })}
+
+          {selected.size > 0 && (
+            <span className="text-xs text-gray-400 dark:text-gray-500 ml-1">
+              只看 {visible.length} 人
+            </span>
+          )}
+        </div>
+      </div>
+
       {/* 排行榜表格 */}
       <div className="overflow-hidden rounded-2xl border border-white/50 dark:border-white/5 backdrop-blur-sm">
         <table className="w-full text-sm">
@@ -103,8 +177,10 @@ export default function PlayerLeaderboard({ rankings, totalGames, totalSessions 
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100 dark:divide-gray-700/20">
-            {rankings.map((entry, i) => {
-              const isTop3 = i < 3;
+            {visible.map((entry) => {
+              // 排名始终用全量榜单里的名次，不因筛选而重排
+              const rank = rankOf.get(entry.player.id) ?? 0;
+              const isTop3 = rank > 0 && rank <= 3;
               const medals = ["🥇", "🥈", "🥉"];
               const totalGames = entry.compGames + entry.campGames;
 
@@ -117,9 +193,9 @@ export default function PlayerLeaderboard({ rankings, totalGames, totalSessions 
                 >
                   <td className="px-4 py-4">
                     {isTop3 ? (
-                      <span className="text-xl">{medals[i]}</span>
+                      <span className="text-xl">{medals[rank - 1]}</span>
                     ) : (
-                      <span className="text-gray-400 dark:text-gray-500 font-medium">{i + 1}</span>
+                      <span className="text-gray-400 dark:text-gray-500 font-medium">{rank}</span>
                     )}
                   </td>
                   <td className="px-4 py-4">
