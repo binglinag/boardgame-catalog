@@ -172,8 +172,8 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fade-in" onClick={() => setOpen(false)} />
-          <div className="relative w-full max-w-lg bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 p-6 animate-scale-in max-h-[90vh] overflow-y-auto">
+          <div className="r-overlay absolute inset-0 bg-black/50 backdrop-blur-sm animate-fade-in" onClick={() => setOpen(false)} />
+          <div className="r-modal relative w-full max-w-lg bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 p-6 animate-scale-in max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-bold text-gray-900 dark:text-white">记录新对局 · {gameTitle}</h3>
               <button onClick={() => setOpen(false)} className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">✕</button>
@@ -222,7 +222,7 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
                       value={scenario}
                       onChange={(e) => setScenario(e.target.value)}
                       placeholder="例如：第一章·午夜面具"
-                      className="w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-violet-500/30 outline-none text-sm"
+                      className="r-input w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-violet-500/30 outline-none text-sm"
                       required
                     />
                   </div>
@@ -235,7 +235,7 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
                       onChange={(e) => setNarrative(e.target.value)}
                       placeholder="记录发生了什么：获得物品、触发事件、角色状态变化..."
                       rows={4}
-                      className="w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-violet-500/30 outline-none text-sm resize-y"
+                      className="r-input w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-violet-500/30 outline-none text-sm resize-y"
                     />
                   </div>
                   <div>
@@ -393,7 +393,7 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="例如：新手局、加扩..."
-                  className="w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-violet-500/30 outline-none text-sm"
+                  className="r-input w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-violet-500/30 outline-none text-sm"
                 />
               </div>
 
@@ -404,15 +404,15 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="输入密码确认操作"
-                  className="w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-violet-500/30 outline-none text-sm"
+                  className="r-input w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-violet-500/30 outline-none text-sm"
                 />
               </div>
 
               {message && <p className={`text-sm ${message.includes("失败") ? "text-red-500" : "text-emerald-500"}`}>{message}</p>}
 
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setOpen(false)} className="flex-1 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium text-sm">取消</button>
-                <button type="submit" disabled={loading} className="flex-1 px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-medium text-sm shadow-lg shadow-violet-600/25 disabled:opacity-50">{loading ? "保存中..." : "保存"}</button>
+                <button type="button" onClick={() => setOpen(false)} className="r-btn flex-1 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium text-sm">取消</button>
+                <button type="submit" disabled={loading} className="r-btn r-btn-primary flex-1 px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-medium text-sm shadow-lg shadow-violet-600/25 disabled:opacity-50">{loading ? "保存中..." : "保存"}</button>
               </div>
             </form>
           </div>

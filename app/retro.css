@@ -1,0 +1,604 @@
+/* ============================================================
+   复古桌游桌面拟物风
+   毡布桌面 + 厚纸卡 + 木质筹码，光源统一来自左上方
+   所有样式仅在 html[data-skin="retro"] 下生效
+   ============================================================ */
+
+[data-skin="retro"] {
+  --felt: #2d4b3c;
+  --felt-2: #24402f;
+  --paper: #faf7ef;
+  --paper-2: #f2ede0;
+  --ink: #29261f;
+  --muted: #857d6c;
+  --wood: #c8955a;
+  --wood-2: #9c6b36;
+  --wood-deep: #6e4824;
+  --red: #a8322b;
+
+  --edge-1: #d9d2c0;
+  --edge-2: #cfc6b1;
+  --edge-3: #c3b99f;
+
+  --font-zh: "ZCOOL XiaoWei", "Songti SC", "SimSun", serif;
+  --font-num: "Alegreya", Georgia, "Times New Roman", serif;
+}
+
+/* ---------- 桌面：毡布 + 细颗粒 ---------- */
+[data-skin="retro"] body {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse at 50% 30%, var(--felt), var(--felt-2) 80%);
+  background-attachment: fixed;
+  color: var(--ink);
+  font-family: var(--font-zh);
+}
+
+/* 毡布主题下隐藏粒子背景与梦幻光晕 */
+[data-skin="retro"] .particle-layer,
+[data-skin="retro"] .dreamy-glow {
+  display: none !important;
+}
+
+/* ---------- 顶栏 ---------- */
+[data-skin="retro"] header {
+  background: transparent !important;
+  border-bottom: 1px solid rgba(250, 247, 239, 0.12) !important;
+  backdrop-filter: none !important;
+}
+
+[data-skin="retro"] header a,
+[data-skin="retro"] header span {
+  color: var(--paper) !important;
+}
+
+[data-skin="retro"] header .r-title {
+  font-family: var(--font-zh);
+  letter-spacing: 0.12em;
+  color: var(--paper) !important;
+  background: none !important;
+  -webkit-text-fill-color: var(--paper);
+  animation: none !important;
+}
+
+/* 顶栏图标按钮统一为木质圆筹码 */
+[data-skin="retro"] header .w-9 {
+  border-radius: 999px !important;
+  border: 0 !important;
+  background: radial-gradient(circle at 35% 30%, #e2b47d, var(--wood) 55%, var(--wood-2)) !important;
+  backdrop-filter: none !important;
+  box-shadow:
+    0 3px 0 var(--wood-deep),
+    0 5px 8px rgba(0, 0, 0, 0.3) !important;
+  color: #3b2410 !important;
+}
+
+[data-skin="retro"] header .w-9 svg {
+  color: #3b2410 !important;
+}
+
+[data-skin="retro"] header .w-9:hover {
+  transform: translateY(-1px);
+}
+
+[data-skin="retro"] header .w-9:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--wood-deep), 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* 「玩家排行」等文字导航 */
+[data-skin="retro"] header a[href="/leaderboard"] {
+  color: var(--paper) !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  border-bottom: 1px solid transparent;
+  font-family: var(--font-zh);
+  letter-spacing: 0.08em;
+}
+
+[data-skin="retro"] header a[href="/leaderboard"]:hover {
+  background: transparent !important;
+  color: var(--paper) !important;
+  border-bottom-color: var(--wood);
+}
+
+/* ---------- 主题互斥显示 ---------- */
+.retro-only {
+  display: none;
+}
+[data-skin="retro"] .retro-only {
+  display: flex;
+}
+[data-skin="retro"] .dreamy-only {
+  display: none !important;
+}
+
+/* ---------- 游戏卡：复古纸卡 ---------- */
+[data-skin="retro"] .game-card {
+  background: var(--paper) !important;
+  border-radius: 10px !important;
+  border: none !important;
+  padding: 10px !important;
+  backdrop-filter: none !important;
+  box-shadow:
+    0 1px 0 var(--edge-1),
+    0 2px 0 var(--edge-2),
+    0 3px 0 var(--edge-3),
+    0 14px 22px -10px rgba(0, 0, 0, 0.55) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+[data-skin="retro"] .game-card::before,
+[data-skin="retro"] .game-card::after {
+  display: none !important;
+}
+
+[data-skin="retro"] a:hover .game-card {
+  transform: translateY(-5px) rotate(-0.5deg);
+  box-shadow:
+    0 1px 0 var(--edge-1),
+    0 2px 0 var(--edge-2),
+    0 3px 0 var(--edge-3),
+    0 20px 28px -12px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* 封面：内嵌在纸卡中，细墨边 */
+[data-skin="retro"] .game-card [class*="aspect-"] {
+  border-radius: 5px !important;
+  border: 1.5px solid var(--ink);
+  background: #ddd5c3 !important;
+}
+
+/* 评分：变成朱红印刷数字，压在左上 */
+[data-skin="retro"] .game-card .token-amber {
+  top: 4px !important;
+  left: 8px !important;
+  right: auto !important;
+  background: var(--paper) !important;
+  color: var(--red) !important;
+  font-family: var(--font-num) !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  height: auto !important;
+  min-width: 0 !important;
+  padding: 2px 5px !important;
+  border-radius: 3px !important;
+  box-shadow: none !important;
+  z-index: 3;
+  -webkit-text-fill-color: var(--red);
+}
+
+/* 标题 */
+[data-skin="retro"] .game-card h3 {
+  font-family: var(--font-zh) !important;
+  font-weight: 400 !important;
+  font-size: 17px !important;
+  line-height: 1.3;
+  text-align: center;
+  color: var(--ink) !important;
+  margin-top: 10px;
+  letter-spacing: 0.02em;
+}
+
+[data-skin="retro"] .game-card p {
+  text-align: center;
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-style: italic;
+  color: var(--muted) !important;
+  font-size: 11px !important;
+}
+
+[data-skin="retro"] .game-card .p-4 {
+  padding: 10px 6px 4px !important;
+}
+
+/* 状态标记：细边小印 */
+[data-skin="retro"] .game-card .status-token {
+  background: transparent !important;
+  border: 1px solid var(--edge-3) !important;
+  color: var(--muted) !important;
+  border-radius: 3px !important;
+  font-size: 10px !important;
+  padding: 2px 7px !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+[data-skin="retro"] .game-card .token-violet {
+  background: transparent !important;
+  border: 1px solid var(--edge-3) !important;
+  color: var(--muted) !important;
+  border-radius: 3px !important;
+  box-shadow: none !important;
+}
+
+/* ---------- 骰子 ---------- */
+[data-skin="retro"] .die {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  border: 1.5px solid var(--ink);
+  border-radius: 4px;
+  display: grid;
+  grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+  padding: 1.5px;
+}
+
+[data-skin="retro"] .die i {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  place-self: center;
+  background: transparent;
+}
+
+[data-skin="retro"] .die i.on {
+  background: var(--ink);
+}
+
+/* 卡片网格间距更舒展 */
+[data-skin="retro"] .game-grid {
+  gap: 30px 24px !important;
+}
+
+/* ---------- 纸卡：多层窄边模拟厚度 ---------- */
+[data-skin="retro"] .r-card {
+  position: relative;
+  background: var(--paper) !important;
+  border: 1px solid transparent !important;
+  border-radius: 10px !important;
+  backdrop-filter: none !important;
+  box-shadow:
+    0 1px 0 var(--edge-1),
+    0 2px 0 var(--edge-2),
+    0 3px 0 var(--edge-3),
+    0 14px 22px -10px rgba(0, 0, 0, 0.55) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+[data-skin="retro"] .r-card:hover {
+  transform: translateY(-5px) rotate(-0.5deg);
+  box-shadow:
+    0 1px 0 var(--edge-1),
+    0 2px 0 var(--edge-2),
+    0 3px 0 var(--edge-3),
+    0 20px 28px -12px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* 卡片内框：细墨线 */
+[data-skin="retro"] .r-frame {
+  border: 1.5px solid var(--ink);
+  border-radius: 6px;
+}
+
+/* ---------- 大面板（统计区、列表容器）---------- */
+[data-skin="retro"] .r-panel {
+  background: var(--paper) !important;
+  border: 1px solid transparent !important;
+  border-radius: 10px !important;
+  backdrop-filter: none !important;
+  box-shadow:
+    0 1px 0 var(--edge-1),
+    0 2px 0 var(--edge-2),
+    0 3px 0 var(--edge-3),
+    0 16px 26px -12px rgba(0, 0, 0, 0.5) !important;
+  color: var(--ink) !important;
+}
+
+/* ---------- 标题铭牌：微倾斜 + 木色侧边 ---------- */
+[data-skin="retro"] .r-plate {
+  display: inline-block;
+  background: var(--paper) !important;
+  color: var(--ink) !important;
+  padding: 16px 28px !important;
+  border-radius: 4px !important;
+  transform: rotate(-1.5deg);
+  box-shadow:
+    6px 6px 0 var(--wood-2),
+    0 18px 30px -12px rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: none !important;
+}
+
+[data-skin="retro"] .r-plate h1,
+[data-skin="retro"] .r-plate h2 {
+  font-family: var(--font-zh) !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.1em;
+  color: var(--ink) !important;
+}
+
+[data-skin="retro"] .r-plate h1 {
+  font-size: 30px !important;
+  line-height: 1.25;
+}
+
+[data-skin="retro"] .r-plate p {
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-style: italic;
+  color: var(--muted) !important;
+  font-size: 14px !important;
+}
+
+/* 详情页封面：纸张里嵌一张图 */
+[data-skin="retro"] .r-cover {
+  border-radius: 6px !important;
+  border: 1.5px solid var(--ink);
+  box-shadow:
+    0 1px 0 var(--edge-1),
+    0 2px 0 var(--edge-2),
+    0 12px 20px -8px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* 空白 / 错误状态 */
+[data-skin="retro"] .r-empty {
+  color: var(--muted) !important;
+  font-family: var(--font-zh);
+  letter-spacing: 0.04em;
+}
+
+/* ---------- 木质筹码（筛选项 / 圆形按钮）---------- */
+[data-skin="retro"] .r-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 56px;
+  height: 56px;
+  padding: 0 14px;
+  border-radius: 999px !important;
+  border: 0 !important;
+  background: radial-gradient(circle at 35% 30%, #e2b47d, var(--wood) 55%, var(--wood-2)) !important;
+  color: #3b2410 !important;
+  font-family: var(--font-zh);
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  cursor: pointer;
+  backdrop-filter: none !important;
+  box-shadow:
+    0 4px 0 var(--wood-deep),
+    0 8px 12px rgba(0, 0, 0, 0.35) !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+[data-skin="retro"] .r-chip:hover {
+  transform: translateY(-1px);
+}
+
+[data-skin="retro"] .r-chip[aria-pressed="true"],
+[data-skin="retro"] .r-chip[data-active="true"] {
+  transform: translateY(4px);
+  box-shadow:
+    0 0 0 var(--wood-deep),
+    0 3px 6px rgba(0, 0, 0, 0.35),
+    inset 0 0 0 3px var(--paper) !important;
+}
+
+/* 小尺寸筹码（表格筛选、次要操作） */
+[data-skin="retro"] .r-chip-sm {
+  min-width: 0;
+  height: 36px;
+  padding: 0 14px;
+  font-size: 13px !important;
+  box-shadow:
+    0 3px 0 var(--wood-deep),
+    0 5px 8px rgba(0, 0, 0, 0.28) !important;
+}
+
+[data-skin="retro"] .r-chip-sm[aria-pressed="true"],
+[data-skin="retro"] .r-chip-sm[data-active="true"] {
+  transform: translateY(3px);
+  box-shadow:
+    0 0 0 var(--wood-deep),
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    inset 0 0 0 2px var(--paper) !important;
+}
+
+/* ---------- 木框按钮（主操作）---------- */
+[data-skin="retro"] .r-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 22px;
+  border-radius: 6px !important;
+  border: 1.5px solid var(--ink) !important;
+  background: var(--paper) !important;
+  color: var(--ink) !important;
+  font-family: var(--font-zh);
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  backdrop-filter: none !important;
+  box-shadow: 3px 3px 0 var(--wood-2), 0 8px 14px -6px rgba(0, 0, 0, 0.45) !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+[data-skin="retro"] .r-btn:hover {
+  background: var(--paper) !important;
+  color: var(--ink) !important;
+  transform: translateY(-1px);
+}
+
+[data-skin="retro"] .r-btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 0 0 var(--wood-2), 0 3px 6px -2px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-skin="retro"] .r-btn-primary {
+  background: var(--wood) !important;
+  color: #3b2410 !important;
+  border-color: var(--wood-deep) !important;
+  box-shadow: 3px 3px 0 var(--wood-deep), 0 8px 14px -6px rgba(0, 0, 0, 0.45) !important;
+}
+
+[data-skin="retro"] .r-btn:disabled,
+[data-skin="retro"] .r-btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* ---------- 表单控件 ---------- */
+[data-skin="retro"] .r-input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 5px !important;
+  border: 1.5px solid var(--edge-3) !important;
+  background: var(--paper) !important;
+  color: var(--ink) !important;
+  font-family: var(--font-zh);
+  font-size: 14px !important;
+  backdrop-filter: none !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06) !important;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+[data-skin="retro"] .r-input::placeholder {
+  color: var(--muted) !important;
+  opacity: 0.7;
+}
+
+[data-skin="retro"] .r-input:focus {
+  border-color: var(--wood-2) !important;
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, 0.06),
+    0 0 0 3px rgba(200, 149, 90, 0.25) !important;
+}
+
+/* ---------- 文字层级 ---------- */
+[data-skin="retro"] .r-title-text {
+  font-family: var(--font-zh);
+  color: var(--ink) !important;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+
+[data-skin="retro"] .r-muted {
+  color: var(--muted) !important;
+}
+
+[data-skin="retro"] .r-num {
+  font-family: var(--font-num);
+  font-feature-settings: "lnum" 1;
+  font-variant-numeric: lining-nums;
+}
+
+[data-skin="retro"] .r-accent {
+  color: var(--red) !important;
+}
+
+/* ---------- 状态标记：边框融入卡片 ---------- */
+[data-skin="retro"] .r-tag {
+  display: inline-block;
+  padding: 2px 9px;
+  border: 1px solid var(--edge-3);
+  border-radius: 3px;
+  background: transparent;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+[data-skin="retro"] .r-tag-red {
+  border-color: rgba(168, 50, 43, 0.35);
+  color: var(--red);
+}
+
+/* ---------- 弹窗 ---------- */
+[data-skin="retro"] .r-modal {
+  background: var(--paper) !important;
+  border: 1.5px solid var(--ink) !important;
+  border-radius: 8px !important;
+  backdrop-filter: none !important;
+  box-shadow:
+    0 1px 0 var(--edge-1),
+    0 2px 0 var(--edge-2),
+    0 3px 0 var(--edge-3),
+    0 26px 40px -14px rgba(0, 0, 0, 0.7) !important;
+  color: var(--ink) !important;
+}
+
+[data-skin="retro"] .r-overlay {
+  background: rgba(20, 32, 24, 0.72) !important;
+  backdrop-filter: none !important;
+}
+
+/* ---------- 表格 ---------- */
+[data-skin="retro"] .r-table {
+  border: 1.5px solid var(--ink) !important;
+  border-radius: 6px !important;
+  overflow: hidden;
+  background: var(--paper) !important;
+}
+
+[data-skin="retro"] .r-table thead tr {
+  background: var(--paper-2) !important;
+}
+
+[data-skin="retro"] .r-table thead th {
+  color: var(--muted) !important;
+  font-family: var(--font-zh);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  border-bottom: 1.5px solid var(--ink) !important;
+}
+
+[data-skin="retro"] .r-table tbody td {
+  color: var(--ink) !important;
+  border-bottom: 1px solid var(--edge-2) !important;
+}
+
+[data-skin="retro"] .r-table tbody tr:hover td {
+  background: rgba(200, 149, 90, 0.09) !important;
+}
+
+/* ---------- 焦点可见性 ---------- */
+[data-skin="retro"] :focus-visible {
+  outline: 2px solid var(--paper);
+  outline-offset: 3px;
+}
+
+[data-skin="retro"] .r-input:focus-visible,
+[data-skin="retro"] .r-modal :focus-visible {
+  outline: 2px solid var(--wood-2);
+  outline-offset: 2px;
+}
+
+/* ---------- 滚动条 ---------- */
+[data-skin="retro"] ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+[data-skin="retro"] ::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.15);
+}
+[data-skin="retro"] ::-webkit-scrollbar-thumb {
+  background: var(--wood-2);
+  border-radius: 5px;
+}
+
+/* ---------- 减少动态效果 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  [data-skin="retro"] .r-card,
+  [data-skin="retro"] .r-chip,
+  [data-skin="retro"] .r-btn,
+  [data-skin="retro"] .r-plate {
+    transition: none !important;
+    transform: none !important;
+  }
+  [data-skin="retro"] .r-card:hover {
+    transform: none;
+  }
+}
+
+/* ---------- 移动端 ---------- */
+@media (max-width: 640px) {
+  [data-skin="retro"] .r-chip {
+    min-width: 48px;
+    height: 48px;
+    font-size: 13px !important;
+  }
+  [data-skin="retro"] .r-plate {
+    padding: 12px 20px !important;
+    transform: rotate(-1deg);
+  }
+}

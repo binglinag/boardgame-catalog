@@ -88,7 +88,8 @@ function ChipButton({
   return (
     <button
       onClick={onClick}
-      className={`px-3 py-1 rounded-xl text-sm font-medium border backdrop-blur-sm transition-all duration-300 ${
+      aria-pressed={active}
+      className={`r-chip-sm px-3 py-1 rounded-xl text-sm font-medium border backdrop-blur-sm transition-all duration-300 ${
         active ? cls.active + " shadow-sm" : cls.idle
       }`}
     >

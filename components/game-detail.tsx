@@ -44,7 +44,7 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
                 alt={game.title}
                 fill
                 sizes="(max-width: 768px) 100vw, 360px"
-                className="rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700/50 object-cover"
+                className="r-cover rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700/50 object-cover"
                 priority
               />
             </div>
@@ -61,7 +61,7 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
         <div className="animate-slide-up">
           {/* 标题区 */}
           <div className="mb-6 flex items-start justify-between gap-4">
-            <div className="min-w-0">
+            <div className="min-w-0 r-plate">
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
                 {game.title}
               </h1>
@@ -75,7 +75,7 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
             {/* 编辑入口 */}
             <Link
               href={`/${game.id}/edit`}
-              className="flex-shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl
+              className="r-btn flex-shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl
                 bg-white/50 dark:bg-gray-800/40 backdrop-blur-sm
                 border border-white/50 dark:border-white/10
                 text-sm font-medium text-violet-600 dark:text-violet-400

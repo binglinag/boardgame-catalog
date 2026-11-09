@@ -50,7 +50,7 @@ export default function CustomSelect({
         type="button"
         disabled={disabled}
         onClick={() => !disabled && setOpen(!open)}
-        className="w-full flex items-center gap-2 px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600
+        className="r-input w-full flex items-center gap-2 px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600
           bg-white/60 dark:bg-gray-700/40 backdrop-blur-sm
           text-left text-sm
           hover:border-violet-300/60 dark:hover:border-violet-700/40
@@ -67,7 +67,7 @@ export default function CustomSelect({
       </button>
 
       {open && (
-        <div className="absolute top-full mt-1.5 left-0 z-50 w-full min-w-[8rem]
+        <div className="r-panel absolute top-full mt-1.5 left-0 z-50 w-full min-w-[8rem]
           rounded-xl bg-white dark:bg-gray-800
           border border-gray-200 dark:border-gray-700
           shadow-2xl shadow-violet-500/10

@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import ThemeToggle from "@/components/theme-toggle";
+import SkinToggle from "@/components/skin-toggle";
 import AddGameButton from "@/components/add-game-button";
 import ExportButton from "@/components/export-button";
 import "./globals.css";
+import "./retro.css";
 
 const siteName = "壮壮的桌游图鉴";
 const siteUrl = "https://www.zzboardgamecatalog.xyz";
@@ -46,6 +48,15 @@ export default function RootLayout({
           href="https://cdn.jsdelivr.net/npm/chiron-sans-hk@2.012/css/vf.min.css"
           rel="stylesheet"
         />
+        {/* 复古主题字体：站酷小薇（中文，印刷感）+ Alegreya（数字/西文，古典衬线） */}
+        <link
+          href="https://cdn.jsdelivr.net/npm/@fontsource/zcool-xiaowei@5/400.css"
+          rel="stylesheet"
+        />
+        <link
+          href="https://cdn.jsdelivr.net/npm/@fontsource/alegreya@5/700.css"
+          rel="stylesheet"
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -57,6 +68,9 @@ export default function RootLayout({
                     : theme;
                   document.documentElement.classList.toggle('dark', resolved === 'dark');
                   if (resolved === 'dark') document.body.classList.add('dark');
+
+                  var skin = localStorage.getItem('skin') || 'dreamy';
+                  document.documentElement.dataset.skin = skin;
                 } catch(e) {}
               })();
             `,
@@ -69,7 +83,7 @@ export default function RootLayout({
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
             <div className="flex items-baseline gap-5">
               <a href="/" className="font-bold text-lg text-gray-900 dark:text-white">
-                <span className="bg-gradient-to-r from-amber-400 via-violet-400 to-amber-300 bg-clip-text text-transparent bg-[length:200%_200%] animate-gradientShift">
+                <span className="r-title bg-gradient-to-r from-amber-400 via-violet-400 to-amber-300 bg-clip-text text-transparent bg-[length:200%_200%] animate-gradientShift">
                   壮壮的桌游图鉴
                 </span>
               </a>
@@ -87,6 +101,7 @@ export default function RootLayout({
             <div className="flex items-center gap-2">
               <AddGameButton />
               <ExportButton />
+              <SkinToggle />
               <ThemeToggle />
             </div>
           </div>

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import type { BoardGame } from "@/types/game";
+import { MeepleRow, BestPlayers } from "./retro-icons";
 
 /* ── 状态 Token ── */
 function StatusBadge({ status }: { status: string[] }) {
@@ -102,40 +103,69 @@ export default function GameCard({ game, sessionCount, priority }: { game: Board
             </p>
           )}
 
-          {/* 元数据 Token 行 */}
-          <div className="flex items-center gap-2 flex-wrap">
-            {game.players && (
-              <span className="token token-indigo text-[0.68rem] min-w-[auto] h-[1.35rem] px-1.5">
-                {game.players}人
-              </span>
-            )}
-            {game.bestPlayers && (
-              <span className="token token-emerald text-[0.68rem] min-w-[auto] h-[1.35rem] px-1.5">
-                最佳{game.bestPlayers}人
-              </span>
-            )}
-            {game.playTime && (
-              <span className="inline-flex items-center text-[0.65rem] text-gray-400 dark:text-gray-500">
-                {game.playTime}
-              </span>
-            )}
+          {/* ── 梦幻主题：Token 元数据 ── */}
+          <div className="dreamy-only space-y-2">
+            <div className="flex items-center gap-2 flex-wrap">
+              {game.players && (
+                <span className="token token-indigo text-[0.68rem] min-w-[auto] h-[1.35rem] px-1.5">
+                  {game.players}人
+                </span>
+              )}
+              {game.bestPlayers && (
+                <span className="token token-emerald text-[0.68rem] min-w-[auto] h-[1.35rem] px-1.5">
+                  最佳{game.bestPlayers}人
+                </span>
+              )}
+              {game.playTime && (
+                <span className="inline-flex items-center text-[0.65rem] text-gray-400 dark:text-gray-500">
+                  {game.playTime}
+                </span>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2.5">
+              {game.weight !== null && (
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[0.66rem] font-medium text-violet-500/60 dark:text-violet-400/60 uppercase tracking-wider">重度</span>
+                  <WeightBar weight={game.weight} />
+                  <span className="text-[0.66rem] font-semibold text-violet-600/80 dark:text-violet-300/80 tabular-nums">
+                    {game.weight.toFixed(1)}
+                  </span>
+                </div>
+              )}
+              {game.year && (
+                <span className="text-[0.62rem] text-gray-400 dark:text-gray-500 ml-auto">
+                  {game.year}
+                </span>
+              )}
+            </div>
           </div>
 
-          {/* 重度 + 年份 */}
-          <div className="flex items-center gap-2.5">
+          {/* ── 复古主题：米宝（重度）+ 骰子（最佳人数）+ 时长 ── */}
+          <div
+            className="retro-only flex-col gap-[7px] mt-2 text-[12px] leading-none"
+            style={{ color: "var(--muted)" }}
+          >
             {game.weight !== null && (
-              <div className="flex items-center gap-1.5">
-                <span className="text-[0.66rem] font-medium text-violet-500/60 dark:text-violet-400/60 uppercase tracking-wider">重度</span>
-                <WeightBar weight={game.weight} />
-                <span className="text-[0.66rem] font-semibold text-violet-600/80 dark:text-violet-300/80 tabular-nums">
-                  {game.weight.toFixed(1)}
-                </span>
+              <div className="flex items-center gap-2">
+                <span className="w-7 flex-shrink-0">重度</span>
+                <MeepleRow weight={game.weight} />
               </div>
             )}
-            {game.year && (
-              <span className="text-[0.62rem] text-gray-400 dark:text-gray-500 ml-auto">
-                {game.year}
-              </span>
+            {game.bestPlayers && (
+              <div className="flex items-center gap-2">
+                <span className="w-7 flex-shrink-0">最佳</span>
+                <BestPlayers best={game.bestPlayers} />
+              </div>
+            )}
+            {(game.playTime || plays > 0) && (
+              <div className="flex items-center gap-2">
+                <span className="w-7 flex-shrink-0">时长</span>
+                <span>
+                  {game.playTime ?? "—"}
+                  {plays > 0 && `，玩过 ${plays} 局`}
+                </span>
+              </div>
             )}
           </div>
 
