@@ -83,6 +83,12 @@ const ParticleBackground = memo(function ParticleBackground() {
 
     let time = 0;
     function animate() {
+      // 复古主题下 canvas 被 display:none，跳过绘制省电（保留 rAF 以便切回时恢复）
+      if (!canvasRef.current || canvasRef.current.offsetWidth === 0) {
+        rafRef.current = requestAnimationFrame(animate);
+        return;
+      }
+
       time += 0.005;
       ctx!.clearRect(0, 0, width, height);
 
@@ -168,7 +174,7 @@ const ParticleBackground = memo(function ParticleBackground() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none"
+      className="particle-layer fixed inset-0 pointer-events-none"
       style={{ zIndex: 0 }}
       aria-hidden="true"
     />
