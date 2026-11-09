@@ -17,9 +17,18 @@ interface Props {
 
 type PlayerRow = PlayerScore & { id: string };
 
+/** 取本地日期（YYYY-MM-DD）。不用 toISOString，那是 UTC，北京时间 0-8 点会退到前一天 */
+function todayLocal(): string {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
 export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) {
   const [open, setOpen] = useState(false);
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
+  const [date, setDate] = useState(todayLocal());
   const [template, setTemplate] = useState<ScoringTemplate>("标准计分");
   const [players, setPlayers] = useState<PlayerRow[]>([
     { name: "", score: 0, id: "", result: null, rank: null },
@@ -59,7 +68,7 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
   }
 
   function resetForm() {
-    setDate(new Date().toISOString().slice(0, 10));
+    setDate(todayLocal());
     setTemplate("标准计分");
     setPlayers([{ name: "", score: 0, id: "", result: null, rank: null }]);
     setNotes("");
@@ -84,23 +93,25 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
         .map((p) => ({ ...p, score: 0, result: null }));
     }
     if (template === "单一赢家") {
-      return players
-        .filter((p) => p.id !== "")
-        .map((p, idx) => ({
-          ...p,
-          score: 0,
-          result: idx === 0 ? "胜" as const : null,
-        }));
-    }
-    if (template === "合作胜负") {
-      // 第一个玩家是合作胜/败的标志位
+      // 保留用户在 radio 上的选择，不再按顺序硬编码第一位
       return players
         .filter((p) => p.id !== "")
         .map((p) => ({
           ...p,
           score: 0,
-          result: p.result === "合作胜" || p.result === "合作败" ? p.result : "合作胜",
+          result: p.result === "胜" ? ("胜" as const) : null,
         }));
+    }
+    if (template === "合作胜负") {
+      // 全队共享同一结果：只要有人标记合作败，全队判负
+      const coopVerdict: "合作胜" | "合作败" = players.some(
+        (p) => p.result === "合作败",
+      )
+        ? "合作败"
+        : "合作胜";
+      return players
+        .filter((p) => p.id !== "")
+        .map((p) => ({ ...p, score: 0, result: coopVerdict }));
     }
     return players.filter((p) => p.id !== "");
   }
@@ -111,6 +122,15 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
     if (valid.length === 0) {
       setMessage("请至少选择一位玩家");
       return;
+    }
+
+    // 单一赢家：必须恰好勾选一人，否则保存后没有胜者
+    if (template === "单一赢家") {
+      const winners = valid.filter((p) => p.result === "胜").length;
+      if (winners !== 1) {
+        setMessage("请在玩家右侧勾选一位获胜玩家");
+        return;
+      }
     }
 
     setLoading(true);

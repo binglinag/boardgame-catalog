@@ -16,8 +16,21 @@ export function getPerformanceCoefficient(
 ): number {
   switch (template) {
     case "标准计分": {
-      const maxScore = Math.max(...allPlayersInSession.map((p) => p.score), 1);
-      return playerScore.score / maxScore;
+      const scores = allPlayersInSession.map((p) => p.score);
+      const max = Math.max(...scores);
+      const min = Math.min(...scores);
+
+      // 常规正分局：个人分 ÷ 全场最高分（保持原有一致性）
+      if (min >= 0 && max > 0) {
+        return playerScore.score / max;
+      }
+      // 全场同分（含全 0 分）：给中性值，避免除零
+      if (max === min) {
+        return max > 0 ? 1 : 0.5;
+      }
+      // 出现负分：min-max 归一化，最高分仍得 1.0，最低分 0.0
+      // 避免旧逻辑 Math.max(..., 1) 把 -1 变成 -1 倍、-5 变成 -5 倍
+      return (playerScore.score - min) / (max - min);
     }
     case "胜负记录": {
       if (playerScore.result === "胜") return 1.0;
