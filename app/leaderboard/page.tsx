@@ -48,24 +48,33 @@ export default async function LeaderboardPage() {
     getAllPlayers(),
   ]);
 
-  // 游戏名 → 重度映射
-  const gameWeightMap: Record<string, number> = {};
+  // 重度映射：同时按游戏 ID 和名称建索引，改名后仍能取到正确重度
+  const weightByGameId: Record<string, number> = {};
+  const weightByTitle: Record<string, number> = {};
   for (const g of games) {
-    gameWeightMap[g.title] = g.weight ?? 2.5;
+    const w = g.weight ?? 2.5;
+    weightByGameId[g.id] = w;
+    weightByTitle[g.title] = w;
   }
 
-  // 玩家名 → 统计
+  // 玩家统计：key 优先用 Notion 玩家 ID（改名不影响历史归属），老数据退回姓名
   const statsMap = new Map<string, PlayerStats>();
 
   for (const session of allSessions) {
-    const weight = gameWeightMap[session.gameTitle] ?? 2.5;
+    const weight =
+      (session.gameId ? weightByGameId[session.gameId] : undefined) ??
+      weightByTitle[session.gameTitle] ??
+      2.5;
     const isCompetitive = COMPETITIVE_TEMPLATES.includes(session.template);
+    // 款数去重键：有游戏 ID 就按 ID 去重，避免改名后被算成两款
+    const gameKey = session.gameId ?? session.gameTitle;
 
     for (const playerScore of session.players) {
       const name = playerScore.name.trim();
       if (!name) continue;
+      const key = playerScore.id ? `id:${playerScore.id}` : `name:${name}`;
 
-      let entry = statsMap.get(name);
+      let entry = statsMap.get(key);
       if (!entry) {
         entry = {
           compWeighted: 0,
@@ -78,7 +87,7 @@ export default async function LeaderboardPage() {
           maxWeight: 0,
           bestGame: "",
         };
-        statsMap.set(name, entry);
+        statsMap.set(key, entry);
       }
 
       if (isCompetitive) {
@@ -89,7 +98,7 @@ export default async function LeaderboardPage() {
         );
         entry.compWeighted += weight * coeff;
         entry.compSessionCount++;
-        entry.compGameSet.add(session.gameTitle);
+        entry.compGameSet.add(gameKey);
       } else {
         // 战役叙事
         const coeff = getPerformanceCoefficient(
@@ -100,7 +109,7 @@ export default async function LeaderboardPage() {
         );
         entry.campWeighted += weight * coeff;
         entry.campSessionCount++;
-        entry.campGameSet.add(session.gameTitle);
+        entry.campGameSet.add(gameKey);
       }
 
       entry.totalRawWeight += weight;
@@ -115,7 +124,9 @@ export default async function LeaderboardPage() {
   // 构建排名
   const rankings: PlayerRank[] = [];
   for (const player of allPlayers) {
-    const stat = statsMap.get(player.name);
+    // 优先按 ID 命中；未回填 ID 的老数据退回按姓名匹配
+    const stat =
+      statsMap.get(`id:${player.id}`) ?? statsMap.get(`name:${player.name.trim()}`);
     if (!stat) {
       rankings.push({
         player,

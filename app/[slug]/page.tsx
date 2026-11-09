@@ -49,8 +49,8 @@ export default async function GamePage({ params }: Props) {
     notFound();
   }
 
-  // 用 title 取 sessions（slug 是 page ID，不是 title）
-  const gameSessions = await getSessionsByGame(game.title);
+  // 优先按游戏 ID 关联，名称做兜底（兼容还没回填 ID 的老对局）
+  const gameSessions = await getSessionsByGame(game.id, game.title);
 
   return <GameDetail game={game} sessions={gameSessions} allPlayers={allPlayers} />;
 }

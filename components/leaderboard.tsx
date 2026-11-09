@@ -4,6 +4,7 @@ function computeLeaderboard(sessions: PlaySession[]): LeaderboardEntry[] {
   const map = new Map<
     string,
     {
+      name: string; // 展示用的最新名字
       bestScore: number;
       bestDate: string;
       totalScore: number;
@@ -16,15 +17,20 @@ function computeLeaderboard(sessions: PlaySession[]): LeaderboardEntry[] {
       const name = player.name.trim();
       if (!name) continue;
 
-      const existing = map.get(name);
+      // 有玩家 ID 就按 ID 聚合（改名不影响历史），否则退回姓名
+      const key = player.id ? `id:${player.id}` : `name:${name}`;
+
+      const existing = map.get(key);
       if (!existing) {
-        map.set(name, {
+        map.set(key, {
+          name,
           bestScore: player.score,
           bestDate: session.date,
           totalScore: player.score,
           count: 1,
         });
       } else {
+        existing.name = name; // 保留最新出现的名字
         if (player.score > existing.bestScore) {
           existing.bestScore = player.score;
           existing.bestDate = session.date;
@@ -36,9 +42,9 @@ function computeLeaderboard(sessions: PlaySession[]): LeaderboardEntry[] {
   }
 
   const entries: LeaderboardEntry[] = [];
-  for (const [name, data] of map) {
+  for (const [, data] of map) {
     entries.push({
-      name,
+      name: data.name,
       bestScore: data.bestScore,
       bestDate: data.bestDate,
       totalPlays: data.count,

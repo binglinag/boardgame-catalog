@@ -46,6 +46,7 @@
     "env": "NOTION_SESSIONS_DATABASE_ID",
     "properties": {
       "gameTitle": "桌游名称",
+      "gameId": "游戏ID",
       "date": "日期",
       "playersData": "玩家数据",
       "notes": "备注",
@@ -53,6 +54,7 @@
     },
     "requiredTypes": {
       "桌游名称": "title",
+      "游戏ID": "rich_text",
       "日期": "date",
       "玩家数据": "rich_text",
       "备注": "rich_text",

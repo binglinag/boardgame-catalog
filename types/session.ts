@@ -1,6 +1,8 @@
 // 对局记录类型
 export interface PlaySession {
   id: string;
+  /** 桌游的 Notion 页 ID —— 稳定关联键（老数据可能没有） */
+  gameId?: string;
   gameTitle: string;
   date: string;
   players: PlayerScore[];
@@ -21,6 +23,12 @@ export type ScoringTemplate =
   | "战役叙事";
 
 export interface PlayerScore {
+  /**
+   * Notion 玩家页 ID —— 稳定关联键
+   * 历史数据里字段名就是 id（表单提交时由 PlayerRow 展开带入），
+   * 之前被 normalizePlayerScore 丢弃，现在读回来用于按人聚合
+   */
+  id?: string;
   name: string;
   score: number;
   result?: "胜" | "平" | "负" | "合作胜" | "合作败" | "冠军" | null;

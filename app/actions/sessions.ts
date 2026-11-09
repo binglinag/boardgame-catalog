@@ -44,7 +44,18 @@ export async function addPlaySession(
     }
   }
 
-  const result = await createSession(gameTitle, date, players, notes, template, scenario, narrative, completion);
+  // gameSlug 就是桌游的 Notion 页 ID，作为稳定关联键写入对局
+  const result = await createSession(
+    gameTitle,
+    date,
+    players,
+    notes,
+    template,
+    scenario,
+    narrative,
+    completion,
+    gameSlug,
+  );
 
   if (result) {
     revalidatePath(`/${gameSlug}`);

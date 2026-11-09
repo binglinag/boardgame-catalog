@@ -37,10 +37,17 @@ export function serializeSessionData(data: SessionData): string {
 }
 
 function normalizePlayerScore(p: Record<string, unknown>): PlayerScore {
-  return {
+  const player: PlayerScore = {
     name: String(p.name ?? ""),
     score: Number(p.score ?? 0),
     result: (p.result as PlayerScore["result"]) ?? null,
     rank: p.rank != null ? Number(p.rank) : null,
   };
+
+  // 玩家 ID 有值才设属性，避免 undefined 改变对象形状（影响历史数据兼容）
+  if (typeof p.id === "string" && p.id) {
+    player.id = p.id;
+  }
+
+  return player;
 }
