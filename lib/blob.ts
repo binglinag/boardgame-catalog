@@ -6,11 +6,37 @@ import { put } from "@vercel/blob";
 
 const BLOB_PREFIX = "covers"; // Blob 存储中的目录前缀
 
+/**
+ * 找 Blob 读写 token
+ * Vercel 创建 store 时用「自定义前缀」生成变量名（如 COVERS_READ_WRITE_TOKEN），
+ * 所以不能只认 BLOB_READ_WRITE_TOKEN，扫一遍所有 *_READ_WRITE_TOKEN
+ */
+function resolveBlobToken(): string | undefined {
+  const primary = process.env.BLOB_READ_WRITE_TOKEN;
+  if (primary) return primary;
+
+  for (const [key, value] of Object.entries(process.env)) {
+    if (key.endsWith("_READ_WRITE_TOKEN") && value) return value;
+  }
+  return undefined;
+}
+
+/** 是否配置了任一 Blob token（供 Server Action 做前置检查） */
+export function hasBlobToken(): boolean {
+  return !!resolveBlobToken();
+}
+
 /** 下载外部图片并上传到 Vercel Blob，返回 Blob URL */
 export async function uploadCoverToBlob(
   imageUrl: string,
   gameTitle: string,
 ): Promise<string | null> {
+  const token = resolveBlobToken();
+  if (!token) {
+    console.error("[Blob] 缺少 *_READ_WRITE_TOKEN 环境变量");
+    return null;
+  }
+
   try {
     // 1. 下载图片
     const res = await fetch(imageUrl, {
@@ -33,6 +59,7 @@ export async function uploadCoverToBlob(
       access: "public",
       contentType,
       addRandomSuffix: false,
+      token,
     });
 
     return blob.url;
@@ -72,6 +99,14 @@ export async function uploadImageFile(
     };
   }
 
+  const token = resolveBlobToken();
+  if (!token) {
+    return {
+      url: null,
+      error: "未找到 Blob 读写 token，请在 Vercel 创建 Blob Store 并勾选 read-write token",
+    };
+  }
+
   try {
     const ext = EXT_BY_TYPE[file.type] ?? "jpg";
     const safeName = nameHint
@@ -83,6 +118,7 @@ export async function uploadImageFile(
       access: "public",
       contentType: file.type,
       addRandomSuffix: false,
+      token,
     });
 
     return { url: blob.url };

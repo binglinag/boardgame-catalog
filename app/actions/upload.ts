@@ -1,6 +1,6 @@
 "use server";
 
-import { uploadImageFile } from "@/lib/blob";
+import { uploadImageFile, hasBlobToken } from "@/lib/blob";
 
 /**
  * 上传图片到 Vercel Blob（供新增/编辑页的封面图使用）
@@ -15,10 +15,10 @@ export async function uploadGameImage(
     return { success: false, message: "密码错误" };
   }
 
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+  if (!hasBlobToken()) {
     return {
       success: false,
-      message: "未配置 Vercel Blob，请先在 Vercel 创建 Blob Store",
+      message: "未配置 Vercel Blob，请先创建 Blob Store 并勾选 read-write token",
     };
   }
 
