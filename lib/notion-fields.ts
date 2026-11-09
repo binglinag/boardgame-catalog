@@ -94,6 +94,7 @@ const FIELD_PRIORITY: string[][] = [
   ["最佳人数", "bestplayers", "best players"],
   ["设计师", "设计者", "designer", "designers"],
   ["BGG链接", "BGG 链接", "BGG连接", "BGG地址", "bgg链接", "BGG", "链接", "bggurl", "bgg url"],
+  ["状态", "status"],
   ["标签", "tags", "tag"],
   ["封面图", "封面", "cover"],
 ];
