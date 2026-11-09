@@ -6,7 +6,7 @@ import { getAllPlayers } from "@/lib/notion-players";
 import GameDetail from "@/components/game-detail";
 
 export const runtime = "edge";
-export const revalidate = 86400;
+export const revalidate = 60;
 
 interface Props {
   params: Promise<{ slug: string }>;
