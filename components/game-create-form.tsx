@@ -285,8 +285,17 @@ export default function GameCreateForm({ fields }: { fields: FieldDef[] }) {
           </svg>
           返回首页
         </Link>
-        <span className="text-xs text-gray-400 dark:text-gray-500">
-          按 Notion 表结构生成 · {fields.length} 个字段
+        <span className="flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500">
+          <Link
+            href="/migrate"
+            className="hover:text-violet-500 dark:hover:text-violet-400 hover:underline transition-colors"
+          >
+            批量迁移封面图
+          </Link>
+          <span className="text-gray-300 dark:text-gray-600">·</span>
+          <span>
+            按 Notion 表结构生成 · {fields.length} 个字段
+          </span>
         </span>
       </div>
 
