@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import CustomSelect from "./custom-select";
+import ImageUploader from "./image-uploader";
 import { createGame } from "@/app/actions/games";
 import type { FieldDef } from "@/lib/notion-fields";
 
@@ -18,6 +19,9 @@ const inputCls =
 
 /** 这些字眼的 rich_text 列用多行文本框 */
 const LONG_TEXT_HINTS = ["评价", "备注", "描述", "介绍", "说明", "心得"];
+
+/** 这些 files 列用上传组件（点击/拖拽/粘贴），其余 files 列仍用 URL 文本框 */
+const UPLOAD_HINTS = ["封面", "cover"];
 
 type FormValues = Record<string, string | string[]>;
 
@@ -115,6 +119,26 @@ export default function GameCreateForm({ fields }: { fields: FieldDef[] }) {
 
   function renderField(f: FieldDef) {
     if (f.type === "unsupported") return null;
+
+    // 封面图：上传组件（点击选择 / 拖拽 / Ctrl+V 粘贴）
+    if (f.type === "files" && UPLOAD_HINTS.some((k) => f.name.toLowerCase().includes(k))) {
+      return (
+        <div key={f.name} className="sm:col-span-2">
+          <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5">
+            {f.name}
+            <span className="ml-1.5 text-[10px] text-gray-300 dark:text-gray-600 uppercase">
+              {f.type}
+            </span>
+          </label>
+          <ImageUploader
+            value={(values[f.name] as string) ?? ""}
+            onChange={(url) => setValue(f.name, url)}
+            password={password}
+            nameHint="cover"
+          />
+        </div>
+      );
+    }
 
     const isLong =
       f.type === "rich_text" && LONG_TEXT_HINTS.some((k) => f.name.includes(k));

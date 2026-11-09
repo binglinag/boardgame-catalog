@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getGameFieldDefs } from "@/lib/notion-fields";
+import { getGameFieldDefs, orderFieldDefs } from "@/lib/notion-fields";
 import GameCreateForm from "@/components/game-create-form";
 
 export const runtime = "edge";
@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default async function NewGamePage() {
-  const fields = await getGameFieldDefs();
+  // 读取真实表结构后按录入习惯重排：常用字段在前，不常填的沉底
+  const fields = orderFieldDefs(await getGameFieldDefs());
   return <GameCreateForm fields={fields} />;
 }
