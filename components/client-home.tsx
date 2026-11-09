@@ -8,9 +8,10 @@ import SearchBar from "@/components/search-bar";
 import StatsPanel from "@/components/stats-panel";
 import RandomPicker from "@/components/random-picker";
 import ParticleBackground from "@/components/particle-background";
-import type { BoardGame, GameStatus, SortOption } from "@/types/game";
+import type { BoardGame, GameStatus, SortOption, WeightFilter } from "@/types/game";
 import type { PlaySession } from "@/types/session";
 import { matchesPlayerCount } from "@/lib/player-count";
+import { matchesWeight } from "@/lib/weight-filter";
 
 interface Props {
   initialGames: BoardGame[];
@@ -30,6 +31,7 @@ export default function ClientHome({
   const [status, setStatus] = useState<GameStatus | "全部">("全部");
   const [tag, setTag] = useState<string | null>(null);
   const [playerCount, setPlayerCount] = useState<number | "全部">("全部");
+  const [weightFilter, setWeightFilter] = useState<WeightFilter>("全部");
   const [sortBy, setSortBy] = useState<SortOption>("rating");
   const [searchQuery, setSearchQuery] = useState("");
   const [mounted, setMounted] = useState(false);
@@ -64,6 +66,9 @@ export default function ClientHome({
     if (playerCount !== "全部") {
       result = result.filter((g) => matchesPlayerCount(g, playerCount));
     }
+    if (weightFilter !== "全部") {
+      result = result.filter((g) => matchesWeight(g, weightFilter));
+    }
     result.sort((a, b) => {
       switch (sortBy) {
         case "rating": return (b.rating ?? 0) - (a.rating ?? 0);
@@ -79,7 +84,7 @@ export default function ClientHome({
       }
     });
     return result;
-  }, [games, status, tag, playerCount, sortBy, searchQuery]);
+  }, [games, status, tag, playerCount, weightFilter, sortBy, searchQuery]);
 
   const isSearching = searchQuery.trim().length > 0;
 
@@ -98,6 +103,7 @@ export default function ClientHome({
               {!isSearching && status !== "全部" && ` · ${status}`}
               {!isSearching && tag && ` · #${tag}`}
               {!isSearching && playerCount !== "全部" && ` · ${playerCount}人`}
+              {!isSearching && weightFilter !== "全部" && ` · ${weightFilter}度策略`}
             </p>
             <div className="flex items-center gap-3">
               <button
@@ -135,11 +141,13 @@ export default function ClientHome({
             status={status}
             tag={tag}
             playerCount={playerCount}
+            weightFilter={weightFilter}
             sortBy={sortBy}
             allTags={tags}
             onStatusChange={setStatus}
             onTagChange={setTag}
             onPlayerCountChange={setPlayerCount}
+            onWeightChange={setWeightFilter}
             onSortChange={setSortBy}
           />
         </div>

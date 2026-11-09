@@ -24,6 +24,9 @@ export interface BoardGame {
 
 export type GameStatus = "已收藏" | "想玩" | "已玩过" | "不好玩";
 
+/** 重度筛选档位（按 BGG weight 划分） */
+export type WeightFilter = "全部" | "轻" | "中" | "重";
+
 /** 可选的状态标签全集（编辑器里的多选按钮） */
 export const GAME_STATUS_OPTIONS: GameStatus[] = ["已收藏", "想玩", "已玩过", "不好玩"];
 

@@ -2,17 +2,20 @@
 
 import { useState } from "react";
 import CustomSelect from "./custom-select";
-import type { GameStatus, SortOption } from "@/types/game";
+import { WEIGHT_TIERS } from "@/lib/weight-filter";
+import type { GameStatus, SortOption, WeightFilter } from "@/types/game";
 
 interface FilterBarProps {
   status: GameStatus | "全部";
   tag: string | null;
   playerCount: number | "全部";
+  weightFilter: WeightFilter;
   sortBy: SortOption;
   allTags: string[];
   onStatusChange: (status: GameStatus | "全部") => void;
   onTagChange: (tag: string | null) => void;
   onPlayerCountChange: (count: number | "全部") => void;
+  onWeightChange: (weight: WeightFilter) => void;
   onSortChange: (sort: SortOption) => void;
 }
 
@@ -47,7 +50,7 @@ function ChipButton({
   active: boolean;
   onClick: () => void;
   children: React.ReactNode;
-  color?: "violet" | "amber" | "emerald";
+  color?: "violet" | "amber" | "emerald" | "rose";
 }) {
   const colorMap = {
     violet: {
@@ -61,6 +64,10 @@ function ChipButton({
     emerald: {
       active: "bg-emerald-100 text-emerald-700 border-emerald-300 dark:bg-emerald-900/40 dark:text-emerald-200 dark:border-emerald-700/30",
       idle:  "bg-white/50 text-gray-500 border-white/40 hover:border-emerald-300/60 dark:bg-white/5 dark:text-gray-400 dark:border-white/10 dark:hover:border-emerald-700/40",
+    },
+    rose: {
+      active: "bg-rose-100 text-rose-700 border-rose-300 dark:bg-rose-900/40 dark:text-rose-200 dark:border-rose-700/30",
+      idle:  "bg-white/50 text-gray-500 border-white/40 hover:border-rose-300/60 dark:bg-white/5 dark:text-gray-400 dark:border-white/10 dark:hover:border-rose-700/40",
     },
   };
 
@@ -79,8 +86,8 @@ function ChipButton({
 }
 
 export default function FilterBar({
-  status, tag, playerCount, sortBy, allTags,
-  onStatusChange, onTagChange, onPlayerCountChange, onSortChange,
+  status, tag, playerCount, weightFilter, sortBy, allTags,
+  onStatusChange, onTagChange, onPlayerCountChange, onWeightChange, onSortChange,
 }: FilterBarProps) {
   // 移动端默认折叠，桌面端始终展开（由 sm: 断点控制，不依赖此状态）
   const [expanded, setExpanded] = useState(false);
@@ -88,6 +95,7 @@ export default function FilterBar({
   const activeCount =
     (status !== "全部" ? 1 : 0) +
     (playerCount !== "全部" ? 1 : 0) +
+    (weightFilter !== "全部" ? 1 : 0) +
     (tag !== null ? 1 : 0);
 
   const sortLabel = SORT_OPTIONS.find((o) => o.value === sortBy)?.label ?? "评分";
@@ -170,6 +178,29 @@ export default function FilterBar({
                 color="emerald"
               >
                 {opt.label}
+              </ChipButton>
+            ))}
+          </div>
+
+          <span className="text-violet-200 dark:text-violet-800 mx-1 hidden sm:inline font-bold">•</span>
+
+          {/* 重度筛选 */}
+          <div className="flex gap-1.5 flex-wrap">
+            <ChipButton
+              active={weightFilter === "全部"}
+              onClick={() => onWeightChange("全部")}
+              color="rose"
+            >
+              全部重度
+            </ChipButton>
+            {WEIGHT_TIERS.map((tier) => (
+              <ChipButton
+                key={tier.value}
+                active={weightFilter === tier.value}
+                onClick={() => onWeightChange(tier.value)}
+                color="rose"
+              >
+                {tier.label}
               </ChipButton>
             ))}
           </div>
