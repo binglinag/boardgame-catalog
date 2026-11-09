@@ -3,13 +3,7 @@
 import { getAllGames } from "@/lib/notion";
 import { getAllSessions } from "@/lib/notion-sessions";
 import { getAllPlayers } from "@/lib/notion-players";
-
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "";
-
-function verifyPassword(password: string): boolean {
-  if (!ADMIN_PASSWORD) return true;
-  return password === ADMIN_PASSWORD;
-}
+import { verifyAdmin } from "@/lib/auth";
 
 export interface ExportData {
   exportedAt: string;
@@ -24,15 +18,17 @@ export interface ExportData {
 export async function exportBackup(
   password: string
 ): Promise<{ success: boolean; data?: ExportData; message: string }> {
-  if (!verifyPassword(password)) {
-    return { success: false, message: "密码错误" };
+  const auth = verifyAdmin(password);
+  if (!auth.ok) {
+    return { success: false, message: auth.reason ?? "密码错误" };
   }
 
   try {
+    // strict: true —— 任何一页查询失败都抛错，绝不拿部分数据冒充完整备份
     const [games, sessions, players] = await Promise.all([
-      getAllGames(),
-      getAllSessions(),
-      getAllPlayers(),
+      getAllGames({ strict: true }),
+      getAllSessions({ strict: true }),
+      getAllPlayers({ strict: true }),
     ]);
 
     // 过滤掉内部字段，保留纯数据结构
@@ -64,6 +60,10 @@ export async function exportBackup(
       template: s.template,
       players: s.players,
       notes: s.notes,
+      // 战役叙事模板的三个字段，之前遗漏
+      scenario: s.scenario,
+      narrative: s.narrative,
+      completion: s.completion,
     }));
 
     const cleanPlayers = players.map((p) => ({
@@ -75,7 +75,7 @@ export async function exportBackup(
 
     const data: ExportData = {
       exportedAt: new Date().toISOString(),
-      version: "1.0",
+      version: "1.1",
       tables: {
         games: cleanGames,
         sessions: cleanSessions,
@@ -88,7 +88,11 @@ export async function exportBackup(
       data,
       message: `备份完成：${cleanGames.length} 款桌游, ${cleanSessions.length} 条对局, ${cleanPlayers.length} 位玩家`,
     };
-  } catch {
-    return { success: false, message: "导出失败，请检查 Notion API 连接" };
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    return {
+      success: false,
+      message: `备份失败，数据可能不完整，请重试：${msg}`,
+    };
   }
 }

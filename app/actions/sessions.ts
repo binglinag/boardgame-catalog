@@ -2,14 +2,8 @@
 
 import { createSession } from "@/lib/notion-sessions";
 import { revalidatePath } from "next/cache";
+import { verifyAdmin } from "@/lib/auth";
 import type { PlayerScore, ScoringTemplate } from "@/types/session";
-
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "";
-
-function verifyPassword(password: string): boolean {
-  if (!ADMIN_PASSWORD) return true; // 未设密码时允许所有操作
-  return password === ADMIN_PASSWORD;
-}
 
 export async function addPlaySession(
   gameTitle: string,
@@ -23,8 +17,9 @@ export async function addPlaySession(
   narrative?: string,
   completion?: "完整通关" | "中途放弃" | null
 ): Promise<{ success: boolean; message: string }> {
-  if (!verifyPassword(password)) {
-    return { success: false, message: "密码错误" };
+  const auth = verifyAdmin(password);
+  if (!auth.ok) {
+    return { success: false, message: auth.reason ?? "密码错误" };
   }
 
   if (players.length === 0) {

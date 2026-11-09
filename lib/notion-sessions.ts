@@ -101,12 +101,19 @@ function mapPageToSession(page: PageObjectResponse): PlaySession {
 
 /**
  * 获取所有对局记录
+ * @param opts.strict 为 true 时，查询失败会抛错而不是返回部分数据（导出备份用）
  */
-export async function getAllSessions(): Promise<PlaySession[]> {
+export async function getAllSessions(opts?: {
+  strict?: boolean;
+}): Promise<PlaySession[]> {
+  const strict = opts?.strict ?? false;
   const sessions: PlaySession[] = [];
 
   if (!SESSIONS_DB_ID || !process.env.NOTION_API_KEY) {
     console.warn("[Notion Sessions] missing env vars");
+    if (strict) {
+      throw new Error("对局数据库未配置（NOTION_SESSIONS_DATABASE_ID）");
+    }
     return sessions;
   }
 
@@ -134,6 +141,7 @@ export async function getAllSessions(): Promise<PlaySession[]> {
     } while (cursor);
   } catch (err) {
     console.error("[Notion Sessions] getAllSessions failed:", err);
+    if (strict) throw err;
   }
 
   return sessions;

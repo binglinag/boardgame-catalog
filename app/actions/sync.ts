@@ -4,13 +4,10 @@ import { Client } from "@notionhq/client";
 import { extractBggId, fetchBggData } from "@/lib/bgg";
 import { uploadCoverToBlob } from "@/lib/blob";
 import { BGG_URL_ALIASES, GAME_PROPS } from "@/lib/notion-schema";
+import { verifyAdmin } from "@/lib/auth";
 
 const notion = new Client({ auth: process.env.NOTION_API_KEY, fetch });
 const DATABASE_ID = process.env.NOTION_DATABASE_ID ?? "";
-
-function verifyPassword(pw: string): boolean {
-  return pw === process.env.ADMIN_PASSWORD;
-}
 
 /** 格式化人数 "2-5" */
 function formatPlayers(min: number | null, max: number | null): string | null {
@@ -39,8 +36,15 @@ export interface SyncResult {
 }
 
 export async function syncBgg(password: string): Promise<SyncResult> {
-  if (!verifyPassword(password)) {
-    return { total: 0, updated: 0, skipped: 0, errors: ["密码错误"], details: [] };
+  const auth = verifyAdmin(password);
+  if (!auth.ok) {
+    return {
+      total: 0,
+      updated: 0,
+      skipped: 0,
+      errors: [auth.reason ?? "密码错误"],
+      details: [],
+    };
   }
 
   const details: SyncResult["details"] = [];

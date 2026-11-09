@@ -37,7 +37,7 @@ function checkEnv() {
   }
 
   if (!process.env.ADMIN_PASSWORD) {
-    logWarn("ADMIN_PASSWORD is not set, write actions are open to anyone with access");
+    logWarn("ADMIN_PASSWORD is not set, all write actions will be rejected (fail-closed)");
   }
 
   return missing;

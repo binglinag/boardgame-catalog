@@ -51,11 +51,17 @@ function mapPageToPlayer(page: PageObjectResponse): Player {
 // 读取
 // ============================================================
 
-export async function getAllPlayers(): Promise<Player[]> {
+export async function getAllPlayers(opts?: {
+  strict?: boolean;
+}): Promise<Player[]> {
+  const strict = opts?.strict ?? false;
   const players: Player[] = [];
 
   if (!PLAYERS_DB_ID || !process.env.NOTION_API_KEY) {
     console.warn("[Notion Players] missing env vars");
+    if (strict) {
+      throw new Error("玩家数据库未配置（NOTION_PLAYERS_DATABASE_ID）");
+    }
     return players;
   }
 
@@ -81,6 +87,7 @@ export async function getAllPlayers(): Promise<Player[]> {
     } while (cursor);
   } catch (err) {
     console.error("[Notion Players] getAllPlayers failed:", err);
+    if (strict) throw err;
   }
 
   return players;

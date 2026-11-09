@@ -1,6 +1,7 @@
 "use server";
 
 import { uploadImageFile, hasBlobToken } from "@/lib/blob";
+import { verifyAdmin } from "@/lib/auth";
 
 /**
  * 上传图片到 Vercel Blob（供新增/编辑页的封面图使用）
@@ -11,8 +12,9 @@ export async function uploadGameImage(
 ): Promise<{ success: boolean; url?: string; message: string }> {
   const password = String(formData.get("password") ?? "");
 
-  if (!process.env.ADMIN_PASSWORD || password !== process.env.ADMIN_PASSWORD) {
-    return { success: false, message: "密码错误" };
+  const auth = verifyAdmin(password);
+  if (!auth.ok) {
+    return { success: false, message: auth.reason ?? "密码错误" };
   }
 
   if (!hasBlobToken()) {

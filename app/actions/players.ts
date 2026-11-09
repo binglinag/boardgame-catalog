@@ -2,13 +2,7 @@
 
 import { createPlayer, getAllPlayers } from "@/lib/notion-players";
 import { revalidatePath } from "next/cache";
-
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "";
-
-function verifyPassword(password: string): boolean {
-  if (!ADMIN_PASSWORD) return true;
-  return password === ADMIN_PASSWORD;
-}
+import { verifyAdmin } from "@/lib/auth";
 
 export async function addPlayer(
   name: string,
@@ -16,8 +10,9 @@ export async function addPlayer(
   notes: string,
   password: string = ""
 ): Promise<{ success: boolean; message: string }> {
-  if (!verifyPassword(password)) {
-    return { success: false, message: "密码错误" };
+  const auth = verifyAdmin(password);
+  if (!auth.ok) {
+    return { success: false, message: auth.reason ?? "密码错误" };
   }
 
   const trimmedName = name.trim();

@@ -4,16 +4,13 @@ import { Client } from "@notionhq/client";
 import { revalidatePath } from "next/cache";
 import { uploadCoverToBlob, hasBlobToken } from "@/lib/blob";
 import { GAME_PROPS } from "@/lib/notion-schema";
+import { verifyAdmin } from "@/lib/auth";
 import type { MigrateResult } from "@/types/migrate";
 
 const notion = new Client({ auth: process.env.NOTION_API_KEY, fetch });
 const DATABASE_ID = process.env.NOTION_DATABASE_ID ?? "";
 
 const BLOB_HOST = "blob.vercel-storage.com";
-
-function verifyPassword(pw: string): boolean {
-  return !!process.env.ADMIN_PASSWORD && pw === process.env.ADMIN_PASSWORD;
-}
 
 interface FileItem {
   name: string;
@@ -81,8 +78,9 @@ export async function migrateCoversBatch(
     done: true,
   };
 
-  if (!verifyPassword(password)) {
-    return { ...empty, message: "密码错误" };
+  const auth = verifyAdmin(password);
+  if (!auth.ok) {
+    return { ...empty, message: auth.reason ?? "密码错误" };
   }
   if (!hasBlobToken()) {
     return { ...empty, message: "未配置 Blob token，请先创建 Blob Store 并勾选 read-write token" };

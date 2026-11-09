@@ -3,14 +3,11 @@
 import { Client } from "@notionhq/client";
 import { revalidatePath } from "next/cache";
 import { BGG_URL_ALIASES, GAME_PROPS } from "@/lib/notion-schema";
+import { verifyAdmin } from "@/lib/auth";
 import type { GameEditForm } from "@/types/game";
 
 const notion = new Client({ auth: process.env.NOTION_API_KEY, fetch });
 const DATABASE_ID = process.env.NOTION_DATABASE_ID ?? "";
-
-function verifyPassword(pw: string): boolean {
-  return !!process.env.ADMIN_PASSWORD && pw === process.env.ADMIN_PASSWORD;
-}
 
 /** 从 BGG URL 提取游戏名（URL 末尾的 slug 部分）作为临时标题 */
 function guessTitle(url: string): string {
@@ -29,8 +26,9 @@ export async function addGameByBggUrl(
   password: string,
   bggUrl: string,
 ): Promise<{ success: boolean; message: string }> {
-  if (!verifyPassword(password)) {
-    return { success: false, message: "密码错误" };
+  const auth = verifyAdmin(password);
+  if (!auth.ok) {
+    return { success: false, message: auth.reason ?? "密码错误" };
   }
 
   const trimmed = bggUrl.trim();
@@ -126,8 +124,9 @@ export async function updateGame(
   pageId: string,
   form: GameEditForm,
 ): Promise<{ success: boolean; message: string; updated?: string[] }> {
-  if (!verifyPassword(password)) {
-    return { success: false, message: "密码错误" };
+  const auth = verifyAdmin(password);
+  if (!auth.ok) {
+    return { success: false, message: auth.reason ?? "密码错误" };
   }
   if (!pageId) {
     return { success: false, message: "缺少页面 ID" };
@@ -237,8 +236,9 @@ export async function createGame(
   password: string,
   values: Record<string, string | string[]>,
 ): Promise<{ success: boolean; message: string; pageId?: string }> {
-  if (!verifyPassword(password)) {
-    return { success: false, message: "密码错误" };
+  const auth = verifyAdmin(password);
+  if (!auth.ok) {
+    return { success: false, message: auth.reason ?? "密码错误" };
   }
 
   try {

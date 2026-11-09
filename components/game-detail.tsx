@@ -253,7 +253,11 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
               共 {sessions.length} 场对局
             </p>
           </div>
-          <SessionForm gameTitle={game.title} gameSlug={game.id} allPlayers={allPlayers} />
+          <SessionForm
+            gameTitle={game.title}
+            gameSlug={game.id}
+            allPlayers={allPlayers.map((p) => ({ id: p.id, name: p.name }))}
+          />
         </div>
 
         {/* 排行榜 */}

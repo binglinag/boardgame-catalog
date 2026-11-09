@@ -12,7 +12,8 @@ import type { Player } from "@/types/player";
 interface Props {
   gameTitle: string;
   gameSlug: string;
-  allPlayers: Player[];
+  /** 只需要 id 和 name —— 手机号、备注不该出现在客户端 JS 里 */
+  allPlayers: Array<Pick<Player, "id" | "name">>;
 }
 
 type PlayerRow = PlayerScore & { id: string };

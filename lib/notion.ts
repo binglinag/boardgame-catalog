@@ -184,12 +184,17 @@ function mapPageToGame(page: PageObjectResponse): BoardGame {
 
 /**
  * 获取所有桌游列表
+ * @param opts.strict 为 true 时，查询失败会抛错而不是返回部分数据（导出备份用）
  */
-export async function getAllGames(): Promise<BoardGame[]> {
+export async function getAllGames(opts?: { strict?: boolean }): Promise<BoardGame[]> {
+  const strict = opts?.strict ?? false;
   const games: BoardGame[] = [];
 
   if (!DATABASE_ID || !process.env.NOTION_API_KEY) {
     console.warn("[Notion] missing env vars");
+    if (strict) {
+      throw new Error("桌游数据库未配置（NOTION_API_KEY / NOTION_DATABASE_ID）");
+    }
     return games;
   }
 
@@ -218,6 +223,7 @@ export async function getAllGames(): Promise<BoardGame[]> {
     } while (cursor);
   } catch (err) {
     console.error("[Notion] getAllGames failed:", err);
+    if (strict) throw err;
   }
 
   return games;
