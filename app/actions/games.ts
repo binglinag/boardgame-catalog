@@ -223,3 +223,112 @@ export async function updateGame(
     return { success: false, message: `保存失败: ${msg}` };
   }
 }
+
+// ============================================================
+// 新增页：按数据库真实表结构动态写入
+// ============================================================
+
+/**
+ * 在桌游数据库中创建一条新记录
+ * values 的 key 是 Notion 的真实列名，value 是字符串或字符串数组（多选/多图）
+ * 服务端会重新读一次表结构，按真实列类型构造属性，不信任客户端传来的类型
+ */
+export async function createGame(
+  password: string,
+  values: Record<string, string | string[]>,
+): Promise<{ success: boolean; message: string; pageId?: string }> {
+  if (!verifyPassword(password)) {
+    return { success: false, message: "密码错误" };
+  }
+
+  try {
+    const db = await notion.databases.retrieve({ database_id: DATABASE_ID });
+    if (!("properties" in db)) {
+      return { success: false, message: "无法读取数据库表结构" };
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const schema = db.properties as Record<string, any>;
+
+    const properties: Record<string, unknown> = {};
+    const skipped: string[] = [];
+    let titleValue = "";
+
+    for (const [name, def] of Object.entries(schema)) {
+      const type = (def.type ?? "") as string;
+      const raw = values[name];
+      const asArray = Array.isArray(raw) ? raw : [];
+      const text = Array.isArray(raw) ? raw.join(",") : (raw ?? "").trim();
+
+      if (type === "title") {
+        titleValue = text;
+        properties[name] = { title: richText(text) };
+        continue;
+      }
+
+      // 其余列：没传值就跳过，创建时不写空值
+      if (raw === undefined) continue;
+
+      switch (type) {
+        case "rich_text":
+          if (text) properties[name] = { rich_text: richText(text) };
+          break;
+        case "number": {
+          const n = toNumber(text);
+          if (n !== null) properties[name] = { number: n };
+          break;
+        }
+        case "select":
+          if (text) properties[name] = { select: { name: text } };
+          break;
+        case "multi_select":
+          if (asArray.length > 0) {
+            properties[name] = { multi_select: asArray.map((n) => ({ name: n })) };
+          }
+          break;
+        case "url":
+          if (text) {
+            properties[name] = {
+              url: /^https?:\/\//i.test(text) ? text : `https://${text}`,
+            };
+          }
+          break;
+        case "files":
+          if (text) properties[name] = { files: toExternalFiles(text) };
+          break;
+        case "date":
+          if (text) properties[name] = { date: { start: text } };
+          break;
+        case "checkbox":
+          properties[name] = { checkbox: text === "true" || text === "1" };
+          break;
+        default:
+          skipped.push(name);
+      }
+    }
+
+    if (!titleValue) {
+      return { success: false, message: "标题列不能为空" };
+    }
+
+    const page = await notion.pages.create({
+      parent: { database_id: DATABASE_ID },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      properties: properties as any,
+    });
+
+    revalidatePath("/");
+    revalidatePath("/leaderboard");
+
+    return {
+      success: true,
+      message:
+        skipped.length > 0
+          ? `已创建「${titleValue}」（跳过不支持的列：${skipped.join("、")}）`
+          : `已创建「${titleValue}」`,
+      pageId: page.id,
+    };
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    return { success: false, message: `创建失败: ${msg}` };
+  }
+}
