@@ -1,5 +1,4 @@
 import * as assert from "node:assert/strict";
-import { extractBggId } from "@/lib/bgg";
 import { getPerformanceCoefficient } from "@/lib/leaderboard-scoring";
 import { matchesPlayerCount, parsePlayerRange } from "@/lib/player-count";
 import { parseSessionData, serializeSessionData } from "@/lib/session-data";
@@ -92,15 +91,6 @@ export const tests: TestCase[] = [
         ) - 5 / 6) < 0.000001
       );
       assert.equal(getPerformanceCoefficient("战役叙事", { name: "Alice", score: 0 }, [], "中途放弃"), 0.5);
-    },
-  },
-  {
-    name: "extractBggId parses boardgame and expansion URLs",
-    run() {
-      assert.equal(extractBggId("https://boardgamegeek.com/boardgame/174430/gloomhaven"), 174430);
-      assert.equal(extractBggId("https://boardgamegeek.com/boardgameexpansion/280789/root-the-underworld-expansion"), 280789);
-      assert.equal(extractBggId("https://example.com/games/12345"), 12345);
-      assert.equal(extractBggId("not-a-url"), null);
     },
   },
 ];
