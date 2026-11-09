@@ -5,6 +5,7 @@ import type { PlaySession } from "@/types/session";
 import type { Player } from "@/types/player";
 import SessionForm from "./session-form";
 import Leaderboard from "./leaderboard";
+import SessionRecord from "./session-record";
 import PriceToggle from "./price-toggle";
 
 interface Props {
@@ -260,17 +261,14 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
           />
         </div>
 
-        {/* 排行榜 */}
+        {/* 榜单：按主导模板自动切换指标 */}
         {sessions.length > 0 && (
           <div className="mb-10">
-            <h3 className="text-sm font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-4">
-              最高分排行
-            </h3>
             <Leaderboard sessions={sessions} />
           </div>
         )}
 
-        {/* 对局历史 */}
+        {/* 对局历史：每条按模板渲染 */}
         {sessions.length > 0 && (
           <div>
             <h3 className="text-sm font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-4">
@@ -278,51 +276,7 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
             </h3>
             <div className="space-y-3">
               {sessions.map((session) => (
-                <div
-                  key={session.id}
-                  className="rounded-xl bg-gray-50 dark:bg-gray-800/30
-                    border border-gray-100 dark:border-gray-700/30 p-4
-                    hover:border-gray-200 dark:hover:border-gray-600/50
-                    transition-all duration-200"
-                >
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-sm font-medium text-gray-900 dark:text-white">
-                      {new Date(session.date).toLocaleDateString("zh-CN", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    </span>
-                    {session.notes && (
-                      <span className="text-xs text-gray-400 dark:text-gray-500 italic">
-                        {session.notes}
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex flex-wrap gap-x-6 gap-y-2">
-                    {session.players
-                      .sort((a, b) => b.score - a.score)
-                      .map((player, i) => (
-                        <div key={i} className="flex items-center gap-2">
-                          <span
-                            className={`text-xs font-bold w-5 text-center ${
-                              i === 0
-                                ? "text-amber-500"
-                                : "text-gray-400 dark:text-gray-500"
-                            }`}
-                          >
-                            {i === 0 ? "👑" : `#${i + 1}`}
-                          </span>
-                          <span className="text-sm text-gray-700 dark:text-gray-300">
-                            {player.name}
-                          </span>
-                          <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                            {player.score}
-                          </span>
-                        </div>
-                      ))}
-                  </div>
-                </div>
+                <SessionRecord key={session.id} session={session} />
               ))}
             </div>
           </div>
