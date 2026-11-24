@@ -20,7 +20,7 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
       {/* 返回按钮 */}
       <Link
         href="/"
-        className="inline-flex items-center gap-2 text-sm text-gray-400 dark:text-gray-500
+        className="r-on-felt inline-flex items-center gap-2 text-sm text-gray-400 dark:text-gray-500
           hover:text-gray-700 dark:hover:text-gray-300 transition-colors mb-8 group"
       >
         <svg
@@ -112,19 +112,19 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
             )}
             {game.weight !== null && (
               <div className="flex items-center gap-1">
-                <span className="text-2xl font-bold text-amber-500 dark:text-amber-400">
+                <span className="r-hero-num text-2xl font-bold text-amber-500 dark:text-amber-400">
                   {game.weight}
                 </span>
-                <span className="text-sm text-gray-400 dark:text-gray-500">/ 5 重度</span>
+                <span className="r-on-felt-sub text-sm text-gray-400 dark:text-gray-500">/ 5 重度</span>
               </div>
             )}
             <span className="text-gray-300 dark:text-gray-600 text-lg">·</span>
             {game.rating !== null && (
               <div className="flex items-center gap-1">
-                <span className="text-2xl font-bold text-violet-600 dark:text-violet-400">
+                <span className="r-hero-num text-2xl font-bold text-violet-600 dark:text-violet-400">
                   {game.rating}
                 </span>
-                <span className="text-sm text-gray-400 dark:text-gray-500">/ 10 评分</span>
+                <span className="r-on-felt-sub text-sm text-gray-400 dark:text-gray-500">/ 10 评分</span>
               </div>
             )}
           </div>
@@ -148,7 +148,7 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
               {game.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="px-3 py-1 rounded-lg text-sm font-medium
+                  className="r-tag-felt px-3 py-1 rounded-lg text-sm font-medium
                     bg-primary-50 text-primary-700
                     dark:bg-primary-900/20 dark:text-primary-300"
                 >
@@ -161,10 +161,10 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
           {/* 个人评价 */}
           {game.review && (
             <div className="mb-6">
-              <h2 className="text-sm font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">
+              <h2 className="r-on-felt text-sm font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">
                 个人评价
               </h2>
-              <blockquote className="border-l-2 border-primary-300 dark:border-primary-600 pl-4 text-gray-700 dark:text-gray-300 leading-relaxed italic">
+              <blockquote className="r-on-felt border-l-2 border-primary-300 dark:border-primary-600 pl-4 text-gray-700 dark:text-gray-300 leading-relaxed italic">
                 {game.review}
               </blockquote>
             </div>
@@ -176,7 +176,7 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
               href={game.bggUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl
+              className="r-btn inline-flex items-center gap-2 px-4 py-2 rounded-xl
                 bg-gradient-to-r from-violet-50 to-indigo-50
                 dark:from-violet-900/20 dark:to-indigo-900/20
                 text-sm font-medium
@@ -220,7 +220,7 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
           {/* 相关图片 */}
           {game.extraImages.length > 0 && (
             <div className="mt-10">
-              <h2 className="text-sm font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-4">
+              <h2 className="r-on-felt text-sm font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-4">
                 图片展示
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -247,10 +247,10 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
       <div className="mt-16 border-t border-gray-200 dark:border-gray-700/50 pt-12">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
-              🏆 排行榜 & 对局记录
+            <h2 className="r-on-felt text-xl font-bold text-gray-900 dark:text-white mb-1">
+              🏆 排行榜 &amp; 对局记录
             </h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="r-on-felt-sub text-sm text-gray-500 dark:text-gray-400">
               共 {sessions.length} 场对局
             </p>
           </div>
@@ -271,7 +271,7 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
         {/* 对局历史：每条按模板渲染 */}
         {sessions.length > 0 && (
           <div>
-            <h3 className="text-sm font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-4">
+            <h3 className="r-on-felt text-sm font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-4">
               对局历史
             </h3>
             <div className="space-y-3">
@@ -296,7 +296,7 @@ function StatusBadge({ status }: { status: GameStatus }) {
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium ${styles[status] ?? ""}`}
+      className={`r-status inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium ${styles[status] ?? ""}`}
     >
       <span className="relative flex h-2 w-2">
         <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-current" />
@@ -317,7 +317,7 @@ function InfoItem({
   value: string;
 }) {
   return (
-    <div className="rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/30 p-3">
+    <div className="r-card rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/30 p-3">
       <div className="flex items-center gap-2 mb-1">
         <span className="text-base">{icon}</span>
         <span className="text-xs text-gray-400 dark:text-gray-500">{label}</span>

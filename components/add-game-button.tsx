@@ -8,7 +8,7 @@ export default function AddGameButton() {
   return (
     <Link
       href="/new"
-      className="w-9 h-9 flex items-center justify-center rounded-xl
+      className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-xl
         bg-white/50 dark:bg-white/5 backdrop-blur-md
         border border-white/40 dark:border-white/10
         hover:bg-amber-50 dark:hover:bg-amber-900/20
@@ -18,7 +18,7 @@ export default function AddGameButton() {
       aria-label="新增桌游"
     >
       <svg
-        className="w-4 h-4 text-amber-500 dark:text-amber-400"
+        className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-500 dark:text-amber-400"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import CustomSelect from "./custom-select";
 import ImageUploader from "./image-uploader";
+import TagPicker from "./tag-picker";
 import { createGame } from "@/app/actions/games";
 import type { FieldDef } from "@/lib/notion-fields";
 
@@ -65,14 +66,6 @@ export default function GameCreateForm({ fields }: { fields: FieldDef[] }) {
     setValues((prev) => ({ ...prev, [name]: value }));
     setMessage("");
     setOk(false);
-  }
-
-  function toggleMulti(name: string, option: string) {
-    const current = (values[name] as string[]) ?? [];
-    const next = current.includes(option)
-      ? current.filter((v) => v !== option)
-      : [...current, option];
-    setValue(name, next);
   }
 
   async function handleSave() {
@@ -205,30 +198,17 @@ export default function GameCreateForm({ fields }: { fields: FieldDef[] }) {
         )}
 
         {f.type === "multi_select" && (
-          <div className="flex flex-wrap gap-2">
-            {f.options.length === 0 && (
-              <span className="text-xs text-gray-400 dark:text-gray-500">
-                该列还没有可选项，请先去 Notion 里添加
-              </span>
-            )}
-            {f.options.map((opt) => {
-              const active = ((values[f.name] as string[]) ?? []).includes(opt);
-              return (
-                <button
-                  key={opt}
-                  type="button"
-                  onClick={() => toggleMulti(f.name, opt)}
-                  className={`px-3.5 py-2 rounded-xl text-sm font-medium border transition-all duration-200 ${
-                    active
-                      ? "bg-violet-600 text-white border-violet-600 shadow-md shadow-violet-500/20"
-                      : "bg-white/60 dark:bg-gray-700/40 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600 hover:border-violet-300 hover:text-violet-600 dark:hover:text-violet-400"
-                  }`}
-                >
-                  {opt}
-                </button>
-              );
-            })}
-          </div>
+          <TagPicker
+            options={f.options}
+            value={((values[f.name] as string[]) ?? []).join(", ")}
+            allowCustom={f.name !== "状态"}
+            onChange={(v) =>
+              setValue(
+                f.name,
+                v.split(",").map((s) => s.trim()).filter(Boolean),
+              )
+            }
+          />
         )}
 
         {f.type === "checkbox" && (

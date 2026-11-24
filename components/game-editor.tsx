@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { updateGame } from "@/app/actions/games";
+import TagPicker from "./tag-picker";
 import {
   GAME_STATUS_OPTIONS,
   type BoardGame,
@@ -42,7 +43,7 @@ function toForm(game: BoardGame): GameEditForm {
   };
 }
 
-export default function GameEditor({ game }: { game: BoardGame }) {
+export default function GameEditor({ game, allTags }: { game: BoardGame; allTags: string[] }) {
   const router = useRouter();
   const initial = useMemo(() => toForm(game), [game]);
   const [form, setForm] = useState<GameEditForm>(initial);
@@ -305,12 +306,10 @@ export default function GameEditor({ game }: { game: BoardGame }) {
         </Field>
 
         <Field label="标签" full>
-          <input
-            type="text"
+          <TagPicker
+            options={allTags}
             value={form.tags}
-            onChange={(e) => set("tags", e.target.value)}
-            className={inputCls}
-            placeholder="多个标签用逗号分隔，如：策略, 德式, 卡牌"
+            onChange={(v) => set("tags", v)}
           />
         </Field>
       </Section>

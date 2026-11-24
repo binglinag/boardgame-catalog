@@ -37,7 +37,7 @@ export default function PlayerForm() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl
+        className="r-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl
           bg-white/40 dark:bg-gray-800/20 backdrop-blur-sm
           border border-white/40 dark:border-white/5
           text-xs font-medium text-violet-600 dark:text-violet-400

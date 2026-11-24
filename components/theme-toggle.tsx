@@ -47,14 +47,14 @@ export default function ThemeToggle() {
     applyTheme(newTheme);
   };
 
-  if (!mounted) return <div className="w-9 h-9" />;
+  if (!mounted) return <div className="w-8 h-8 sm:w-9 sm:h-9" />;
 
   const icon = theme === "light" ? "☀️" : theme === "dark" ? "🌙" : "💻";
 
   return (
     <button
       onClick={cycle}
-      className="w-9 h-9 flex items-center justify-center rounded-xl
+      className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-xl
         bg-white/50 dark:bg-white/5 backdrop-blur-md
         border border-white/40 dark:border-white/10
         hover:scale-110 active:scale-95 transition-all duration-200

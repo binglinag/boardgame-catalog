@@ -158,7 +158,7 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
         <PlayerForm />
         <button
           onClick={() => setOpen(true)}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl
+          className="r-btn r-btn-primary inline-flex items-center gap-2 px-5 py-2.5 rounded-xl
             bg-primary-600 hover:bg-primary-700 text-white font-medium text-sm
             shadow-lg shadow-primary-600/25 transition-all duration-200
             hover:shadow-xl hover:shadow-primary-600/30 active:scale-95"

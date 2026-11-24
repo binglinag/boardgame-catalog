@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getGameBySlug } from "@/lib/notion";
+import { getGameBySlug, getAllTags } from "@/lib/notion";
 import GameEditor from "@/components/game-editor";
 
 export const runtime = "edge";
@@ -22,11 +22,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function EditGamePage({ params }: Props) {
   const { slug } = await params;
-  const game = await getGameBySlug(slug);
+  // 标签池与游戏详情并行取，编辑页本来就是 force-dynamic，不额外增加一次串行等待
+  const [game, allTags] = await Promise.all([getGameBySlug(slug), getAllTags()]);
 
   if (!game) {
     notFound();
   }
 
-  return <GameEditor game={game} />;
+  return <GameEditor game={game} allTags={allTags} />;
 }

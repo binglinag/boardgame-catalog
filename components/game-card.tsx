@@ -43,7 +43,7 @@ function StarRating({ rating }: { rating: number }) {
 function WeightBar({ weight }: { weight: number }) {
   const pct = Math.min((weight / 5) * 100, 100);
   return (
-    <div className="weight-bar w-14">
+    <div className="weight-bar w-10 sm:w-14 flex-shrink-0">
       <div className="weight-bar-fill" style={{ width: `${pct}%` }} />
     </div>
   );
@@ -123,18 +123,19 @@ export default function GameCard({ game, sessionCount, priority }: { game: Board
               )}
             </div>
 
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center justify-between gap-2">
               {game.weight !== null && (
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[0.66rem] font-medium text-violet-500/60 dark:text-violet-400/60 uppercase tracking-wider">重度</span>
+                <div className="flex items-center gap-1.5 min-w-0">
+                  {/* 窄屏两列布局下，「重度」二字会被压成竖排，必须禁止换行 */}
+                  <span className="text-[0.66rem] font-medium text-violet-500/60 dark:text-violet-400/60 uppercase tracking-wider whitespace-nowrap flex-shrink-0">重度</span>
                   <WeightBar weight={game.weight} />
-                  <span className="text-[0.66rem] font-semibold text-violet-600/80 dark:text-violet-300/80 tabular-nums">
+                  <span className="text-[0.66rem] font-semibold text-violet-600/80 dark:text-violet-300/80 tabular-nums flex-shrink-0">
                     {game.weight.toFixed(1)}
                   </span>
                 </div>
               )}
               {game.year && (
-                <span className="text-[0.62rem] text-gray-400 dark:text-gray-500 ml-auto">
+                <span className="text-[0.62rem] text-gray-400 dark:text-gray-500 flex-shrink-0">
                   {game.year}
                 </span>
               )}

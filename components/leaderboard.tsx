@@ -370,14 +370,14 @@ function RankCell({ index }: { index: number }) {
 
 function Table({ head, rows }: { head: string[]; rows: React.ReactNode[][] }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-100 dark:border-gray-700/50">
-      <table className="w-full text-sm">
+    <div className="r-table overflow-x-auto rounded-xl border border-gray-100 dark:border-gray-700/50">
+      <table className="w-full min-w-[300px] text-sm">
         <thead>
           <tr className="bg-gray-50 dark:bg-gray-800/50">
             {head.map((h, i) => (
               <th
                 key={h}
-                className={`px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 ${
+                className={`px-2 sm:px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 ${
                   i === 0 ? "text-left w-14" : i === 1 ? "text-left" : "text-right"
                 }`}
               >
@@ -397,7 +397,7 @@ function Table({ head, rows }: { head: string[]; rows: React.ReactNode[][] }) {
               {cells.map((cell, ci) => (
                 <td
                   key={ci}
-                  className={`px-4 py-3 ${
+                  className={`px-2 sm:px-4 py-3 ${
                     ci === 0
                       ? "text-left"
                       : ci === 1

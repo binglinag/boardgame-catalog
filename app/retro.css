@@ -385,19 +385,40 @@
     inset 0 0 0 3px var(--paper) !important;
 }
 
-/* 小尺寸筹码（表格筛选、次要操作） */
+/* 小尺寸筹码（表格筛选、次要操作）
+   注意：这里必须完整声明 background / color。
+   早期只写了 box-shadow，导致元素退回到 Tailwind 的 bg-white/50 + text-gray-500，
+   在毡布上实测对比度仅 1.9:1（WCAG AA 要求 4.5:1），文字基本读不出来。 */
 [data-skin="retro"] .r-chip-sm {
   min-width: 0;
   height: 36px;
   padding: 0 14px;
+  border-radius: 999px !important;
+  border: 0 !important;
+  background: radial-gradient(circle at 35% 30%, #e2b47d, var(--wood) 55%, var(--wood-2)) !important;
+  color: #2a1a08 !important;
+  font-family: var(--font-zh);
   font-size: 13px !important;
+  font-weight: 400 !important;
+  line-height: 1;
+  white-space: nowrap;
+  backdrop-filter: none !important;
   box-shadow:
     0 3px 0 var(--wood-deep),
     0 5px 8px rgba(0, 0, 0, 0.28) !important;
 }
 
+[data-skin="retro"] .r-chip-sm:hover {
+  background: radial-gradient(circle at 35% 30%, #ecc48f, #d3a066 55%, var(--wood-2)) !important;
+  color: #2a1a08 !important;
+  transform: translateY(-1px);
+}
+
+/* 选中态：换成深木 + 米白字，对比度 7.5:1，且不再依赖 Tailwind 的五种彩色 */
 [data-skin="retro"] .r-chip-sm[aria-pressed="true"],
 [data-skin="retro"] .r-chip-sm[data-active="true"] {
+  background: var(--wood-deep) !important;
+  color: var(--paper) !important;
   transform: translateY(3px);
   box-shadow:
     0 0 0 var(--wood-deep),
@@ -415,6 +436,9 @@
   border-radius: 6px !important;
   border: 1.5px solid var(--ink) !important;
   background: var(--paper) !important;
+  /* 梦幻主题的主按钮用 bg-gradient-to-r，background-image 会盖住 background-color，
+     不显式清掉的话复古下仍会露出蓝紫渐变 */
+  background-image: none !important;
   color: var(--ink) !important;
   font-family: var(--font-zh);
   font-size: 14px !important;
@@ -437,9 +461,16 @@
 
 [data-skin="retro"] .r-btn-primary {
   background: var(--wood) !important;
-  color: #3b2410 !important;
+  background-image: none !important;
+  color: #2a1a08 !important;
   border-color: var(--wood-deep) !important;
   box-shadow: 3px 3px 0 var(--wood-deep), 0 8px 14px -6px rgba(0, 0, 0, 0.45) !important;
+}
+
+[data-skin="retro"] .r-btn-primary:hover {
+  background: #d3a066 !important;
+  background-image: none !important;
+  color: #2a1a08 !important;
 }
 
 [data-skin="retro"] .r-btn:disabled,
@@ -485,6 +516,47 @@
   letter-spacing: 0.04em;
 }
 
+/* 直接落在毡布上的文字必须反白。
+   深墨 --ink 落在毡布 --felt 上实测对比度仅 1.57:1，
+   所以凡是没被纸面 / 纸卡包住的标题、正文都要挂 .r-on-felt。 */
+[data-skin="retro"] .r-on-felt {
+  color: var(--paper) !important;
+}
+
+[data-skin="retro"] .r-on-felt h1,
+[data-skin="retro"] .r-on-felt h2,
+[data-skin="retro"] .r-on-felt h3,
+[data-skin="retro"] .r-on-felt h4 {
+  color: var(--paper) !important;
+}
+
+[data-skin="retro"] .r-on-felt a,
+[data-skin="retro"] .r-on-felt button {
+  color: var(--paper) !important;
+}
+
+/* 毡布上的次级文字（副标题、说明、日期等），对比度约 7.8:1 */
+[data-skin="retro"] .r-on-felt-sub {
+  color: rgba(250, 247, 239, 0.68) !important;
+}
+
+/* 状态徽章：纸上墨色，去掉梦幻主题的彩色底与发光圆点 */
+[data-skin="retro"] .r-status {
+  background: var(--paper) !important;
+  color: var(--ink) !important;
+  border: 1px solid var(--edge-3) !important;
+  border-radius: 3px !important;
+  padding: 3px 10px !important;
+  font-family: var(--font-zh) !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  box-shadow: none !important;
+}
+
+[data-skin="retro"] .r-status span {
+  color: var(--ink) !important;
+}
+
 [data-skin="retro"] .r-muted {
   color: var(--muted) !important;
 }
@@ -493,6 +565,15 @@
   font-family: var(--font-num);
   font-feature-settings: "lnum" 1;
   font-variant-numeric: lining-nums;
+}
+
+/* 详情页顶部的重度 / 评分大数字：落在毡布上，用古典衬线 + 米白 */
+[data-skin="retro"] .r-hero-num {
+  font-family: var(--font-num);
+  font-feature-settings: "lnum" 1;
+  font-variant-numeric: lining-nums;
+  color: var(--paper) !important;
+  letter-spacing: 0.01em;
 }
 
 [data-skin="retro"] .r-accent {
@@ -514,6 +595,41 @@
 [data-skin="retro"] .r-tag-red {
   border-color: rgba(168, 50, 43, 0.35);
   color: var(--red);
+}
+
+/* 表单里的标签选择：纸片描边，选中压成深木 */
+[data-skin="retro"] .r-tag-btn {
+  background: var(--paper) !important;
+  background-image: none !important;
+  border: 1px solid var(--edge-3) !important;
+  border-radius: 3px !important;
+  color: var(--ink) !important;
+  font-family: var(--font-zh);
+  font-weight: 400 !important;
+  box-shadow: none !important;
+}
+
+[data-skin="retro"] .r-tag-btn[aria-pressed="true"] {
+  background: var(--wood-deep) !important;
+  border-color: var(--wood-deep) !important;
+  color: var(--paper) !important;
+}
+
+[data-skin="retro"] .r-tag-btn:hover {
+  border-color: var(--wood-2) !important;
+}
+
+/* 毡布上的标签：不用纸面墨色（--muted 在毡布上只有 2.4:1），改为半透明米白描边 */
+[data-skin="retro"] .r-tag-felt {
+  display: inline-block;
+  padding: 3px 10px !important;
+  border: 1px solid rgba(250, 247, 239, 0.32) !important;
+  border-radius: 3px !important;
+  background: transparent !important;
+  color: rgba(250, 247, 239, 0.8) !important;
+  font-family: var(--font-zh);
+  font-size: 12px !important;
+  font-weight: 400 !important;
 }
 
 /* ---------- 弹窗 ---------- */

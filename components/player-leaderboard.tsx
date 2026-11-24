@@ -127,6 +127,7 @@ export default function PlayerLeaderboard({ rankings, totalGames, totalSessions 
           <button
             type="button"
             onClick={clearSelection}
+            aria-pressed={selected.size === 0}
             className={`r-chip-sm px-3 py-1.5 rounded-xl text-sm font-medium border backdrop-blur-sm transition-all duration-200 ${
               selected.size === 0
                 ? "bg-violet-100 text-violet-700 border-violet-300 dark:bg-violet-900/40 dark:text-violet-200 dark:border-violet-700/30 shadow-sm"
@@ -143,6 +144,7 @@ export default function PlayerLeaderboard({ rankings, totalGames, totalSessions 
                 key={r.player.id}
                 type="button"
                 onClick={() => toggle(r.player.id)}
+                aria-pressed={active}
                 className={`r-chip-sm px-3 py-1.5 rounded-xl text-sm font-medium border backdrop-blur-sm transition-all duration-200 ${
                   active
                     ? "bg-violet-100 text-violet-700 border-violet-300 dark:bg-violet-900/40 dark:text-violet-200 dark:border-violet-700/30 shadow-sm"
@@ -163,17 +165,18 @@ export default function PlayerLeaderboard({ rankings, totalGames, totalSessions 
       </div>
 
       {/* 排行榜表格 */}
-      <div className="r-table overflow-hidden rounded-2xl border border-white/50 dark:border-white/5 backdrop-blur-sm">
-        <table className="w-full text-sm">
+      {/* overflow-hidden 会在窄屏把超出容器宽度的列直接裁掉，改用 overflow-x-auto 保证信息不丢 */}
+      <div className="r-table overflow-x-auto rounded-2xl border border-white/50 dark:border-white/5 backdrop-blur-sm">
+        <table className="w-full min-w-[320px] text-sm">
           <thead>
             <tr className="bg-white/40 dark:bg-gray-800/30">
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider w-14">排名</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">玩家</th>
-              <th className="px-4 py-3 text-right text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider w-20">桌游度</th>
-              <th className="px-4 py-3 text-right text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider w-20 hidden md:table-cell">竞技 · 战役</th>
-              <th className="px-4 py-3 text-right text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider w-16 hidden sm:table-cell">款数</th>
-              <th className="px-4 py-3 text-right text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider w-16 hidden sm:table-cell">场次</th>
-              <th className="px-4 py-3 text-right text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider w-20 hidden lg:table-cell">均重度</th>
+              <th className="px-2 sm:px-4 py-3 text-left text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider w-14">排名</th>
+              <th className="px-2 sm:px-4 py-3 text-left text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">玩家</th>
+              <th className="px-2 sm:px-4 py-3 text-right text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider w-20">桌游度</th>
+              <th className="px-2 sm:px-4 py-3 text-right text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider w-20 hidden md:table-cell">竞技 · 战役</th>
+              <th className="px-2 sm:px-4 py-3 text-right text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider w-16 hidden sm:table-cell">款数</th>
+              <th className="px-2 sm:px-4 py-3 text-right text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider w-16 hidden sm:table-cell">场次</th>
+              <th className="px-2 sm:px-4 py-3 text-right text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider w-20 hidden lg:table-cell">均重度</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100 dark:divide-gray-700/20">
@@ -191,14 +194,14 @@ export default function PlayerLeaderboard({ rankings, totalGames, totalSessions 
                     isTop3 ? "bg-amber-50/20 dark:bg-amber-900/5" : ""
                   }`}
                 >
-                  <td className="px-4 py-4">
+                  <td className="px-2 sm:px-4 py-4">
                     {isTop3 ? (
                       <span className="text-xl">{medals[rank - 1]}</span>
                     ) : (
                       <span className="text-gray-400 dark:text-gray-500 font-medium">{rank}</span>
                     )}
                   </td>
-                  <td className="px-4 py-4">
+                  <td className="px-2 sm:px-4 py-4">
                     <span className={`font-semibold text-gray-900 dark:text-white ${isTop3 ? "text-base" : ""}`}>
                       {entry.player.name}
                     </span>
@@ -206,27 +209,27 @@ export default function PlayerLeaderboard({ rankings, totalGames, totalSessions 
                       <span className="ml-2 text-xs text-gray-400 dark:text-gray-500">{entry.player.notes}</span>
                     )}
                   </td>
-                  <td className="px-4 py-4 text-right">
+                  <td className="px-2 sm:px-4 py-4 text-right">
                     <span className={`font-bold ${isTop3 ? "text-violet-600 dark:text-violet-400 text-lg" : "text-gray-700 dark:text-gray-300"}`}>
                       {entry.bgScore}
                     </span>
                   </td>
-                  <td className="px-4 py-4 text-right hidden md:table-cell">
+                  <td className="px-2 sm:px-4 py-4 text-right hidden md:table-cell">
                     <div className="flex items-center justify-end gap-1 text-xs">
                       <span className="text-blue-600 dark:text-blue-400 font-medium">{entry.compScore}</span>
                       <span className="text-gray-300 dark:text-gray-600">·</span>
                       <span className="text-emerald-600 dark:text-emerald-400 font-medium">{entry.campScore}</span>
                     </div>
                   </td>
-                  <td className="px-4 py-4 text-right text-gray-500 dark:text-gray-400 hidden sm:table-cell">
+                  <td className="px-2 sm:px-4 py-4 text-right text-gray-500 dark:text-gray-400 hidden sm:table-cell">
                     <span title={`竞技 ${entry.compGames} · 战役 ${entry.campGames}`}>
                       {totalGames}
                     </span>
                   </td>
-                  <td className="px-4 py-4 text-right text-gray-500 dark:text-gray-400 hidden sm:table-cell">
+                  <td className="px-2 sm:px-4 py-4 text-right text-gray-500 dark:text-gray-400 hidden sm:table-cell">
                     {entry.totalSessions}
                   </td>
-                  <td className="px-4 py-4 text-right text-gray-500 dark:text-gray-400 hidden lg:table-cell">
+                  <td className="px-2 sm:px-4 py-4 text-right text-gray-500 dark:text-gray-400 hidden lg:table-cell">
                     {entry.avgWeight > 0 ? entry.avgWeight : "-"}
                   </td>
                 </tr>

@@ -80,16 +80,16 @@ export default function RootLayout({
       <body className="min-h-screen flex flex-col">
         {/* 顶部导航 — 毛玻璃梦幻风格 */}
         <header className="sticky top-0 z-50 border-b border-white/30 dark:border-white/5 bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
-            <div className="flex items-baseline gap-5">
-              <a href="/" className="font-bold text-lg text-gray-900 dark:text-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-2">
+            <div className="flex items-baseline gap-3 sm:gap-5 min-w-0">
+              <a href="/" className="font-bold text-base sm:text-lg text-gray-900 dark:text-white whitespace-nowrap">
                 <span className="r-title bg-gradient-to-r from-amber-400 via-violet-400 to-amber-300 bg-clip-text text-transparent bg-[length:200%_200%] animate-gradientShift">
                   壮壮的桌游图鉴
                 </span>
               </a>
               <a
                 href="/leaderboard"
-                className="text-sm font-medium px-3 py-1.5 -mb-0.5 rounded-xl
+                className="text-sm font-medium px-2 sm:px-3 py-1.5 -mb-0.5 rounded-xl whitespace-nowrap flex-shrink-0
                   text-violet-500 dark:text-violet-400
                   hover:bg-violet-50 dark:hover:bg-violet-900/20
                   hover:text-violet-700 dark:hover:text-violet-300
@@ -98,9 +98,12 @@ export default function RootLayout({
                 玩家排行
               </a>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
               <AddGameButton />
-              <ExportButton />
+              {/* 导出备份是低频操作，窄屏优先让位给标题与主导航 */}
+              <div className="hidden sm:block">
+                <ExportButton />
+              </div>
               <SkinToggle />
               <ThemeToggle />
             </div>
@@ -110,7 +113,7 @@ export default function RootLayout({
         <main className="flex-1">{children}</main>
 
         <footer className="border-t border-white/30 dark:border-white/5 py-6 bg-white/30 dark:bg-gray-900/20 backdrop-blur-sm">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs text-violet-400 dark:text-violet-500">
+          <div className="r-on-felt-sub max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs text-violet-400 dark:text-violet-500">
             Built with Next.js · Powered by Notion · {new Date().getFullYear()}
           </div>
         </footer>
