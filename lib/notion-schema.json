@@ -4,6 +4,7 @@
     "env": "NOTION_DATABASE_ID",
     "properties": {
       "title": "名称",
+      "number": "编号",
       "nameEn": "英文名",
       "players": "玩家人数",
       "bestPlayers": "最佳人数",
@@ -24,6 +25,7 @@
     "bggUrlAliases": ["BGG链接", "BGG 链接", "BGG连接", "BGG地址", "bgg链接", "BGG", "链接"],
     "requiredTypes": {
       "名称": "title",
+      "编号": "number",
       "英文名": "rich_text",
       "玩家人数": "rich_text",
       "最佳人数": "rich_text",

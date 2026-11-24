@@ -7,6 +7,7 @@ import SessionForm from "./session-form";
 import Leaderboard from "./leaderboard";
 import SessionRecord from "./session-record";
 import PriceToggle from "./price-toggle";
+import { bggIdOf, formatDay, formatNumber } from "@/lib/catalog-format";
 
 interface Props {
   game: BoardGame;
@@ -15,6 +16,10 @@ interface Props {
 }
 
 export default function GameDetail({ game, sessions, allPlayers }: Props) {
+  // 对局按日期倒序返回，第一条就是最近一次
+  const lastPlayed = formatDay(sessions[0]?.date);
+  const bggId = bggIdOf(game.bggUrl);
+  const addedOn = formatDay(game.createdTime);
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       {/* 返回按钮 */}
@@ -34,9 +39,26 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
         返回列表
       </Link>
 
-      <div className="grid grid-cols-1 md:grid-cols-[360px_1fr] gap-8 md:gap-12">
-        {/* 左侧：封面图 */}
-        <div className="animate-scale-in">
+      <div className="grid grid-cols-1 md:grid-cols-[360px_1fr] lg:grid-cols-[22px_320px_1fr] gap-8 md:gap-x-10 lg:gap-x-8">
+        {/* 书脊编号：只有 lg 以上横向空间够，竖排一行 No.037 */}
+        <div className="hidden lg:flex flex-col items-center gap-3.5">
+          {game.number !== null && (
+            <>
+              <span
+                aria-hidden="true"
+                className="spine-no r-on-felt tnum text-[10.5px] text-ink-3 dark:text-gray-500"
+              >
+                No. {formatNumber(game.number)} — Catalogue
+              </span>
+              <span aria-hidden="true" className="spine-rule" />
+            </>
+          )}
+        </div>
+
+        {/* 左侧：封面图
+            self-start 必须留着：默认 grid 会把这一列拉伸到整行高度，
+            藏书印是相对它 bottom 定位的，一拉伸就跑到封面下面的空白里 */}
+        <div className="animate-scale-in relative self-start">
           {game.coverUrl ? (
             <div className="relative aspect-[4/5] w-full">
               <Image
@@ -55,13 +77,25 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
               </span>
             </div>
           )}
+
+          {/* 藏书印：编号存在才盖，压在封面右下角 */}
+          {game.number !== null && (
+            <span className="book-seal right-2 bottom-2 sm:-right-3.5 sm:-bottom-3.5" aria-hidden="true">
+              <i>壮</i>
+              <i>壮</i>
+              <i>藏</i>
+              <i>书</i>
+            </span>
+          )}
         </div>
 
         {/* 右侧：信息 */}
         <div className="animate-slide-up">
           {/* 标题区 */}
           <div className="mb-6 flex items-start justify-between gap-4">
-            <div className="min-w-0 r-plate">
+            <div className="min-w-0 r-plate relative">
+              {/* 书脊竖线：默认主题的图鉴细节，复古主题下由 retro.css 关掉 */}
+              <span aria-hidden="true" className="title-spine" />
               <h1 className="font-serif text-[26px] font-semibold text-ink dark:text-gray-100 mb-1 leading-tight">
                 {game.title}
               </h1>
@@ -98,8 +132,9 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
             </Link>
           </div>
 
-          {/* 状态 + 重度 + 评分 */}
-          <div className="flex items-center gap-6 mb-8 flex-wrap">
+          {/* 状态 + 重度 + 评分
+              窄屏下 gap 收小，分隔点隐藏，避免「4.4 /5 重度 ·」占满一行后把评分挤到下一行 */}
+          <div className="flex items-center gap-x-4 gap-y-2 sm:gap-x-6 mb-8 flex-wrap">
             {game.status.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
                 {game.status.map((s) => (
@@ -115,7 +150,7 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
                 <span className="r-on-felt-sub text-[11.5px] text-ink-3 dark:text-gray-500">/ 5 重度</span>
               </div>
             )}
-            <span aria-hidden="true" className="text-line-strong dark:text-gray-700 text-[13px]">·</span>
+            <span aria-hidden="true" className="hidden sm:inline text-line-strong dark:text-gray-700 text-[13px]">·</span>
             {game.rating !== null && (
               <div className="flex items-baseline gap-1">
                 <span className="r-hero-num text-[22px] font-medium text-accent-700 dark:text-accent-300 leading-none">
@@ -160,7 +195,7 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
               <h2 className="r-on-felt font-serif text-[13px] font-medium tracking-wide text-ink-2 dark:text-gray-400 mb-2">
                 个人评价
               </h2>
-              <blockquote className="r-on-felt border-l-2 border-line-strong dark:border-gray-600 pl-3.5 text-[13.5px] text-ink-2 dark:text-gray-300 leading-relaxed">
+              <blockquote className="drop-cap r-on-felt border-l-2 border-line-strong dark:border-gray-600 pl-3.5 text-[13.5px] text-ink-2 dark:text-gray-300 leading-relaxed">
                 {game.review}
               </blockquote>
             </div>
@@ -229,6 +264,18 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
               </div>
             </div>
           )}
+          {/* 页脚藏书票：编号 / 录入 / 最后游玩 / 数据来源 */}
+          <div className="r-on-felt-sub mt-10 pt-3.5 border-t border-line dark:border-gray-700
+            flex flex-wrap gap-x-5 gap-y-1 font-mono text-[10.5px] tracking-wide text-ink-3 dark:text-gray-500">
+            {game.number !== null && (
+              <span className="colophon-no text-accent-700 dark:text-accent-300">
+                No. {formatNumber(game.number)}
+              </span>
+            )}
+            {addedOn && <span>录入 {addedOn}</span>}
+            {lastPlayed && <span>最后游玩 {lastPlayed}</span>}
+            {bggId && <span>数据源 BGG #{bggId}</span>}
+          </div>
         </div>
       </div>
 
@@ -308,8 +355,8 @@ function InfoCell({
 }) {
   return (
     <div
-      className={`px-3.5 py-2.5 border-r border-line dark:border-gray-700 ${
-        wide ? "min-w-[124px]" : "min-w-[86px]"
+      className={`px-3.5 py-2.5 border-r border-line dark:border-gray-700 flex-1 min-w-[calc(50%-1px)] sm:min-w-[100px] ${
+        wide ? "sm:min-w-[130px]" : ""
       }`}
     >
       <span className="block text-[10px] tracking-wide text-ink-3 dark:text-gray-500 mb-0.5">

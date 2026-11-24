@@ -543,6 +543,43 @@
   color: rgba(250, 247, 239, 0.68) !important;
 }
 
+/* ---------- 图鉴元素在复古皮肤下的适配 ---------- */
+
+/* 标题左侧的砖红竖线：复古这块是木框纸牌，加竖线会跟纸牌边框打架 */
+[data-skin="retro"] .title-spine {
+  display: none;
+}
+
+/* 藏书印：毡布是深底，默认的浅纸底在这里要更实一点，边框换成印章红 */
+[data-skin="retro"] .book-seal {
+  background:
+    radial-gradient(circle at 28% 16%, rgba(168, 50, 43, 0.10), transparent 58%),
+    var(--paper);
+  color: var(--red);
+  border-color: var(--red);
+  box-shadow:
+    inset 0 0 0 3px var(--paper),
+    inset 0 0 0 4px rgba(168, 50, 43, 0.35),
+    2px 3px 6px rgba(0, 0, 0, 0.35);
+  font-family: var(--font-zh);
+}
+
+/* 首字下沉：复古用书法体更贴，字色改成纸上的朱红 */
+[data-skin="retro"] .drop-cap::first-letter {
+  font-family: var(--font-zh);
+  color: var(--red);
+}
+
+/* 书脊细线在毡布上要用米白，不然看不见 */
+[data-skin="retro"] .spine-rule {
+  background: linear-gradient(to bottom, rgba(250, 247, 239, 0.5), transparent);
+}
+
+/* 藏书票里的编号：砖红压在毡布上没有对比度，用米白 */
+[data-skin="retro"] .colophon-no {
+  color: var(--paper) !important;
+}
+
 /* 状态徽章：纸上墨色，去掉梦幻主题的彩色底与发光圆点 */
 [data-skin="retro"] .r-status {
   background: var(--paper) !important;

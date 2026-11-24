@@ -2,6 +2,10 @@
 export interface BoardGame {
   id: string;
   slug: string;
+  /** 图鉴编号（Notion「编号」列），一旦分配不再变动 */
+  number: number | null;
+  /** Notion 页面的创建时间，详情页页脚用 */
+  createdTime: string;
   title: string;
   nameEn: string;
   players: string;               // 支持人数

@@ -43,6 +43,12 @@ const SUPPORTED: FieldType[] = [
 ];
 
 /**
+ * 由程序自动维护的列，不出现在新建 / 编辑表单里
+ * 「编号」在创建时自动分配（lib/catalog-number.ts），手填会撞号
+ */
+const AUTO_MANAGED = new Set(["编号"]);
+
+/**
  * 读取桌游数据库的真实表结构
  * 顺序就是 Notion 表头的顺序，新增页面据此动态生成输入项
  */
@@ -58,21 +64,27 @@ export async function getGameFieldDefs(): Promise<FieldDef[]> {
 
     const props = db.properties as Record<string, PropDef>;
 
-    return Object.entries(props).map(([name, def]) => {
-      const rawType = (def.type ?? "") as string;
-      const type = (SUPPORTED as string[]).includes(rawType)
-        ? (rawType as FieldType)
-        : ("unsupported" as const);
+    return Object.entries(props)
+      .filter(([name]) => !AUTO_MANAGED.has(name.trim()))
+      .map(([name, def]) => {
+        const rawType = (def.type ?? "") as string;
+        const type = (SUPPORTED as string[]).includes(rawType)
+          ? (rawType as FieldType)
+          : ("unsupported" as const);
 
-      let options: string[] = [];
-      if (rawType === "select") {
-        options = ((def.select?.options ?? []) as Array<{ name: string }>).map((o) => o.name);
-      } else if (rawType === "multi_select") {
-        options = ((def.multi_select?.options ?? []) as Array<{ name: string }>).map((o) => o.name);
-      }
+        let options: string[] = [];
+        if (rawType === "select") {
+          options = ((def.select?.options ?? []) as Array<{ name: string }>).map(
+            (o) => o.name,
+          );
+        } else if (rawType === "multi_select") {
+          options = ((def.multi_select?.options ?? []) as Array<{ name: string }>).map(
+            (o) => o.name,
+          );
+        }
 
-      return { name, type, options };
-    });
+        return { name, type, options };
+      });
   } catch (err) {
     console.error("[Notion] 读取表结构失败:", err);
     return [];

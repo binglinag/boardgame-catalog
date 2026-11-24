@@ -15,13 +15,12 @@ export default function PriceToggle({ price, notes }: Props) {
   const [showNotes, setShowNotes] = useState(false);
 
   return (
-    <div className="relative min-w-[88px]">
+    <div className="relative flex-1 min-w-[calc(50%-1px)] sm:min-w-[100px] border-r border-line dark:border-gray-700">
       <button
         type="button"
         onClick={() => notes && setShowNotes(!showNotes)}
         aria-expanded={showNotes}
         className="w-full text-left px-3.5 py-2.5
-          border-r border-line dark:border-gray-700
           hover:bg-gray-50 dark:hover:bg-gray-800/60
           transition-colors"
       >

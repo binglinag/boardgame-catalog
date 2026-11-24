@@ -157,6 +157,8 @@ function mapPageToGame(page: PageObjectResponse): BoardGame {
   return {
     id: page.id,
     slug: page.id,
+    number: getNumber(props[GAME_PROPS.number]),
+    createdTime: page.created_time,
     title: getTitle(props[GAME_PROPS.title]),
     nameEn: getRichText(props[GAME_PROPS.nameEn]),
     players: getRichText(props[GAME_PROPS.players]),

@@ -3,6 +3,12 @@
 import { Client } from "@notionhq/client";
 import { revalidatePath } from "next/cache";
 import { BGG_URL_ALIASES, GAME_PROPS } from "@/lib/notion-schema";
+import {
+  ensureNumberColumn,
+  nextCatalogNumber,
+  NUMBER_PROP,
+} from "@/lib/catalog-number";
+import { formatNumber } from "@/lib/catalog-format";
 import { verifyAdmin } from "@/lib/auth";
 import type { GameEditForm } from "@/types/game";
 
@@ -240,6 +246,25 @@ export async function createGame(
       return { success: false, message: "标题列不能为空" };
     }
 
+    // 图鉴编号：新建时自动分配下一个号，跟页面一起写进 Notion
+    // 列不存在时 ensureNumberColumn 会顺手建一列，拿不到号就跳过（不阻塞创建）
+    let assignedNumber: number | null = null;
+    if (!(NUMBER_PROP in schema)) {
+      try {
+        await ensureNumberColumn();
+      } catch (err) {
+        console.warn("[createGame] 创建「编号」列失败:", err);
+      }
+    }
+    try {
+      assignedNumber = await nextCatalogNumber();
+      if (assignedNumber !== null) {
+        properties[NUMBER_PROP] = { number: assignedNumber };
+      }
+    } catch (err) {
+      console.warn("[createGame] 分配编号失败，本次先不写编号:", err);
+    }
+
     const page = await notion.pages.create({
       parent: { database_id: DATABASE_ID },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -249,12 +274,13 @@ export async function createGame(
     revalidatePath("/");
     revalidatePath("/leaderboard");
 
+    const numberNote = assignedNumber !== null ? `，编号 ${formatNumber(assignedNumber)}` : "";
     return {
       success: true,
       message:
         skipped.length > 0
-          ? `已创建「${titleValue}」（跳过不支持的列：${skipped.join("、")}）`
-          : `已创建「${titleValue}」`,
+          ? `已创建「${titleValue}」${numberNote}（跳过不支持的列：${skipped.join("、")}）`
+          : `已创建「${titleValue}」${numberNote}`,
       pageId: page.id,
     };
   } catch (err) {
