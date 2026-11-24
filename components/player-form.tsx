@@ -37,11 +37,12 @@ export default function PlayerForm() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="r-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl
-          bg-white/40 dark:bg-gray-800/20 backdrop-blur-sm
-          border border-white/40 dark:border-white/5
-          text-xs font-medium text-violet-600 dark:text-violet-400
-          hover:bg-violet-50 dark:hover:bg-violet-900/20 transition-all"
+        className="r-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md
+          border border-line-strong dark:border-gray-600
+          text-[12.5px] text-ink-2 dark:text-gray-400
+          hover:border-accent-500 hover:text-accent-700
+          dark:hover:border-accent-600 dark:hover:text-accent-300
+          transition-colors"
       >
         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />

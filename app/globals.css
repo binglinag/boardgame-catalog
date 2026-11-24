@@ -3,7 +3,9 @@
 @tailwind utilities;
 
 /* ================================================
-   Premium Board Game 主题样式
+   基础层：温暖的纸面
+   原有实现是「五色对角渐变 + 噪点纹理 + 玻璃卡 + 紫色光晕」，
+   这一层全部去掉——底色就是一张纸，卡片就是一张纸卡。
    ================================================ */
 
 @layer base {
@@ -18,26 +20,20 @@
   }
 
   body {
-    @apply text-gray-800 dark:text-gray-200;
-    font-family: "Nunito", "Chiron Sans HK WS", "LXGW WenKai", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size: 1.05rem;
+    @apply text-ink bg-paper;
+    font-family: theme("fontFamily.sans");
+    font-size: 1rem;
     line-height: 1.75;
-    letter-spacing: 0.01em;
     font-weight: 400;
-    transition: background-color 0.5s ease, color 0.5s ease;
-    /* 桌布纹理背景 */
-    background:
-      /* 微妙噪点 */
-      repeating-conic-gradient(rgba(139,92,246,0.02) 0% 25%, transparent 0% 50%) 0 0 / 4px 4px,
-      /* 渐变基底 */
-      linear-gradient(150deg, #fef3c7 0%, #fdf2f8 25%, #f0f4ff 55%, #ecfdf5 80%, #fef3c7 100%);
-    background-attachment: fixed;
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
 
+  /* 标题：衬线，靠字体本身撑住层级，不靠渐变和发光 */
   h1, h2, h3, h4, h5, h6 {
-    font-weight: 700;
-    line-height: 1.35;
-    letter-spacing: -0.01em;
+    font-family: theme("fontFamily.serif");
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.01em;
   }
 
   p {
@@ -46,23 +42,53 @@
 
   .dark body,
   body.dark {
-    background:
-      repeating-conic-gradient(rgba(139,92,246,0.03) 0% 25%, transparent 0% 50%) 0 0 / 4px 4px,
-      linear-gradient(150deg, #0f0a1a 0%, #0d1117 30%, #110b1e 60%, #061812 85%, #0f0a1a 100%);
-    background-attachment: fixed;
+    @apply text-gray-200;
+    background-color: #1a1712;
+  }
+
+  /* 数字统一等宽，表格与卡片里的数值才能竖着对齐 */
+  .tnum {
+    font-family: theme("fontFamily.mono");
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+
+  /* 详情页顶部的重度 / 评分大数字（复古主题下由 retro.css 覆盖成米白衬线） */
+  .r-hero-num {
+    font-family: theme("fontFamily.mono");
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
   }
 
   ::selection {
-    @apply bg-amber-200/50 dark:bg-amber-700/40 text-gray-900 dark:text-amber-100;
+    @apply bg-accent-100 text-accent-900;
+  }
+
+  .dark ::selection {
+    @apply bg-accent-900 text-accent-100;
   }
 }
 
 /* ================================================
-   主题过渡
+   滚动条
    ================================================ */
 
-.theme-transition {
-  transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-gray-700;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400 dark:bg-gray-600;
 }
 
 /* ================================================
@@ -74,107 +100,62 @@ img {
 }
 
 /* ================================================
-   滚动条美化
-   ================================================ */
-
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  @apply bg-transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  @apply bg-amber-300/60 dark:bg-amber-700/40 rounded-full;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  @apply bg-amber-400/80 dark:bg-amber-600/60;
-}
-
-/* ================================================
-   🔴 Token 样式 — 桌游计分圆片
+   Token — 原先五色并列（violet/amber/emerald/rose/indigo），
+   现在全部收敛成「纸片 + 墨字」，靠内容区分而不是靠色相。
    ================================================ */
 
 @layer components {
-  /* 基础 Token 圆片 */
   .token {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 1.75rem;
-    height: 1.75rem;
-    padding: 0 0.55rem;
-    border-radius: 9999px;
+    min-width: 1.6rem;
+    height: 1.35rem;
+    padding: 0 0.4rem;
+    border-radius: 3px;
+    border: 1px solid theme("colors.line.DEFAULT");
+    background: theme("colors.white");
+    color: theme("colors.ink.2");
+    font-family: theme("fontFamily.mono");
     font-weight: 500;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     line-height: 1;
-    letter-spacing: 0.01em;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums;
     user-select: none;
-    transition: transform 0.2s ease;
   }
 
-  .token:hover {
-    transform: translateY(-1px);
+  .dark .token {
+    border-color: theme("colors.gray.700");
+    background: theme("colors.gray.800");
+    color: theme("colors.gray.300");
   }
 
-  /* Token 颜色变体 — 柔化低饱和 */
-  .token-violet {
-    background: #e9d5ff;
-    color: #6d28d9;
-    box-shadow: 0 1px 3px rgba(139,92,246,0.12);
-  }
-
-  .token-amber {
-    background: #fef3c7;
-    color: #92400e;
-    box-shadow: 0 1px 3px rgba(245,158,11,0.12);
-  }
-
-  .token-emerald {
-    background: #d1fae5;
-    color: #065f46;
-    box-shadow: 0 1px 3px rgba(16,185,129,0.12);
-  }
-
-  .token-rose {
-    background: #ffe4e6;
-    color: #be123c;
-    box-shadow: 0 1px 3px rgba(244,63,94,0.12);
-  }
-
+  /* 保留旧类名，避免大范围改动；视觉上不再区分颜色 */
+  .token-violet,
+  .token-amber,
+  .token-emerald,
+  .token-rose,
   .token-indigo {
-    background: #e0e7ff;
-    color: #4338ca;
-    box-shadow: 0 1px 3px rgba(99,102,241,0.12);
+    @apply token;
   }
 
-  /* 深色主题 */
-  .dark .token-violet  { background: #4c1d95; color: #ddd6fe; }
-  .dark .token-amber   { background: #78350f; color: #fef3c7; }
-  .dark .token-emerald { background: #064e3b; color: #d1fae5; }
-  .dark .token-rose    { background: #881337; color: #ffe4e6; }
-  .dark .token-indigo  { background: #312e81; color: #e0e7ff; }
-
-  /* 大型 Token（用于分数展示） */
   .token-lg {
-    min-width: 2.35rem;
-    height: 2.35rem;
-    font-size: 0.95rem;
+    min-width: 2.25rem;
+    height: 2.25rem;
+    font-size: 0.9rem;
   }
 
   .token-xl {
-    min-width: 3rem;
-    height: 3rem;
-    font-size: 1.15rem;
+    min-width: 2.75rem;
+    height: 2.75rem;
+    padding: 0 0.6rem;
+    font-size: 1.05rem;
   }
 }
 
 /* ================================================
-   ⭐ 评分星标
+   评分星标：只保留实心 / 空心两态，去掉渐变填充
    ================================================ */
 
 .rating-stars {
@@ -184,180 +165,127 @@ img {
 }
 
 .rating-star {
-  width: 14px;
-  height: 14px;
+  width: 11px;
+  height: 11px;
   clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
 }
 
 .rating-star.filled {
-  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  @apply bg-accent-600;
 }
 
 .rating-star.empty {
-  background: rgba(139,92,246,0.15);
+  @apply bg-gray-300;
 }
 
 .dark .rating-star.empty {
-  background: rgba(255,255,255,0.08);
+  @apply bg-gray-700;
 }
 
 /* ================================================
-   📊 重度进度条
+   重度进度条：细线，不要发光渐变
    ================================================ */
 
 .weight-bar {
   position: relative;
-  height: 5px;
-  border-radius: 9999px;
-  background: rgba(139,92,246,0.08);
+  height: 3px;
+  border-radius: 2px;
+  @apply bg-gray-200 dark:bg-gray-700;
   overflow: hidden;
-}
-
-.dark .weight-bar {
-  background: rgba(255,255,255,0.05);
 }
 
 .weight-bar-fill {
   height: 100%;
-  border-radius: 9999px;
-  background: linear-gradient(90deg, #e9d5ff, #fbcfe8);
-  transition: width 0.8s cubic-bezier(0.16,1,0.3,1);
+  border-radius: 2px;
+  @apply bg-accent-600;
+  transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* ================================================
-   🃏 卡牌倾斜 + 阴影
+   卡片：一张纸卡
+   原来有 3D 倾斜 hover、紫色外发光、顶部渐变条、光扫动画，
+   现在只有 1px 描边 + 一档极轻阴影，hover 时阴影略深。
    ================================================ */
 
 .game-card {
   position: relative;
-  border-radius: 1.25rem;
+  border-radius: 8px;
   overflow: hidden;
-  background: theme('colors.white / 70%');
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255,255,255,0.3);
-  box-shadow:
-    0 1px 3px rgba(0,0,0,0.06),
-    0 6px 20px rgba(139,92,246,0.08),
-    0 0 0 1px rgba(0,0,0,0.03) inset;
-  transition:
-    transform 0.5s cubic-bezier(0.16,1,0.3,1),
-    box-shadow 0.5s ease,
-    border-color 0.3s ease;
+  @apply bg-white dark:bg-gray-800;
+  border: 1px solid theme("colors.line.DEFAULT");
+  box-shadow: theme("boxShadow.card");
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
 .dark .game-card {
-  background: rgba(30,30,40,0.7);
-  border-color: rgba(255,255,255,0.06);
-  box-shadow:
-    0 1px 3px rgba(0,0,0,0.12),
-    0 6px 20px rgba(139,92,246,0.06),
-    0 0 0 1px rgba(255,255,255,0.02) inset;
+  border-color: theme("colors.gray.700");
 }
 
 .game-card:hover {
-  transform: translateY(-6px) rotateY(-2deg) rotateX(1deg);
-  box-shadow:
-    0 2px 6px rgba(0,0,0,0.08),
-    0 12px 40px rgba(139,92,246,0.2),
-    0 0 0 1px rgba(0,0,0,0.04) inset;
-  border-color: rgba(245,158,11,0.3);
-}
-
-.dark .game-card:hover {
-  border-color: rgba(245,158,11,0.15);
-  box-shadow:
-    0 2px 6px rgba(0,0,0,0.2),
-    0 12px 40px rgba(139,92,246,0.15),
-    0 0 0 1px rgba(255,255,255,0.04) inset;
-}
-
-/* 卡牌色调条 */
-.game-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #8b5cf6, #6366f1, #a78bfa);
-  z-index: 1;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.game-card:hover::before {
-  opacity: 1;
+  @apply shadow-card-hover border-line-strong dark:border-gray-600;
 }
 
 /* ================================================
-   🎭 状态 Token 徽章
+   状态标记：描边小标签，不再用彩色底 + 彩字
    ================================================ */
 
 .status-token {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-  padding: 0.15rem 0.6rem;
-  border-radius: 9999px;
-  font-size: 0.66rem;
-  font-weight: 500;
-  letter-spacing: 0.03em;
-  border: 1.5px solid;
+  gap: 0.25rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 3px;
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  border: 1px solid theme("colors.line.strong");
+  @apply text-ink-2;
 }
 
+.dark .status-token {
+  @apply border-gray-600 text-gray-300;
+}
+
+/* 已收藏 / 已玩过 / 想玩 / 不好玩 靠边框浓淡区分，不靠色相 */
 .status-token-collected {
-  background: rgba(139,92,246,0.08);
-  color: #7c3aed;
-  border-color: rgba(139,92,246,0.2);
-}
-
-.status-token-want {
-  background: rgba(244,63,94,0.06);
-  color: #e11d48;
-  border-color: rgba(244,63,94,0.16);
+  @apply border-accent-300 text-accent-700 dark:border-accent-800 dark:text-accent-300;
 }
 
 .status-token-played {
-  background: rgba(79,70,229,0.06);
-  color: #4f46e5;
-  border-color: rgba(79,70,229,0.16);
+  @apply border-gray-400 text-gray-700 dark:border-gray-500 dark:text-gray-300;
+}
+
+.status-token-want {
+  @apply border-dashed;
 }
 
 .status-token-bad {
-  background: rgba(220,38,38,0.06);
-  color: #dc2626;
-  border-color: rgba(220,38,38,0.16);
+  @apply border-gray-300 text-gray-400 line-through dark:border-gray-700 dark:text-gray-500;
 }
 
-.dark .status-token-collected { color: #c4b5fd; }
-.dark .status-token-want      { color: #fecdd3; }
-.dark .status-token-played     { color: #c7d2fe; }
-.dark .status-token-bad        { color: #fecaca; }
-
 /* ================================================
-   🎨 自定义表单控件
+   自定义表单控件
    ================================================ */
 
-/* 自定义 Select 包装器（隐藏原生箭头 + 替换图标） */
 .custom-select {
   position: relative;
   display: inline-flex;
 }
 
 .custom-select select {
-  @apply w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600
-    bg-white/60 dark:bg-gray-700/40 backdrop-blur-sm
-    text-gray-900 dark:text-white text-sm
-    focus:ring-2 focus:ring-violet-400/30 outline-none
-    transition-all duration-200;
+  @apply w-full px-3 py-2 rounded-md border border-line dark:border-gray-600
+    bg-white dark:bg-gray-800
+    text-ink dark:text-gray-100 text-sm
+    focus:outline-none focus:border-accent-500
+    transition-colors;
   appearance: none;
   -webkit-appearance: none;
-  padding-right: 2.25rem;
+  padding-right: 2rem;
   cursor: pointer;
 }
 
 .custom-select select:hover {
-  @apply border-violet-300/60 dark:border-violet-700/40;
+  @apply border-line-strong dark:border-gray-500;
 }
 
 .custom-select::after {
@@ -366,39 +294,28 @@ img {
   right: 0.6rem;
   top: 50%;
   transform: translateY(-50%);
-  width: 0.85rem;
-  height: 0.85rem;
+  width: 0.8rem;
+  height: 0.8rem;
   pointer-events: none;
-  background: currentColor;
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238b5cf6' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   mask-size: contain;
   mask-repeat: no-repeat;
   mask-position: center;
-  background-color: #a78bfa;
-  transition: background-color 0.2s;
+  @apply bg-gray-500;
 }
 
-.dark .custom-select::after {
-  background-color: #8b5cf6;
-}
-
-.custom-select:hover::after {
-  background-color: #7c3aed;
-}
-
-/* 自定义 Date 输入包装器 */
 .custom-date {
   position: relative;
   display: flex;
 }
 
 .custom-date input[type="date"] {
-  @apply w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600
-    bg-white/60 dark:bg-gray-700/40 backdrop-blur-sm
-    text-gray-900 dark:text-white text-sm
-    focus:ring-2 focus:ring-violet-400/30 outline-none
-    transition-all duration-200;
-  padding-right: 2.25rem;
+  @apply w-full px-3 py-2 rounded-md border border-line dark:border-gray-600
+    bg-white dark:bg-gray-800
+    text-ink dark:text-gray-100 text-sm
+    focus:outline-none focus:border-accent-500
+    transition-colors;
+  padding-right: 2rem;
   cursor: pointer;
   color-scheme: light;
 }
@@ -408,10 +325,9 @@ img {
 }
 
 .custom-date input[type="date"]:hover {
-  @apply border-violet-300/60 dark:border-violet-700/40;
+  @apply border-line-strong dark:border-gray-500;
 }
 
-/* 隐藏浏览器默认的日期图标，用自己的 */
 .custom-date input[type="date"]::-webkit-calendar-picker-indicator {
   opacity: 0;
   width: 2rem;
@@ -427,161 +343,47 @@ img {
   right: 0.65rem;
   top: 50%;
   transform: translateY(-50%);
-  width: 1rem;
-  height: 1rem;
+  width: 0.9rem;
+  height: 0.9rem;
   pointer-events: none;
-  background-color: #a78bfa;
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238b5cf6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'%3E%3C/rect%3E%3Cline x1='16' y1='2' x2='16' y2='6'%3E%3C/line%3E%3Cline x1='8' y1='2' x2='8' y2='6'%3E%3C/line%3E%3Cline x1='3' y1='10' x2='21' y2='10'%3E%3C/line%3E%3C/svg%3E");
+  @apply bg-gray-500;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2'%3E%3C/rect%3E%3Cline x1='16' y1='2' x2='16' y2='6'%3E%3C/line%3E%3Cline x1='8' y1='2' x2='8' y2='6'%3E%3C/line%3E%3Cline x1='3' y1='10' x2='21' y2='10'%3E%3C/line%3E%3C/svg%3E");
   mask-size: contain;
   mask-repeat: no-repeat;
-  transition: background-color 0.2s;
-}
-
-.dark .custom-date::after {
-  background-color: #8b5cf6;
-}
-
-.custom-date:hover::after {
-  background-color: #7c3aed;
-}
-
-/* 表单聚焦时的公共效果 */
-.custom-select select:focus,
-.custom-date input[type="date"]:focus {
-  @apply border-violet-400 dark:border-violet-600;
-  box-shadow: 0 0 0 3px rgba(139,92,246,0.12);
 }
 
 /* ================================================
-   Glass morphism 工具类
+   旧工具类：保留类名，去掉玻璃与光晕
+   （页面里还在用 .glass / .glass-card，逐个替换前先兜住）
    ================================================ */
 
 @layer components {
-  .glass {
-    @apply bg-white/60 dark:bg-white/5 backdrop-blur-xl
-      border border-white/30 dark:border-white/10;
-  }
-
+  .glass,
   .glass-card {
-    @apply bg-white/70 dark:bg-gray-800/40 backdrop-blur-lg
-      border border-white/40 dark:border-gray-700/20
-      shadow-[0_8px_32px_rgba(139,92,246,0.08)]
-      dark:shadow-[0_8px_32px_rgba(139,92,246,0.06)];
+    @apply bg-white dark:bg-gray-800 border border-line dark:border-gray-700;
   }
 
   .card-hover {
-    @apply transition-all duration-500 ease-out
-      hover:-translate-y-2 hover:shadow-[0_16px_48px_rgba(139,92,246,0.15)]
-      dark:hover:shadow-[0_16px_48px_rgba(139,92,246,0.1)];
+    @apply transition-shadow duration-150 hover:shadow-card-hover;
   }
 
   .magnetic {
-    @apply transition-transform duration-200 ease-out
-      hover:scale-105 active:scale-95;
+    @apply transition-colors duration-150;
   }
 }
 
 /* ================================================
-   梦幻动画
+   动效：只保留入场，去掉一切无限循环
+   原先有 dreamyFloat / dreamyPulse / gradientShift / shimmer /
+   glowPulse / borderGlow，全部删除。
    ================================================ */
 
-@keyframes dreamyFloat {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-8px); }
-}
-
-@keyframes dreamyPulse {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
-}
-
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-@keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
-
-@keyframes glowPulse {
-  0%, 100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.15), 0 0 40px rgba(139, 92, 246, 0.05); }
-  50% { box-shadow: 0 0 30px rgba(139, 92, 246, 0.25), 0 0 60px rgba(139, 92, 246, 0.1); }
-}
-
-@keyframes borderGlow {
-  0%, 100% { border-color: rgba(139, 92, 246, 0.1); }
-  50% { border-color: rgba(139, 92, 246, 0.3); }
-}
-
-.dreamy-float {
-  animation: dreamyFloat 6s ease-in-out infinite;
-}
-
-.dreamy-pulse {
-  animation: dreamyPulse 4s ease-in-out infinite;
-}
-
-.dreamy-gradient {
-  background-size: 200% 200%;
-  animation: gradientShift 8s ease infinite;
-}
-
-.dreamy-glow {
-  animation: glowPulse 4s ease-in-out infinite;
-}
-
-.dreamy-border {
-  animation: borderGlow 4s ease-in-out infinite;
-}
-
-/* 卡片光扫效果 */
-.card-shimmer::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    105deg,
-    transparent 40%,
-    rgba(255, 255, 255, 0.15) 45%,
-    rgba(255, 255, 255, 0.22) 50%,
-    rgba(255, 255, 255, 0.15) 55%,
-    transparent 60%
-  );
-  transform: translateX(-100%);
-  pointer-events: none;
-  z-index: 2;
-}
-
-.card-shimmer:hover::after {
-  animation: shimmer 1.5s ease-in-out;
-}
-
-/* 梦幻标题渐变 */
-.dreamy-title {
-  background: linear-gradient(135deg, #f59e0b 0%, #a78bfa 30%, #fbbf24 50%, #8b5cf6 70%, #f59e0b 100%);
-  background-size: 200% 200%;
-  animation: gradientShift 6s ease infinite;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* 响应式调整 */
 @media (prefers-reduced-motion: reduce) {
-  .dreamy-float,
-  .dreamy-pulse,
-  .dreamy-gradient,
-  .dreamy-glow,
-  .dreamy-border,
-  .card-shimmer::after,
-  .game-card {
-    animation: none !important;
-    transform: none !important;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

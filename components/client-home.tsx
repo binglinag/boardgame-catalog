@@ -7,7 +7,6 @@ import FilterBar from "@/components/filter-bar";
 import SearchBar from "@/components/search-bar";
 import StatsPanel from "@/components/stats-panel";
 import RandomPicker from "@/components/random-picker";
-import ParticleBackground from "@/components/particle-background";
 import type { BoardGame, GameStatus, SortOption, WeightFilter } from "@/types/game";
 import type { PlaySession } from "@/types/session";
 import { matchesPlayerCount, matchesBestPlayerCount } from "@/lib/player-count";
@@ -94,29 +93,30 @@ export default function ClientHome({
 
   return (
     <>
-      <ParticleBackground />
-
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* 标题区 + 搜索框 + 随机按钮 */}
-        <div className="mb-6 animate-fade-in">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-7">
+        {/* 标题区 + 搜索框 + 统计开关 */}
+        <div className="mb-5 animate-fade-in">
           <div className="flex items-end justify-between flex-wrap gap-3">
-            <p className="text-violet-400 dark:text-violet-500 text-sm tracking-wide">
-              {isSearching
-                ? `搜索 "${searchQuery}" · ${filteredGames.length} 个结果`
-                : `${filteredGames.length} 款桌游`}
-              {!isSearching && status !== "全部" && ` · ${status}`}
-              {!isSearching && tag && ` · #${tag}`}
-              {!isSearching && playerCount !== "全部" && ` · ${playerCount}人`}
-              {!isSearching && bestPlayerCount !== "全部" && ` · 最佳${bestPlayerCount}人`}
-              {!isSearching && weightFilter !== "全部" && ` · ${weightFilter}度策略`}
-            </p>
-            <div className="flex items-center gap-3">
+            <div className="flex items-baseline gap-2 min-w-0">
+              <span className="tnum text-2xl font-medium text-ink dark:text-gray-100 leading-none">
+                {filteredGames.length}
+              </span>
+              <span className="text-[12.5px] text-ink-3 dark:text-gray-500">
+                {isSearching ? `个结果 · 搜索「${searchQuery}」` : "款桌游"}
+                {!isSearching && status !== "全部" && ` · ${status}`}
+                {!isSearching && tag && ` · #${tag}`}
+                {!isSearching && playerCount !== "全部" && ` · ${playerCount}人`}
+                {!isSearching && bestPlayerCount !== "全部" && ` · 最佳${bestPlayerCount}人`}
+                {!isSearching && weightFilter !== "全部" && ` · ${weightFilter}度策略`}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
               <button
                 onClick={() => setShowStats(!showStats)}
-                className={`r-btn px-5 py-2 rounded-2xl text-sm font-medium whitespace-nowrap min-w-[90px] transition-all duration-300 ${
+                className={`r-btn px-3.5 py-1.5 rounded-md text-[12.5px] whitespace-nowrap min-w-[84px] transition-colors ${
                   showStats
-                    ? "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300"
-                    : "bg-white/40 dark:bg-gray-800/20 text-gray-500 dark:text-gray-400 hover:bg-violet-50 dark:hover:bg-violet-900/20 backdrop-blur-sm border border-white/40 dark:border-white/5"
+                    ? "bg-accent-600 text-white border-accent-600"
+                    : "bg-white dark:bg-gray-800 text-ink-2 dark:text-gray-400 border-line-strong dark:border-gray-600 hover:border-accent-500 hover:text-accent-700 dark:hover:text-accent-300"
                 }`}
               >
                 {showStats ? "收起统计" : "查看统计"}
@@ -136,12 +136,12 @@ export default function ClientHome({
         )}
 
         {/* 随机选一款 */}
-        <div className="mb-6">
+        <div className="mb-5">
           <RandomPicker games={filteredGames} />
         </div>
 
         {/* 筛选栏 */}
-        <div className="mb-10">
+        <div className="mb-8">
           <FilterBar
             status={status}
             tag={tag}
@@ -168,9 +168,9 @@ export default function ClientHome({
 
         {mounted && filteredGames.length === 0 && games.length > 0 && (
           <div className="text-center py-20">
-            <p className="r-empty text-violet-400 dark:text-violet-500 text-lg">
+            <p className="r-empty text-ink-3 dark:text-gray-500 text-[13px]">
               {isSearching
-                ? `没有找到包含 "${searchQuery}" 的桌游`
+                ? `没有找到包含「${searchQuery}」的桌游`
                 : "没有匹配的桌游，试试换一个筛选条件"}
             </p>
           </div>

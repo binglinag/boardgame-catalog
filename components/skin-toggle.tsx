@@ -37,23 +37,24 @@ export default function SkinToggle() {
       aria-pressed={isRetro}
       title={isRetro ? "切换到梦幻玻璃主题" : "切换到复古桌游主题"}
       aria-label={isRetro ? "切换到梦幻玻璃主题" : "切换到复古桌游主题"}
-      className="r-icon-btn w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-xl
-        bg-white/50 dark:bg-white/5 backdrop-blur-md
-        border border-white/40 dark:border-white/10
-        hover:scale-110 active:scale-95 transition-all duration-200
-        shadow-[0_2px_8px_rgba(139,92,246,0.06)]"
+      className="r-icon-btn w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-md
+        border border-line dark:border-gray-700
+        text-ink-2 dark:text-gray-400
+        hover:border-line-strong hover:text-accent-700
+        dark:hover:border-gray-600 dark:hover:text-accent-300
+        transition-colors"
     >
       {isRetro ? (
         // 骰子：复古主题中表示"当前在桌面上"
-        <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6}>
+        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6}>
           <rect x="3.5" y="3.5" width="17" height="17" rx="3.5" />
           <circle cx="8.5" cy="8.5" r="1.3" fill="currentColor" stroke="none" />
           <circle cx="15.5" cy="15.5" r="1.3" fill="currentColor" stroke="none" />
           <circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none" />
         </svg>
       ) : (
-        // 玻璃/棱镜：表示当前是梦幻主题
-        <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6}>
+        // 玻璃/棱镜：表示当前是默认主题
+        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6}>
           <path d="M12 3l7 5.5v7L12 21l-7-5.5v-7L12 3z" strokeLinejoin="round" />
           <path d="M12 3v18M5 8.5l14 7M19 8.5l-14 7" opacity=".5" />
         </svg>

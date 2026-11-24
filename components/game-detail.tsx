@@ -20,8 +20,8 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
       {/* 返回按钮 */}
       <Link
         href="/"
-        className="r-on-felt inline-flex items-center gap-2 text-sm text-gray-400 dark:text-gray-500
-          hover:text-gray-700 dark:hover:text-gray-300 transition-colors mb-8 group"
+        className="r-on-felt inline-flex items-center gap-1.5 text-[12.5px] text-ink-3 dark:text-gray-500
+          hover:text-accent-700 dark:hover:text-accent-300 transition-colors mb-6 group"
       >
         <svg
           className="w-4 h-4 transition-transform group-hover:-translate-x-1"
@@ -44,7 +44,7 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
                 alt={game.title}
                 fill
                 sizes="(max-width: 768px) 100vw, 360px"
-                className="r-cover rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700/50 object-cover"
+                className="r-cover rounded-lg shadow-card border border-line dark:border-gray-700 object-cover"
                 priority
               />
             </div>
@@ -62,11 +62,11 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
           {/* 标题区 */}
           <div className="mb-6 flex items-start justify-between gap-4">
             <div className="min-w-0 r-plate">
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              <h1 className="font-serif text-[26px] font-semibold text-ink dark:text-gray-100 mb-1 leading-tight">
                 {game.title}
               </h1>
               {game.nameEn && (
-                <p className="text-lg text-gray-400 dark:text-gray-500 italic">
+                <p className="text-[12.5px] text-ink-3 dark:text-gray-500 italic">
                   {game.nameEn}
                 </p>
               )}
@@ -75,15 +75,12 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
             {/* 编辑入口 */}
             <Link
               href={`/${game.id}/edit`}
-              className="r-btn flex-shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl
-                bg-white/50 dark:bg-gray-800/40 backdrop-blur-sm
-                border border-white/50 dark:border-white/10
-                text-sm font-medium text-violet-600 dark:text-violet-400
-                hover:bg-violet-50 dark:hover:bg-violet-900/20
-                hover:border-violet-200 dark:hover:border-violet-700/40
-                hover:shadow-md hover:shadow-violet-500/10
-                hover:scale-[1.03] active:scale-[0.98]
-                transition-all duration-200"
+              className="r-btn flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md
+                border border-line-strong dark:border-gray-600
+                text-[12.5px] text-ink-2 dark:text-gray-400
+                hover:border-accent-500 hover:text-accent-700
+                dark:hover:border-accent-600 dark:hover:text-accent-300
+                transition-colors"
             >
               <svg
                 className="w-3.5 h-3.5"
@@ -111,33 +108,33 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
               </div>
             )}
             {game.weight !== null && (
-              <div className="flex items-center gap-1">
-                <span className="r-hero-num text-2xl font-bold text-amber-500 dark:text-amber-400">
+              <div className="flex items-baseline gap-1">
+                <span className="r-hero-num text-[22px] font-medium text-ink dark:text-gray-100 leading-none">
                   {game.weight}
                 </span>
-                <span className="r-on-felt-sub text-sm text-gray-400 dark:text-gray-500">/ 5 重度</span>
+                <span className="r-on-felt-sub text-[11.5px] text-ink-3 dark:text-gray-500">/ 5 重度</span>
               </div>
             )}
-            <span className="text-gray-300 dark:text-gray-600 text-lg">·</span>
+            <span className="text-line-strong dark:text-gray-700 text-[13px]">·</span>
             {game.rating !== null && (
-              <div className="flex items-center gap-1">
-                <span className="r-hero-num text-2xl font-bold text-violet-600 dark:text-violet-400">
+              <div className="flex items-baseline gap-1">
+                <span className="r-hero-num text-[22px] font-medium text-accent-700 dark:text-accent-300 leading-none">
                   {game.rating}
                 </span>
-                <span className="r-on-felt-sub text-sm text-gray-400 dark:text-gray-500">/ 10 评分</span>
+                <span className="r-on-felt-sub text-[11.5px] text-ink-3 dark:text-gray-500">/ 10 评分</span>
               </div>
             )}
           </div>
 
-          {/* 信息卡片 */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8">
-            {game.players && <InfoItem icon="👥" label="玩家人数" value={game.players} />}
-            {game.bestPlayers && <InfoItem icon="⭐" label="最佳人数" value={game.bestPlayers} />}
-            {game.playTime && <InfoItem icon="⏱️" label="游戏时长" value={game.playTime} />}
-            {game.year && <InfoItem icon="📅" label="出版年份" value={String(game.year)} />}
-            {game.designer && <InfoItem icon="🎨" label="设计师" value={game.designer} />}
+          {/* 信息带：一行格子，不再拆成六张独立小卡 */}
+          <div className="r-card flex flex-wrap mb-7 border border-line dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 overflow-hidden [&>*:last-child]:border-r-0">
+            {game.players && <InfoCell label="人数" value={game.players} />}
+            {game.bestPlayers && <InfoCell label="最佳" value={game.bestPlayers} />}
+            {game.playTime && <InfoCell label="时长" value={game.playTime} />}
+            {game.year && <InfoCell label="出版" value={String(game.year)} />}
+            {game.designer && <InfoCell label="设计师" value={game.designer} wide />}
             {sessions.length > 0 && (
-              <InfoItem icon="🎮" label="游玩次数" value={`${sessions.length} 次`} />
+              <InfoCell label="玩过" value={`${sessions.length} 次`} />
             )}
             {game.price !== null && <PriceItem price={game.price} notes={game.priceNotes} />}
           </div>
@@ -148,9 +145,8 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
               {game.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="r-tag-felt px-3 py-1 rounded-lg text-sm font-medium
-                    bg-primary-50 text-primary-700
-                    dark:bg-primary-900/20 dark:text-primary-300"
+                  className="r-tag-felt px-2 py-0.5 rounded border border-line-strong dark:border-gray-600
+                    text-[12px] text-ink-2 dark:text-gray-400"
                 >
                   {tag}
                 </span>
@@ -161,10 +157,10 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
           {/* 个人评价 */}
           {game.review && (
             <div className="mb-6">
-              <h2 className="r-on-felt text-sm font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">
+              <h2 className="r-on-felt font-serif text-[13px] font-medium tracking-wide text-ink-2 dark:text-gray-400 mb-2">
                 个人评价
               </h2>
-              <blockquote className="r-on-felt border-l-2 border-primary-300 dark:border-primary-600 pl-4 text-gray-700 dark:text-gray-300 leading-relaxed italic">
+              <blockquote className="r-on-felt border-l-2 border-line-strong dark:border-gray-600 pl-3.5 text-[13.5px] text-ink-2 dark:text-gray-300 leading-relaxed">
                 {game.review}
               </blockquote>
             </div>
@@ -176,17 +172,12 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
               href={game.bggUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="r-btn inline-flex items-center gap-2 px-4 py-2 rounded-xl
-                bg-gradient-to-r from-violet-50 to-indigo-50
-                dark:from-violet-900/20 dark:to-indigo-900/20
-                text-sm font-medium
-                text-violet-700 dark:text-violet-300
-                border border-violet-200/50 dark:border-violet-700/30
-                hover:from-violet-100 hover:to-indigo-100
-                dark:hover:from-violet-900/30 dark:hover:to-indigo-900/30
-                hover:shadow-md hover:shadow-violet-500/10
-                hover:scale-[1.02]
-                transition-all duration-200"
+              className="r-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md
+                border border-line-strong dark:border-gray-600
+                text-[12.5px] text-ink-2 dark:text-gray-400
+                hover:border-accent-500 hover:text-accent-700
+                dark:hover:border-accent-600 dark:hover:text-accent-300
+                transition-colors"
             >
               <svg
                 className="w-4 h-4"
@@ -220,7 +211,7 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
           {/* 相关图片 */}
           {game.extraImages.length > 0 && (
             <div className="mt-10">
-              <h2 className="r-on-felt text-sm font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-4">
+              <h2 className="r-on-felt font-serif text-[13px] font-medium tracking-wide text-ink-2 dark:text-gray-400 mb-3">
                 图片展示
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -231,7 +222,7 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
                       alt={`${game.title} 图片 ${i + 1}`}
                       fill
                       sizes="(max-width: 640px) 50vw, 33vw"
-                      className="rounded-xl border border-gray-100 dark:border-gray-700/50 object-cover hover:scale-105 transition-transform duration-300"
+                      className="rounded-md border border-line dark:border-gray-700 object-cover hover:opacity-90 transition-opacity"
                     />
                   </a>
                 ))}
@@ -247,10 +238,10 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
       <div className="mt-16 border-t border-gray-200 dark:border-gray-700/50 pt-12">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="r-on-felt text-xl font-bold text-gray-900 dark:text-white mb-1">
-              🏆 排行榜 &amp; 对局记录
+            <h2 className="r-on-felt font-serif text-lg font-semibold text-ink dark:text-gray-100 mb-1">
+              排行榜 &amp; 对局记录
             </h2>
-            <p className="r-on-felt-sub text-sm text-gray-500 dark:text-gray-400">
+            <p className="r-on-felt-sub text-[12.5px] text-ink-3 dark:text-gray-500">
               共 {sessions.length} 场对局
             </p>
           </div>
@@ -271,7 +262,7 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
         {/* 对局历史：每条按模板渲染 */}
         {sessions.length > 0 && (
           <div>
-            <h3 className="r-on-felt text-sm font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-4">
+            <h3 className="r-on-felt font-serif text-[13px] font-medium tracking-wide text-ink-2 dark:text-gray-400 mb-3">
               对局历史
             </h3>
             <div className="space-y-3">
@@ -287,42 +278,46 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
 }
 
 function StatusBadge({ status }: { status: GameStatus }) {
+  // 靠边框浓淡区分状态，不用彩色底 + 彩色字 + 呼吸圆点
   const styles: Record<string, string> = {
-    已收藏: "bg-violet-100 text-violet-800 dark:bg-violet-900/50 dark:text-violet-300",
-    想玩: "bg-pink-100 text-pink-800 dark:bg-pink-900/50 dark:text-pink-300",
-    已玩过: "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/50 dark:text-indigo-300",
-    不好玩: "bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300",
+    已收藏: "border-accent-300 text-accent-700 dark:border-accent-800 dark:text-accent-300",
+    想玩: "border-dashed border-line-strong text-ink-2 dark:border-gray-600 dark:text-gray-400",
+    已玩过: "border-gray-400 text-gray-700 dark:border-gray-500 dark:text-gray-300",
+    不好玩: "border-gray-300 text-gray-400 line-through dark:border-gray-700 dark:text-gray-500",
   };
 
   return (
     <span
-      className={`r-status inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium ${styles[status] ?? ""}`}
+      className={`r-status inline-flex items-center px-2 py-0.5 rounded border text-[12px] tracking-wide ${
+        styles[status] ?? "border-line text-ink-2"
+      }`}
     >
-      <span className="relative flex h-2 w-2">
-        <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-current" />
-        <span className="relative inline-flex rounded-full h-2 w-2 bg-current" />
-      </span>
       {status}
     </span>
   );
 }
 
-function InfoItem({
-  icon,
+function InfoCell({
   label,
   value,
+  wide = false,
 }: {
-  icon: string;
   label: string;
   value: string;
+  wide?: boolean;
 }) {
   return (
-    <div className="r-card rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/30 p-3">
-      <div className="flex items-center gap-2 mb-1">
-        <span className="text-base">{icon}</span>
-        <span className="text-xs text-gray-400 dark:text-gray-500">{label}</span>
-      </div>
-      <p className="text-sm font-semibold text-gray-900 dark:text-white">{value}</p>
+    <div
+      className={`px-3.5 py-2.5 border-r border-line dark:border-gray-700 ${
+        wide ? "min-w-[124px]" : "min-w-[86px]"
+      }`}
+    >
+      <span className="block text-[10px] tracking-wide text-ink-3 dark:text-gray-500 mb-0.5">
+        {label}
+      </span>
+      <span className="block text-[12.5px] text-ink dark:text-gray-100 tnum">
+        {value}
+      </span>
     </div>
   );
 }

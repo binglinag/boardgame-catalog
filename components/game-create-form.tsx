@@ -12,11 +12,11 @@ import type { FieldDef } from "@/lib/notion-fields";
 const PW_KEY = "zz_admin_pw";
 
 const inputCls =
-  "r-input w-full px-3.5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 " +
-  "bg-gray-50/80 dark:bg-gray-700/40 text-gray-900 dark:text-white " +
-  "placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm " +
-  "focus:ring-2 focus:ring-violet-500/25 focus:border-violet-300 dark:focus:border-violet-600 " +
-  "outline-none transition-all";
+  "r-input w-full px-3.5 py-2.5 rounded-md border border-line dark:border-gray-600 " +
+  "bg-white dark:bg-gray-800 text-ink dark:text-gray-100 " +
+  "placeholder:text-ink-3 dark:placeholder:text-gray-500 text-[13px] " +
+  "focus:outline-none focus:border-accent-500 " +
+  "transition-colors";
 
 /** 这些字眼的 rich_text 列用多行文本框 */
 const LONG_TEXT_HINTS = ["评价", "备注", "描述", "介绍", "说明", "心得"];
@@ -117,11 +117,8 @@ export default function GameCreateForm({ fields }: { fields: FieldDef[] }) {
     if (f.type === "files" && UPLOAD_HINTS.some((k) => f.name.toLowerCase().includes(k))) {
       return (
         <div key={f.name} className="sm:col-span-2">
-          <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5">
+          <label className="block text-[11.5px] text-ink-2 dark:text-gray-400 mb-1.5">
             {f.name}
-            <span className="ml-1.5 text-[10px] text-gray-300 dark:text-gray-600 uppercase">
-              {f.type}
-            </span>
           </label>
           <ImageUploader
             value={(values[f.name] as string) ?? ""}
@@ -139,12 +136,9 @@ export default function GameCreateForm({ fields }: { fields: FieldDef[] }) {
 
     return (
       <div key={f.name} className={full ? "sm:col-span-2" : ""}>
-        <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5">
+        <label className="block text-[11.5px] text-ink-2 dark:text-gray-400 mb-1.5">
           {f.name}
-          {f.type === "title" && <span className="ml-1 text-rose-500">*</span>}
-          <span className="ml-1.5 text-[10px] text-gray-300 dark:text-gray-600 uppercase">
-            {f.type}
-          </span>
+          {f.type === "title" && <span className="ml-0.5 text-accent-600">*</span>}
         </label>
 
         {(f.type === "title" ||
@@ -265,35 +259,35 @@ export default function GameCreateForm({ fields }: { fields: FieldDef[] }) {
           </svg>
           返回首页
         </Link>
-        <span className="flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500">
+        <span className="flex items-center gap-2 text-[11px] text-ink-3 dark:text-gray-500">
           <Link
             href="/migrate"
-            className="hover:text-violet-500 dark:hover:text-violet-400 hover:underline transition-colors"
+            className="hover:text-accent-700 dark:hover:text-accent-300 hover:underline transition-colors"
           >
             批量迁移封面图
           </Link>
-          <span className="text-gray-300 dark:text-gray-600">·</span>
+          <span className="text-line-strong dark:text-gray-700">·</span>
           <span>
             按 Notion 表结构生成 · {fields.length} 个字段
           </span>
         </span>
       </div>
 
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">新增桌游</h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
+      <div className="mb-6">
+        <h1 className="font-serif text-[22px] font-semibold text-ink dark:text-gray-100 mb-1">新增桌游</h1>
+        <p className="text-[12.5px] text-ink-3 dark:text-gray-500">
           填写后保存，会直接在 Notion 桌游数据库创建一条新记录
         </p>
       </div>
 
       {/* 权限 */}
-      <section className="r-panel rounded-2xl border border-white/50 dark:border-white/5 bg-white/50 dark:bg-gray-800/30 backdrop-blur-sm p-5 mb-6">
+      <section className="r-panel rounded-lg border border-line dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-3 mb-4">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>
-            <h2 className="text-sm font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
-              🔐 管理员密码
+            <h2 className="text-[13px] font-medium text-ink dark:text-gray-200">
+              管理员密码
             </h2>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-[11.5px] text-ink-3 dark:text-gray-500 mt-0.5">
               {unlocked
                 ? "本次会话已解锁，保存时自动带上密码"
                 : "输入后才能写入 Notion"}
@@ -311,30 +305,29 @@ export default function GameCreateForm({ fields }: { fields: FieldDef[] }) {
       </section>
 
       {/* 动态字段 */}
-      <section className="r-panel rounded-2xl border border-white/50 dark:border-white/5 bg-white/50 dark:bg-gray-800/30 backdrop-blur-sm p-5 mb-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <section className="r-panel rounded-lg border border-line dark:border-gray-700 bg-white dark:bg-gray-800 p-4 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           {fields.map(renderField)}
         </div>
       </section>
 
       {/* 底部保存栏 */}
       <div
-        className="r-bar fixed bottom-0 left-0 right-0 z-30 border-t border-gray-200/70 dark:border-gray-700/50
-          bg-white/85 dark:bg-gray-900/85 backdrop-blur-md"
+        className="r-bar fixed bottom-0 left-0 right-0 z-30 border-t border-line dark:border-gray-800
+          bg-paper/95 dark:bg-[#1a1712]/95 backdrop-blur"
       >
-        <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+        <div className="max-w-3xl mx-auto px-4 py-2.5 flex items-center justify-between gap-3">
           <div className="min-w-0">
             {message ? (
               <p
-                className={`text-sm truncate ${
-                  ok ? "text-emerald-600 dark:text-emerald-400" : "text-red-500"
+                className={`text-[12.5px] truncate ${
+                  ok ? "text-accent-700 dark:text-accent-300" : "text-red-600 dark:text-red-400"
                 }`}
               >
-                {ok ? "✅ " : "⚠️ "}
                 {message}
               </p>
             ) : (
-              <p className="text-xs text-gray-400 dark:text-gray-500">
+              <p className="text-[11.5px] text-ink-3 dark:text-gray-500">
                 {dirty ? "有未保存的内容" : "还没填写"}
               </p>
             )}
@@ -343,8 +336,8 @@ export default function GameCreateForm({ fields }: { fields: FieldDef[] }) {
             {ok && createdId && (
               <Link
                 href={`/${createdId}`}
-                className="px-4 py-2 rounded-xl text-sm font-medium text-violet-600 dark:text-violet-400
-                  hover:bg-violet-50 dark:hover:bg-violet-900/20 transition-all"
+                className="px-3 py-1.5 rounded-md text-[12.5px] text-accent-700 dark:text-accent-300
+                  hover:bg-accent-50 dark:hover:bg-accent-900/20 transition-colors"
               >
                 打开详情 →
               </Link>
@@ -357,9 +350,9 @@ export default function GameCreateForm({ fields }: { fields: FieldDef[] }) {
                 setOk(false);
               }}
               disabled={!dirty || saving}
-              className="r-btn px-4 py-2 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-300
-                border border-gray-200 dark:border-gray-600
-                hover:bg-gray-50 dark:hover:bg-gray-700/40 transition-all
+              className="r-btn px-3.5 py-1.5 rounded-md text-[12.5px] text-ink-2 dark:text-gray-400
+                border border-line-strong dark:border-gray-600
+                hover:border-accent-500 hover:text-accent-700 transition-colors
                 disabled:opacity-40 disabled:cursor-not-allowed"
             >
               清空
@@ -368,15 +361,12 @@ export default function GameCreateForm({ fields }: { fields: FieldDef[] }) {
               type="button"
               onClick={handleSave}
               disabled={saving || !dirty}
-              className="r-btn r-btn-primary px-6 py-2 rounded-xl text-sm font-semibold text-white
-                bg-gradient-to-r from-violet-600 to-indigo-600
-                hover:from-violet-500 hover:to-indigo-500
-                shadow-lg shadow-violet-500/20 hover:shadow-violet-500/30
-                hover:scale-[1.02] active:scale-[0.98]
-                transition-all duration-200
-                disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
+              className="r-btn r-btn-primary px-4 py-1.5 rounded-md text-[12.5px] text-white
+                bg-accent-600 hover:bg-accent-700
+                transition-colors
+                disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              {saving ? "保存中..." : "保存到 Notion"}
+              {saving ? "保存中…" : "保存到 Notion"}
             </button>
           </div>
         </div>

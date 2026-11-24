@@ -40,12 +40,9 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* 三层字体：衬线标题 / 无衬线正文 / 等宽数字 */}
         <link
-          href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap"
-          rel="stylesheet"
-        />
-        <link
-          href="https://cdn.jsdelivr.net/npm/chiron-sans-hk@2.012/css/vf.min.css"
+          href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
           rel="stylesheet"
         />
         {/* 复古主题字体：站酷小薇（中文，印刷感）+ Alegreya（数字/西文，古典衬线） */}
@@ -78,22 +75,24 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen flex flex-col">
-        {/* 顶部导航 — 毛玻璃梦幻风格 */}
-        <header className="sticky top-0 z-50 border-b border-white/30 dark:border-white/5 bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl">
+        {/* 顶部导航 — 纸面 + 一条细分割线，不做毛玻璃 */}
+        <header className="sticky top-0 z-50 border-b border-line dark:border-gray-800 bg-paper/92 dark:bg-[#1a1712]/92 backdrop-blur-md">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-2">
-            <div className="flex items-baseline gap-3 sm:gap-5 min-w-0">
-              <a href="/" className="font-bold text-base sm:text-lg text-gray-900 dark:text-white whitespace-nowrap">
-                <span className="r-title bg-gradient-to-r from-amber-400 via-violet-400 to-amber-300 bg-clip-text text-transparent bg-[length:200%_200%] animate-gradientShift">
-                  壮壮的桌游图鉴
-                </span>
+            <div className="flex items-baseline gap-4 sm:gap-6 min-w-0">
+              <a
+                href="/"
+                className="font-serif text-base sm:text-lg font-semibold tracking-tight whitespace-nowrap text-ink dark:text-gray-100"
+              >
+                <span className="r-title">壮壮的桌游图鉴</span>
               </a>
               <a
                 href="/leaderboard"
-                className="text-sm font-medium px-2 sm:px-3 py-1.5 -mb-0.5 rounded-xl whitespace-nowrap flex-shrink-0
-                  text-violet-500 dark:text-violet-400
-                  hover:bg-violet-50 dark:hover:bg-violet-900/20
-                  hover:text-violet-700 dark:hover:text-violet-300
-                  transition-all duration-200"
+                className="text-[13px] whitespace-nowrap flex-shrink-0 pb-0.5
+                  text-ink-2 dark:text-gray-400
+                  border-b border-transparent
+                  hover:text-accent-700 hover:border-accent-600
+                  dark:hover:text-accent-300 dark:hover:border-accent-500
+                  transition-colors"
               >
                 玩家排行
               </a>
@@ -112,8 +111,8 @@ export default function RootLayout({
 
         <main className="flex-1">{children}</main>
 
-        <footer className="border-t border-white/30 dark:border-white/5 py-6 bg-white/30 dark:bg-gray-900/20 backdrop-blur-sm">
-          <div className="r-on-felt-sub max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs text-violet-400 dark:text-violet-500">
+        <footer className="border-t border-line dark:border-gray-800 py-6">
+          <div className="r-on-felt-sub max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-[11px] tracking-wide text-ink-3 dark:text-gray-500">
             Built with Next.js · Powered by Notion · {new Date().getFullYear()}
           </div>
         </footer>

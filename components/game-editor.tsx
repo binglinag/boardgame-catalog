@@ -15,11 +15,11 @@ import {
 const PW_KEY = "zz_admin_pw";
 
 const inputCls =
-  "r-input w-full px-3.5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 " +
-  "bg-gray-50/80 dark:bg-gray-700/40 text-gray-900 dark:text-white " +
-  "placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm " +
-  "focus:ring-2 focus:ring-violet-500/25 focus:border-violet-300 dark:focus:border-violet-600 " +
-  "outline-none transition-all";
+  "r-input w-full px-3.5 py-2.5 rounded-md border border-line dark:border-gray-600 " +
+  "bg-white dark:bg-gray-800 text-ink dark:text-gray-100 " +
+  "placeholder:text-ink-3 dark:placeholder:text-gray-500 text-[13px] " +
+  "focus:outline-none focus:border-accent-500 " +
+  "transition-colors";
 
 function toForm(game: BoardGame): GameEditForm {
   return {
@@ -162,13 +162,13 @@ export default function GameEditor({ game, allTags }: { game: BoardGame; allTags
       </div>
 
       {/* 权限 */}
-      <section className="r-panel rounded-2xl border border-white/50 dark:border-white/5 bg-white/50 dark:bg-gray-800/30 backdrop-blur-sm p-5 mb-6">
+      <section className="r-panel rounded-lg border border-line dark:border-gray-700 bg-white dark:bg-gray-800 p-4 mb-4">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>
-            <h2 className="text-sm font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
-              🔐 编辑权限
+            <h2 className="text-[13px] font-medium text-ink dark:text-gray-200">
+              编辑权限
             </h2>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-[11.5px] text-ink-3 dark:text-gray-500 mt-0.5">
               {unlocked
                 ? "本次会话已解锁，保存时自动带上密码"
                 : "输入管理员密码后才能保存到 Notion"}
@@ -292,10 +292,11 @@ export default function GameEditor({ game, allTags }: { game: BoardGame; allTags
                   key={s}
                   type="button"
                   onClick={() => toggleStatus(s)}
-                  className={`px-3.5 py-2 rounded-xl text-sm font-medium border transition-all duration-200 ${
+                  aria-pressed={active}
+                  className={`r-tag-btn px-3 py-1.5 rounded text-[12.5px] border transition-colors ${
                     active
-                      ? "bg-violet-600 text-white border-violet-600 shadow-md shadow-violet-500/20"
-                      : "bg-white/60 dark:bg-gray-700/40 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600 hover:border-violet-300 hover:text-violet-600 dark:hover:text-violet-400"
+                      ? "bg-accent-600 text-white border-accent-600"
+                      : "bg-white dark:bg-gray-800 text-ink-2 dark:text-gray-400 border-line-strong dark:border-gray-600 hover:border-accent-500 hover:text-accent-700 dark:hover:text-accent-300"
                   }`}
                 >
                   {s}
@@ -336,7 +337,7 @@ export default function GameEditor({ game, allTags }: { game: BoardGame; allTags
               />
             </Field>
           </div>
-          <div className="aspect-[4/5] rounded-xl overflow-hidden bg-gradient-to-br from-violet-100 to-pink-50 dark:from-violet-900/20 dark:to-pink-900/10 border border-gray-100 dark:border-gray-700/40 flex items-center justify-center">
+          <div className="aspect-[4/5] rounded-md overflow-hidden bg-gray-100 dark:bg-gray-900 border border-line dark:border-gray-700 flex items-center justify-center">
             {coverPreview ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -345,7 +346,7 @@ export default function GameEditor({ game, allTags }: { game: BoardGame; allTags
                 className="w-full h-full object-cover"
               />
             ) : (
-              <span className="text-xs text-gray-400 dark:text-gray-500 px-2 text-center">
+              <span className="text-[11.5px] text-ink-3 dark:text-gray-500 px-2 text-center">
                 封面预览
               </span>
             )}
@@ -401,22 +402,21 @@ export default function GameEditor({ game, allTags }: { game: BoardGame; allTags
 
       {/* 底部保存栏 */}
       <div
-        className="fixed bottom-0 left-0 right-0 z-30 border-t border-gray-200/70 dark:border-gray-700/50
-          bg-white/85 dark:bg-gray-900/85 backdrop-blur-md"
+        className="fixed bottom-0 left-0 right-0 z-30 border-t border-line dark:border-gray-800
+          bg-paper/95 dark:bg-[#1a1712]/95 backdrop-blur"
       >
-        <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+        <div className="max-w-4xl mx-auto px-4 py-2.5 flex items-center justify-between gap-3">
           <div className="min-w-0">
             {message ? (
               <p
-                className={`text-sm truncate ${
-                  ok ? "text-emerald-600 dark:text-emerald-400" : "text-red-500"
+                className={`text-[12.5px] truncate ${
+                  ok ? "text-accent-700 dark:text-accent-300" : "text-red-600 dark:text-red-400"
                 }`}
               >
-                {ok ? "✅ " : "⚠️ "}
                 {message}
               </p>
             ) : (
-              <p className="text-xs text-gray-400 dark:text-gray-500">
+              <p className="text-[11.5px] text-ink-3 dark:text-gray-500">
                 {dirty ? "有未保存的改动" : "没有改动"}
               </p>
             )}
@@ -425,8 +425,8 @@ export default function GameEditor({ game, allTags }: { game: BoardGame; allTags
             {ok && (
               <Link
                 href={`/${game.id}`}
-                className="px-4 py-2 rounded-xl text-sm font-medium text-violet-600 dark:text-violet-400
-                  hover:bg-violet-50 dark:hover:bg-violet-900/20 transition-all"
+                className="px-3 py-1.5 rounded-md text-[12.5px] text-accent-700 dark:text-accent-300
+                  hover:bg-accent-50 dark:hover:bg-accent-900/20 transition-colors"
               >
                 查看详情 →
               </Link>
@@ -435,9 +435,9 @@ export default function GameEditor({ game, allTags }: { game: BoardGame; allTags
               type="button"
               onClick={handleReset}
               disabled={!dirty || saving}
-              className="px-4 py-2 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-300
-                border border-gray-200 dark:border-gray-600
-                hover:bg-gray-50 dark:hover:bg-gray-700/40 transition-all
+              className="px-3.5 py-1.5 rounded-md text-[12.5px] text-ink-2 dark:text-gray-400
+                border border-line-strong dark:border-gray-600
+                hover:border-accent-500 hover:text-accent-700 transition-colors
                 disabled:opacity-40 disabled:cursor-not-allowed"
             >
               还原
@@ -446,15 +446,11 @@ export default function GameEditor({ game, allTags }: { game: BoardGame; allTags
               type="button"
               onClick={handleSave}
               disabled={saving || !dirty}
-              className="px-6 py-2 rounded-xl text-sm font-semibold text-white
-                bg-gradient-to-r from-violet-600 to-indigo-600
-                hover:from-violet-500 hover:to-indigo-500
-                shadow-lg shadow-violet-500/20 hover:shadow-violet-500/30
-                hover:scale-[1.02] active:scale-[0.98]
-                transition-all duration-200
-                disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
+              className="px-4 py-1.5 rounded-md text-[12.5px] text-white
+                bg-accent-600 hover:bg-accent-700 transition-colors
+                disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              {saving ? "保存中..." : "保存到 Notion"}
+              {saving ? "保存中…" : "保存到 Notion"}
             </button>
           </div>
         </div>
@@ -473,12 +469,12 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="r-panel rounded-2xl border border-white/50 dark:border-white/5 bg-white/50 dark:bg-gray-800/30 backdrop-blur-sm p-5 mb-6">
-      <div className="mb-4">
-        <h2 className="text-sm font-semibold text-gray-800 dark:text-gray-200">{title}</h2>
-        {desc && <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{desc}</p>}
+    <section className="r-panel rounded-lg border border-line dark:border-gray-700 bg-white dark:bg-gray-800 p-4 mb-4">
+      <div className="mb-3.5">
+        <h2 className="font-serif text-[14px] font-semibold text-ink dark:text-gray-200">{title}</h2>
+        {desc && <p className="text-[11.5px] text-ink-3 dark:text-gray-500 mt-0.5">{desc}</p>}
       </div>
-      <div className="space-y-4">{children}</div>
+      <div className="space-y-3.5">{children}</div>
     </section>
   );
 }
@@ -496,9 +492,9 @@ function Field({
 }) {
   return (
     <div className={full ? "sm:col-span-2" : ""}>
-      <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5">
+      <label className="block text-[11.5px] text-ink-2 dark:text-gray-400 mb-1.5">
         {label}
-        {hint && <span className="ml-1.5 text-gray-400 dark:text-gray-500">（{hint}）</span>}
+        {hint && <span className="ml-1.5 text-ink-3 dark:text-gray-500">（{hint}）</span>}
       </label>
       {children}
     </div>

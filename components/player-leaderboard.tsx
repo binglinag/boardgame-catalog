@@ -54,7 +54,7 @@ export default function PlayerLeaderboard({ rankings, totalGames, totalSessions 
   if (rankings.length === 0) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-8">
-        <Link href="/" className="inline-flex items-center gap-2 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors mb-8 group">
+        <Link href="/" className="inline-flex items-center gap-1.5 text-[12.5px] text-ink-3 dark:text-gray-500 hover:text-accent-700 dark:hover:text-accent-300 transition-colors mb-6 group">
           <svg className="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
@@ -62,13 +62,13 @@ export default function PlayerLeaderboard({ rankings, totalGames, totalSessions 
         </Link>
         <div className="flex items-start justify-between mb-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">玩家排行榜</h1>
+            <h1 className="font-serif text-[24px] font-semibold text-ink dark:text-gray-100 mb-1">玩家排行榜</h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">暂无玩家数据</p>
           </div>
           <PlayerForm />
         </div>
         <div className="text-center py-20">
-          <p className="text-violet-400 dark:text-violet-500">添加第一位玩家后，排行榜会在这里显示</p>
+          <p className="text-[12.5px] text-ink-3 dark:text-gray-500">添加第一位玩家后，排行榜会在这里显示</p>
         </div>
       </div>
     );
@@ -76,7 +76,7 @@ export default function PlayerLeaderboard({ rankings, totalGames, totalSessions 
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <Link href="/" className="inline-flex items-center gap-2 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors mb-8 group">
+      <Link href="/" className="inline-flex items-center gap-1.5 text-[12.5px] text-ink-3 dark:text-gray-500 hover:text-accent-700 dark:hover:text-accent-300 transition-colors mb-6 group">
         <svg className="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
         </svg>
@@ -85,7 +85,7 @@ export default function PlayerLeaderboard({ rankings, totalGames, totalSessions 
 
       <div className="mb-8 flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          <h1 className="font-serif text-[24px] font-semibold text-ink dark:text-gray-100 mb-1">
             玩家排行榜
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -96,23 +96,21 @@ export default function PlayerLeaderboard({ rankings, totalGames, totalSessions 
       </div>
 
       {/* 算法说明 */}
-      <div className="r-panel mb-8 p-4 rounded-2xl bg-gradient-to-br from-violet-50/50 to-white dark:from-violet-950/10 dark:to-gray-800/20 border border-white/50 dark:border-white/5 backdrop-blur-sm text-xs text-gray-500 dark:text-gray-400 leading-relaxed space-y-1.5">
+      <div className="r-panel mb-7 px-4 py-3 rounded-lg bg-white dark:bg-gray-800 border border-line dark:border-gray-700 text-[11.5px] text-ink-2 dark:text-gray-400 leading-relaxed space-y-1">
         <div>
-          <span className="font-semibold text-violet-600 dark:text-violet-400">桌游度</span>
+          <span className="font-medium text-accent-700 dark:text-accent-300">桌游度</span>
           {" = "}
-          <span className="text-blue-600 dark:text-blue-400 font-medium">竞技分</span>
+          <span className="text-ink dark:text-gray-200">竞技分</span>
           {" + "}
-          <span className="text-emerald-600 dark:text-emerald-400 font-medium">战役分</span>
+          <span className="text-ink dark:text-gray-200">战役分</span>
         </div>
-        <div className="pl-4 border-l-2 border-blue-200 dark:border-blue-800">
-          <span className="text-blue-600 dark:text-blue-400 font-medium">竞技分</span>
-          {" = Σ(重度 × 变现系数) + 竞技款数 × 2"}
+        <div className="pl-3 border-l border-line dark:border-gray-700">
+          竞技分 = Σ(重度 × 变现系数) + 竞技款数 × 2
         </div>
-        <div className="pl-4 border-l-2 border-emerald-200 dark:border-emerald-800">
-          <span className="text-emerald-600 dark:text-emerald-400 font-medium">战役分</span>
-          {" = Σ(重度 × 完成标记系数) + 战役款数 × 3"}
+        <div className="pl-3 border-l border-line dark:border-gray-700">
+          战役分 = Σ(重度 × 完成标记系数) + 战役款数 × 3
         </div>
-        <div className="text-gray-400 dark:text-gray-500 pt-1">
+        <div className="text-ink-3 dark:text-gray-500 pt-1">
           变现系数基于对局表现（排名/分数/胜负），战役系数基于完成标记（可选）
         </div>
       </div>
@@ -128,10 +126,10 @@ export default function PlayerLeaderboard({ rankings, totalGames, totalSessions 
             type="button"
             onClick={clearSelection}
             aria-pressed={selected.size === 0}
-            className={`r-chip-sm px-3 py-1.5 rounded-xl text-sm font-medium border backdrop-blur-sm transition-all duration-200 ${
+            className={`r-chip-sm px-2.5 py-1 rounded text-[12.5px] border transition-colors ${
               selected.size === 0
-                ? "bg-violet-100 text-violet-700 border-violet-300 dark:bg-violet-900/40 dark:text-violet-200 dark:border-violet-700/30 shadow-sm"
-                : "bg-white/50 text-gray-500 border-white/40 hover:border-violet-300/60 dark:bg-white/5 dark:text-gray-400 dark:border-white/10 dark:hover:border-violet-700/40"
+                ? "bg-accent-600 text-white border-accent-600"
+                : "bg-transparent text-ink-2 dark:text-gray-400 border-line-strong dark:border-gray-600 hover:border-accent-500 hover:text-accent-700 dark:hover:text-accent-300"
             }`}
           >
             全部
@@ -145,10 +143,10 @@ export default function PlayerLeaderboard({ rankings, totalGames, totalSessions 
                 type="button"
                 onClick={() => toggle(r.player.id)}
                 aria-pressed={active}
-                className={`r-chip-sm px-3 py-1.5 rounded-xl text-sm font-medium border backdrop-blur-sm transition-all duration-200 ${
+                className={`r-chip-sm px-2.5 py-1 rounded text-[12.5px] border transition-colors ${
                   active
-                    ? "bg-violet-100 text-violet-700 border-violet-300 dark:bg-violet-900/40 dark:text-violet-200 dark:border-violet-700/30 shadow-sm"
-                    : "bg-white/50 text-gray-500 border-white/40 hover:border-violet-300/60 dark:bg-white/5 dark:text-gray-400 dark:border-white/10 dark:hover:border-violet-700/40"
+                    ? "bg-accent-600 text-white border-accent-600"
+                    : "bg-transparent text-ink-2 dark:text-gray-400 border-line-strong dark:border-gray-600 hover:border-accent-500 hover:text-accent-700 dark:hover:text-accent-300"
                 }`}
               >
                 {r.player.name}
@@ -166,70 +164,78 @@ export default function PlayerLeaderboard({ rankings, totalGames, totalSessions 
 
       {/* 排行榜表格 */}
       {/* overflow-hidden 会在窄屏把超出容器宽度的列直接裁掉，改用 overflow-x-auto 保证信息不丢 */}
-      <div className="r-table overflow-x-auto rounded-2xl border border-white/50 dark:border-white/5 backdrop-blur-sm">
-        <table className="w-full min-w-[320px] text-sm">
+      <div className="r-table overflow-x-auto rounded-lg border border-line dark:border-gray-700">
+        <table className="w-full min-w-[320px] text-[12.5px]">
           <thead>
-            <tr className="bg-white/40 dark:bg-gray-800/30">
-              <th className="px-2 sm:px-4 py-3 text-left text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider w-14">排名</th>
-              <th className="px-2 sm:px-4 py-3 text-left text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">玩家</th>
-              <th className="px-2 sm:px-4 py-3 text-right text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider w-20">桌游度</th>
-              <th className="px-2 sm:px-4 py-3 text-right text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider w-20 hidden md:table-cell">竞技 · 战役</th>
-              <th className="px-2 sm:px-4 py-3 text-right text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider w-16 hidden sm:table-cell">款数</th>
-              <th className="px-2 sm:px-4 py-3 text-right text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider w-16 hidden sm:table-cell">场次</th>
-              <th className="px-2 sm:px-4 py-3 text-right text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider w-20 hidden lg:table-cell">均重度</th>
+            <tr className="bg-gray-50 dark:bg-gray-800/60 border-b border-line dark:border-gray-700">
+              <th className="px-2 sm:px-4 py-2.5 text-left text-[10.5px] font-medium tracking-wide text-ink-3 dark:text-gray-500 w-14">排名</th>
+              <th className="px-2 sm:px-4 py-2.5 text-left text-[10.5px] font-medium tracking-wide text-ink-3 dark:text-gray-500">玩家</th>
+              <th className="px-2 sm:px-4 py-2.5 text-right text-[10.5px] font-medium tracking-wide text-ink-3 dark:text-gray-500 w-20">桌游度</th>
+              <th className="px-2 sm:px-4 py-2.5 text-right text-[10.5px] font-medium tracking-wide text-ink-3 dark:text-gray-500 w-24 hidden md:table-cell">竞技 · 战役</th>
+              <th className="px-2 sm:px-4 py-2.5 text-right text-[10.5px] font-medium tracking-wide text-ink-3 dark:text-gray-500 w-16 hidden sm:table-cell">款数</th>
+              <th className="px-2 sm:px-4 py-2.5 text-right text-[10.5px] font-medium tracking-wide text-ink-3 dark:text-gray-500 w-16 hidden sm:table-cell">场次</th>
+              <th className="px-2 sm:px-4 py-2.5 text-right text-[10.5px] font-medium tracking-wide text-ink-3 dark:text-gray-500 w-20 hidden lg:table-cell">均重度</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100 dark:divide-gray-700/20">
+          <tbody className="divide-y divide-line dark:divide-gray-700/60">
             {visible.map((entry) => {
               // 排名始终用全量榜单里的名次，不因筛选而重排
               const rank = rankOf.get(entry.player.id) ?? 0;
               const isTop3 = rank > 0 && rank <= 3;
-              const medals = ["🥇", "🥈", "🥉"];
               const totalGames = entry.compGames + entry.campGames;
 
               return (
                 <tr
                   key={entry.player.id}
-                  className={`transition-colors hover:bg-violet-50/30 dark:hover:bg-violet-900/5 ${
-                    isTop3 ? "bg-amber-50/20 dark:bg-amber-900/5" : ""
-                  }`}
+                  className="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/40"
                 >
-                  <td className="px-2 sm:px-4 py-4">
-                    {isTop3 ? (
-                      <span className="text-xl">{medals[rank - 1]}</span>
-                    ) : (
-                      <span className="text-gray-400 dark:text-gray-500 font-medium">{rank}</span>
-                    )}
+                  <td className="px-2 sm:px-4 py-3">
+                    {/* 前三名不贴奖牌 emoji，用砖红数字，视觉更克制也更好对齐 */}
+                    <span
+                      className={`tnum ${
+                        isTop3
+                          ? "text-accent-700 dark:text-accent-300 font-medium"
+                          : "text-ink-3 dark:text-gray-500"
+                      }`}
+                    >
+                      {rank}
+                    </span>
                   </td>
-                  <td className="px-2 sm:px-4 py-4">
-                    <span className={`font-semibold text-gray-900 dark:text-white ${isTop3 ? "text-base" : ""}`}>
+                  <td className="px-2 sm:px-4 py-3">
+                    <span className="font-medium text-ink dark:text-gray-100">
                       {entry.player.name}
                     </span>
                     {entry.player.notes && (
-                      <span className="ml-2 text-xs text-gray-400 dark:text-gray-500">{entry.player.notes}</span>
+                      <span className="ml-2 text-[11px] text-ink-3 dark:text-gray-500">{entry.player.notes}</span>
                     )}
                   </td>
-                  <td className="px-2 sm:px-4 py-4 text-right">
-                    <span className={`font-bold ${isTop3 ? "text-violet-600 dark:text-violet-400 text-lg" : "text-gray-700 dark:text-gray-300"}`}>
+                  <td className="px-2 sm:px-4 py-3 text-right">
+                    <span
+                      className={`tnum ${
+                        isTop3
+                          ? "text-accent-700 dark:text-accent-300 font-medium text-[15px]"
+                          : "text-ink-2 dark:text-gray-300"
+                      }`}
+                    >
                       {entry.bgScore}
                     </span>
                   </td>
-                  <td className="px-2 sm:px-4 py-4 text-right hidden md:table-cell">
-                    <div className="flex items-center justify-end gap-1 text-xs">
-                      <span className="text-blue-600 dark:text-blue-400 font-medium">{entry.compScore}</span>
-                      <span className="text-gray-300 dark:text-gray-600">·</span>
-                      <span className="text-emerald-600 dark:text-emerald-400 font-medium">{entry.campScore}</span>
+                  <td className="px-2 sm:px-4 py-3 text-right hidden md:table-cell">
+                    <div className="flex items-center justify-end gap-1 text-[11.5px] tnum">
+                      <span className="text-ink-2 dark:text-gray-300">{entry.compScore}</span>
+                      <span className="text-line-strong dark:text-gray-700">·</span>
+                      <span className="text-ink-2 dark:text-gray-300">{entry.campScore}</span>
                     </div>
                   </td>
-                  <td className="px-2 sm:px-4 py-4 text-right text-gray-500 dark:text-gray-400 hidden sm:table-cell">
+                  <td className="px-2 sm:px-4 py-3 text-right text-ink-3 dark:text-gray-500 hidden sm:table-cell tnum">
                     <span title={`竞技 ${entry.compGames} · 战役 ${entry.campGames}`}>
                       {totalGames}
                     </span>
                   </td>
-                  <td className="px-2 sm:px-4 py-4 text-right text-gray-500 dark:text-gray-400 hidden sm:table-cell">
+                  <td className="px-2 sm:px-4 py-3 text-right text-ink-3 dark:text-gray-500 hidden sm:table-cell tnum">
                     {entry.totalSessions}
                   </td>
-                  <td className="px-2 sm:px-4 py-4 text-right text-gray-500 dark:text-gray-400 hidden lg:table-cell">
+                  <td className="px-2 sm:px-4 py-3 text-right text-ink-3 dark:text-gray-500 hidden lg:table-cell tnum">
                     {entry.avgWeight > 0 ? entry.avgWeight : "-"}
                   </td>
                 </tr>

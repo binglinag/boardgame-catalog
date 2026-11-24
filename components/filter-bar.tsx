@@ -24,7 +24,7 @@ interface FilterBarProps {
 const STATUS_OPTIONS: Array<GameStatus | "全部"> = ["全部", "已收藏", "想玩", "已玩过", "不好玩"];
 
 const PLAYER_COUNT_OPTIONS: Array<{ value: number | "全部"; label: string }> = [
-  { value: "全部", label: "全部人数" },
+  { value: "全部", label: "全部" },
   { value: 1, label: "1人" },
   { value: 2, label: "2人" },
   { value: 3, label: "3人" },
@@ -34,9 +34,9 @@ const PLAYER_COUNT_OPTIONS: Array<{ value: number | "全部"; label: string }> =
   { value: 7, label: "7人+" },
 ];
 
-// 最佳人数沿用同一批人数档位，只把「全部」的文案换掉以示区分
+// 最佳人数沿用同一批人数档位
 const BEST_COUNT_OPTIONS: Array<{ value: number | "全部"; label: string }> = [
-  { value: "全部", label: "全部最佳" },
+  { value: "全部", label: "全部" },
   ...PLAYER_COUNT_OPTIONS.slice(1),
 ];
 
@@ -48,53 +48,52 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: "playCount", label: "游玩次数" },
 ];
 
-/* ── 小 Token 按钮 ── */
+/**
+ * 筛选项
+ *
+ * 旧实现按组给了五套配色（紫 / 琥珀 / 绿 / 洋红 / 靛蓝），
+ * 一行里能出现五种高饱和色块，色板完全失控。
+ * 现在只有一种强调色：选中砖红实心，未选中透明描边。
+ */
 function ChipButton({
   active,
   onClick,
   children,
-  color = "violet",
 }: {
   active: boolean;
   onClick: () => void;
   children: React.ReactNode;
-  color?: "violet" | "amber" | "emerald" | "rose" | "indigo";
 }) {
-  const colorMap = {
-    violet: {
-      active: "bg-violet-100 text-violet-700 border-violet-300 dark:bg-violet-900/40 dark:text-violet-200 dark:border-violet-700/30",
-      idle:  "bg-white/50 text-gray-500 border-white/40 hover:border-violet-300/60 dark:bg-white/5 dark:text-gray-400 dark:border-white/10 dark:hover:border-violet-700/40",
-    },
-    amber: {
-      active: "bg-amber-100 text-amber-700 border-amber-300 dark:bg-amber-900/40 dark:text-amber-200 dark:border-amber-700/30",
-      idle:  "bg-white/50 text-gray-500 border-white/40 hover:border-amber-300/60 dark:bg-white/5 dark:text-gray-400 dark:border-white/10 dark:hover:border-amber-700/40",
-    },
-    emerald: {
-      active: "bg-emerald-100 text-emerald-700 border-emerald-300 dark:bg-emerald-900/40 dark:text-emerald-200 dark:border-emerald-700/30",
-      idle:  "bg-white/50 text-gray-500 border-white/40 hover:border-emerald-300/60 dark:bg-white/5 dark:text-gray-400 dark:border-white/10 dark:hover:border-emerald-700/40",
-    },
-    rose: {
-      active: "bg-rose-100 text-rose-700 border-rose-300 dark:bg-rose-900/40 dark:text-rose-200 dark:border-rose-700/30",
-      idle:  "bg-white/50 text-gray-500 border-white/40 hover:border-rose-300/60 dark:bg-white/5 dark:text-gray-400 dark:border-white/10 dark:hover:border-rose-700/40",
-    },
-    indigo: {
-      active: "bg-indigo-100 text-indigo-700 border-indigo-300 dark:bg-indigo-900/40 dark:text-indigo-200 dark:border-indigo-700/30",
-      idle:  "bg-white/50 text-gray-500 border-white/40 hover:border-indigo-300/60 dark:bg-white/5 dark:text-gray-400 dark:border-white/10 dark:hover:border-indigo-700/40",
-    },
-  };
-
-  const cls = colorMap[color];
-
   return (
     <button
+      type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`r-chip-sm px-3 py-1 rounded-xl text-sm font-medium border backdrop-blur-sm transition-all duration-300 ${
-        active ? cls.active + " shadow-sm" : cls.idle
+      className={`r-chip-sm px-2.5 py-1 rounded text-[12.5px] whitespace-nowrap border transition-colors ${
+        active
+          ? "bg-accent-600 text-white border-accent-600"
+          : "bg-transparent text-ink-2 dark:text-gray-400 border-line-strong dark:border-gray-600 hover:border-accent-500 hover:text-accent-700 dark:hover:text-accent-300"
       }`}
     >
       {children}
     </button>
+  );
+}
+
+function FilterRow({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex items-start gap-2.5">
+      <span className="w-9 shrink-0 pt-1 text-[11px] tracking-wide text-ink-3 dark:text-gray-500">
+        {label}
+      </span>
+      <div className="flex flex-wrap gap-1.5">{children}</div>
+    </div>
   );
 }
 
@@ -116,49 +115,45 @@ export default function FilterBar({
   const sortLabel = SORT_OPTIONS.find((o) => o.value === sortBy)?.label ?? "评分";
 
   return (
-    <div className="flex flex-col gap-3 sm:gap-4">
+    <div className="flex flex-col gap-3">
       {/* 移动端折叠开关（桌面端隐藏） */}
       <button
         type="button"
         onClick={() => setExpanded((v) => !v)}
         aria-expanded={expanded}
         className="sm:hidden w-full flex items-center justify-between gap-3
-          px-4 py-2.5 rounded-xl text-sm font-medium
-          bg-white/50 dark:bg-white/5 backdrop-blur-sm
-          border border-white/40 dark:border-white/10
-          text-gray-600 dark:text-gray-300
-          active:scale-[0.99] transition-all duration-200"
+          px-3 py-2 rounded-md text-[13px]
+          bg-white dark:bg-gray-800 border border-line dark:border-gray-700
+          text-ink-2 dark:text-gray-300"
       >
         <span className="flex items-center gap-2">
           <svg
-            className="w-4 h-4 text-violet-500 dark:text-violet-400"
+            className="w-4 h-4 text-ink-3 dark:text-gray-500"
             fill="none"
             stroke="currentColor"
-            strokeWidth={2}
+            strokeWidth={1.7}
             strokeLinecap="round"
-            strokeLinejoin="round"
             viewBox="0 0 24 24"
           >
             <path d="M3 6h18M7 12h10M10 18h4" />
           </svg>
           筛选
           {activeCount > 0 && (
-            <span className="min-w-[18px] h-[18px] px-1 inline-flex items-center justify-center
-              rounded-full bg-violet-500 text-white text-[11px] font-bold leading-none">
+            <span className="min-w-[17px] h-[17px] px-1 inline-flex items-center justify-center
+              rounded bg-accent-600 text-white text-[10.5px] leading-none tnum">
               {activeCount}
             </span>
           )}
         </span>
 
-        <span className="flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500">
+        <span className="flex items-center gap-1.5 text-[11px] text-ink-3 dark:text-gray-500">
           按{sortLabel}排序
           <svg
-            className={`w-4 h-4 transition-transform duration-300 ${expanded ? "rotate-180" : ""}`}
+            className={`w-4 h-4 transition-transform duration-200 ${expanded ? "rotate-180" : ""}`}
             fill="none"
             stroke="currentColor"
-            strokeWidth={2}
+            strokeWidth={1.7}
             strokeLinecap="round"
-            strokeLinejoin="round"
             viewBox="0 0 24 24"
           >
             <path d="M6 9l6 6 6-6" />
@@ -167,105 +162,89 @@ export default function FilterBar({
       </button>
 
       {/* 筛选主体：移动端按展开状态显隐，桌面端常显 */}
-      <div
-        className={`${expanded ? "flex" : "hidden"} sm:flex flex-col gap-4 animate-fade-in`}
-      >
-        {/* 第一行：状态 + 人数 + 排序 */}
-        <div className="flex flex-wrap items-center gap-2">
-          {/* 状态筛选 */}
-          <div className="flex gap-1.5 flex-wrap">
-            {STATUS_OPTIONS.map((s) => (
-              <ChipButton key={s} active={status === s} onClick={() => onStatusChange(s)}>
-                {s}
-              </ChipButton>
-            ))}
-          </div>
+      <div className={`${expanded ? "flex" : "hidden"} sm:flex flex-col gap-2.5`}>
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex flex-col gap-2.5 flex-1 min-w-0">
+            <FilterRow label="状态">
+              {STATUS_OPTIONS.map((s) => (
+                <ChipButton key={s} active={status === s} onClick={() => onStatusChange(s)}>
+                  {s}
+                </ChipButton>
+              ))}
+            </FilterRow>
 
-          <span className="text-violet-200 dark:text-violet-800 mx-1 hidden sm:inline font-bold">•</span>
+            <FilterRow label="人数">
+              {PLAYER_COUNT_OPTIONS.map((opt) => (
+                <ChipButton
+                  key={opt.label}
+                  active={playerCount === opt.value}
+                  onClick={() => onPlayerCountChange(opt.value)}
+                >
+                  {opt.label}
+                </ChipButton>
+              ))}
+            </FilterRow>
 
-          {/* 人数筛选 */}
-          <div className="flex gap-1.5 flex-wrap">
-            {PLAYER_COUNT_OPTIONS.map((opt) => (
+            <FilterRow label="最佳">
+              {BEST_COUNT_OPTIONS.map((opt) => (
+                <ChipButton
+                  key={`best-${opt.label}`}
+                  active={bestPlayerCount === opt.value}
+                  onClick={() => onBestPlayerCountChange(opt.value)}
+                >
+                  {opt.label}
+                </ChipButton>
+              ))}
+            </FilterRow>
+
+            <FilterRow label="重度">
               <ChipButton
-                key={opt.label}
-                active={playerCount === opt.value}
-                onClick={() => onPlayerCountChange(opt.value)}
-                color="emerald"
+                active={weightFilter === "全部"}
+                onClick={() => onWeightChange("全部")}
               >
-                {opt.label}
+                全部
               </ChipButton>
-            ))}
+              {WEIGHT_TIERS.map((tier) => (
+                <ChipButton
+                  key={tier.value}
+                  active={weightFilter === tier.value}
+                  onClick={() => onWeightChange(tier.value)}
+                >
+                  {tier.label}
+                </ChipButton>
+              ))}
+            </FilterRow>
+
+            {allTags.length > 0 && (
+              <FilterRow label="标签">
+                <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto sm:max-h-none sm:overflow-visible">
+                  <ChipButton active={tag === null} onClick={() => onTagChange(null)}>
+                    全部
+                  </ChipButton>
+                  {allTags.map((t) => (
+                    <ChipButton
+                      key={t}
+                      active={tag === t}
+                      onClick={() => onTagChange(tag === t ? null : t)}
+                    >
+                      {t}
+                    </ChipButton>
+                  ))}
+                </div>
+              </FilterRow>
+            )}
           </div>
 
-          <span className="text-violet-200 dark:text-violet-800 mx-1 hidden sm:inline font-bold">•</span>
-
-          {/* 最佳人数筛选（只看 bestPlayers，不看支持人数范围） */}
-          <div className="flex gap-1.5 flex-wrap">
-            {BEST_COUNT_OPTIONS.map((opt) => (
-              <ChipButton
-                key={`best-${opt.label}`}
-                active={bestPlayerCount === opt.value}
-                onClick={() => onBestPlayerCountChange(opt.value)}
-                color="indigo"
-              >
-                {opt.label}
-              </ChipButton>
-            ))}
+          {/* 排序：桌面端固定在右侧 */}
+          <div className="hidden sm:block shrink-0 pt-0.5">
+            <CustomSelect
+              value={sortBy}
+              options={SORT_OPTIONS.map((opt) => ({ value: opt.value, label: `按${opt.label}排序` }))}
+              onChange={(v) => onSortChange(v as SortOption)}
+              className="w-32"
+            />
           </div>
-
-          <span className="text-violet-200 dark:text-violet-800 mx-1 hidden sm:inline font-bold">•</span>
-
-          {/* 重度筛选 */}
-          <div className="flex gap-1.5 flex-wrap">
-            <ChipButton
-              active={weightFilter === "全部"}
-              onClick={() => onWeightChange("全部")}
-              color="rose"
-            >
-              全部重度
-            </ChipButton>
-            {WEIGHT_TIERS.map((tier) => (
-              <ChipButton
-                key={tier.value}
-                active={weightFilter === tier.value}
-                onClick={() => onWeightChange(tier.value)}
-                color="rose"
-              >
-                {tier.label}
-              </ChipButton>
-            ))}
-          </div>
-
-          <span className="text-violet-200 dark:text-violet-800 mx-1 hidden sm:inline font-bold">•</span>
-
-          {/* 排序 */}
-          <CustomSelect
-            value={sortBy}
-            options={SORT_OPTIONS.map((opt) => ({ value: opt.value, label: `按${opt.label}排序` }))}
-            onChange={(v) => onSortChange(v as SortOption)}
-            className="w-32"
-          />
         </div>
-
-        {/* 第二行：标签筛选（移动端限制高度，避免撑满屏幕） */}
-        {allTags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto
-            sm:max-h-none sm:overflow-visible">
-            <ChipButton active={tag === null} onClick={() => onTagChange(null)} color="amber">
-              全部标签
-            </ChipButton>
-            {allTags.map((t) => (
-              <ChipButton
-                key={t}
-                active={tag === t}
-                onClick={() => onTagChange(tag === t ? null : t)}
-                color="amber"
-              >
-                {t}
-              </ChipButton>
-            ))}
-          </div>
-        )}
       </div>
     </div>
   );

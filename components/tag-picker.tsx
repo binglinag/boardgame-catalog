@@ -83,10 +83,10 @@ export default function TagPicker({
               type="button"
               onClick={() => toggle(tag)}
               aria-pressed={active}
-              className={`r-tag-btn ${sizeCls} rounded-xl font-medium border transition-all duration-200 ${
+              className={`r-tag-btn ${sizeCls} rounded font-medium border transition-colors ${
                 active
-                  ? "bg-violet-600 text-white border-violet-600 shadow-sm shadow-violet-500/20"
-                  : "bg-white/60 dark:bg-gray-700/40 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600 hover:border-violet-300 hover:text-violet-600 dark:hover:text-violet-400"
+                  ? "bg-accent-600 text-white border-accent-600"
+                  : "bg-white dark:bg-gray-800 text-ink-2 dark:text-gray-400 border-line-strong dark:border-gray-600 hover:border-accent-500 hover:text-accent-700 dark:hover:text-accent-300"
               }`}
             >
               {tag}
@@ -108,22 +108,22 @@ export default function TagPicker({
               }
             }}
             placeholder="输入新标签后回车添加"
-            className="r-input w-48 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600
-              bg-gray-50/80 dark:bg-gray-700/40 text-gray-900 dark:text-white
-              placeholder:text-gray-400 dark:placeholder:text-gray-500 text-xs
-              focus:ring-2 focus:ring-violet-500/25 focus:border-violet-300 outline-none transition-all"
+            className="r-input w-48 px-3 py-1.5 rounded border border-line dark:border-gray-600
+              bg-white dark:bg-gray-800 text-ink dark:text-gray-100
+              placeholder:text-ink-3 dark:placeholder:text-gray-500 text-[11.5px]
+              focus:outline-none focus:border-accent-500 transition-colors"
           />
           <button
             type="button"
             onClick={addDraft}
             disabled={!draft.trim()}
-            className="text-xs text-violet-600 dark:text-violet-400 hover:underline
+            className="text-[11.5px] text-accent-700 dark:text-accent-300 hover:underline
               disabled:opacity-40 disabled:no-underline"
           >
             + 添加
           </button>
           {selected.length > 0 && (
-            <span className="text-xs text-gray-400 dark:text-gray-500 ml-auto">
+            <span className="text-[11px] text-ink-3 dark:text-gray-500 ml-auto">
               已选 {selected.length} 个
             </span>
           )}

@@ -172,38 +172,52 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="r-overlay absolute inset-0 bg-black/50 backdrop-blur-sm animate-fade-in" onClick={() => setOpen(false)} />
-          <div className="r-modal relative w-full max-w-lg bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 p-6 animate-scale-in max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white">记录新对局 · {gameTitle}</h3>
-              <button onClick={() => setOpen(false)} className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">✕</button>
+          <div className="r-overlay absolute inset-0 bg-[#1a1712]/60 animate-fade-in" onClick={() => setOpen(false)} />
+          <div className="r-modal relative w-full max-w-lg bg-white dark:bg-gray-800 rounded-lg shadow-pop border border-line dark:border-gray-700 p-5 animate-fade-in max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-5">
+              <h3 className="font-serif text-[16px] font-semibold text-ink dark:text-gray-100">
+                记录新对局 · {gameTitle}
+              </h3>
+              <button
+                onClick={() => setOpen(false)}
+                aria-label="关闭"
+                className="w-7 h-7 flex items-center justify-center rounded-md text-ink-3 hover:text-ink-2 dark:hover:text-gray-300 transition-colors"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">日期</label>
+                <label className="block text-[11.5px] text-ink-2 dark:text-gray-400 mb-1.5">日期</label>
                 <CustomDatePicker value={date} onChange={setDate} />
               </div>
 
               {/* 计分模板选择 */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">计分模板</label>
-                <div className="grid grid-cols-1 gap-1.5">
-                  {SCORING_TEMPLATES.map((t) => (
+                <label className="block text-[11.5px] text-ink-2 dark:text-gray-400 mb-1.5">计分模板</label>
+                <div className="grid grid-cols-2 gap-1.5">
+                  {SCORING_TEMPLATES.map((t, i) => (
                     <button
                       key={t.id}
                       type="button"
                       onClick={() => setTemplate(t.id)}
-                      className={`flex items-start gap-2 px-3 py-2 rounded-xl border text-left transition-all text-sm ${
+                      aria-pressed={template === t.id}
+                      className={`flex items-start gap-2 px-2.5 py-2 rounded border text-left transition-colors ${
                         template === t.id
-                          ? "border-violet-500 bg-violet-50 dark:bg-violet-900/20"
-                          : "border-gray-200 dark:border-gray-600 hover:border-violet-300"
+                          ? "border-accent-600 bg-accent-50 dark:bg-accent-900/20"
+                          : "border-line dark:border-gray-600 hover:border-accent-400"
                       }`}
                     >
-                      <span className="text-base">{t.emoji}</span>
+                      {/* 用序号代替 emoji：六个选项的图标信息量低，反而让扫读变慢 */}
+                      <span className="tnum text-[10px] text-ink-3 dark:text-gray-500 mt-0.5 flex-shrink-0">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
                       <div className="flex-1 min-w-0">
-                        <div className="font-medium text-gray-900 dark:text-white">{t.label}</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">{t.description}</div>
+                        <div className="text-[12.5px] font-medium text-ink dark:text-gray-100">{t.label}</div>
+                        <div className="text-[10.5px] text-ink-3 dark:text-gray-500 leading-snug">{t.description}</div>
                       </div>
                     </button>
                   ))}
@@ -214,42 +228,43 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
               {tpl.inputType === "narrative" && (
                 <>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                      📍 场景/章节名称
+                    <label className="block text-[11.5px] text-ink-2 dark:text-gray-400 mb-1.5">
+                      场景 / 章节名称
                     </label>
                     <input
                       type="text"
                       value={scenario}
                       onChange={(e) => setScenario(e.target.value)}
                       placeholder="例如：第一章·午夜面具"
-                      className="r-input w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-violet-500/30 outline-none text-sm"
+                      className="r-input w-full px-3 py-1.5 rounded-md border border-line dark:border-gray-600 bg-white dark:bg-gray-800 text-ink dark:text-gray-100 focus:outline-none focus:border-accent-500 outline-none text-[12.5px]"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                      📝 叙事记录
+                    <label className="block text-[11.5px] text-ink-2 dark:text-gray-400 mb-1.5">
+                      叙事记录
                     </label>
                     <textarea
                       value={narrative}
                       onChange={(e) => setNarrative(e.target.value)}
                       placeholder="记录发生了什么：获得物品、触发事件、角色状态变化..."
                       rows={4}
-                      className="r-input w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-violet-500/30 outline-none text-sm resize-y"
+                      className="r-input w-full px-3 py-1.5 rounded-md border border-line dark:border-gray-600 bg-white dark:bg-gray-800 text-ink dark:text-gray-100 focus:outline-none focus:border-accent-500 outline-none text-[12.5px] resize-y"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                      🏁 完成标记（可选）
+                    <label className="block text-[11.5px] text-ink-2 dark:text-gray-400 mb-1.5">
+                      完成标记（可选）
                     </label>
                     <div className="flex gap-2">
                       <button
                         type="button"
                         onClick={() => setCompletion(null)}
-                        className={`flex-1 px-3 py-2 rounded-xl border text-sm font-medium transition-all ${
+                        aria-pressed={completion === null}
+                        className={`flex-1 px-3 py-1.5 rounded border text-[12px] transition-colors ${
                           completion === null
-                            ? "border-violet-500 bg-violet-50 dark:bg-violet-900/20 text-violet-700 dark:text-violet-300"
-                            : "border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-violet-300"
+                            ? "border-accent-600 bg-accent-50 dark:bg-accent-900/20 text-accent-700 dark:text-accent-300"
+                            : "border-line dark:border-gray-600 text-ink-2 dark:text-gray-400 hover:border-accent-400"
                         }`}
                       >
                         不标记
@@ -257,10 +272,11 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
                       <button
                         type="button"
                         onClick={() => setCompletion("完整通关")}
-                        className={`flex-1 px-3 py-2 rounded-xl border text-sm font-medium transition-all ${
+                        aria-pressed={completion === "完整通关"}
+                        className={`flex-1 px-3 py-1.5 rounded border text-[12px] transition-colors ${
                           completion === "完整通关"
-                            ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300"
-                            : "border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-emerald-300"
+                            ? "border-accent-600 bg-accent-50 dark:bg-accent-900/20 text-accent-700 dark:text-accent-300"
+                            : "border-line dark:border-gray-600 text-ink-2 dark:text-gray-400 hover:border-accent-400"
                         }`}
                       >
                         完整通关
@@ -268,10 +284,11 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
                       <button
                         type="button"
                         onClick={() => setCompletion("中途放弃")}
-                        className={`flex-1 px-3 py-2 rounded-xl border text-sm font-medium transition-all ${
+                        aria-pressed={completion === "中途放弃"}
+                        className={`flex-1 px-3 py-1.5 rounded border text-[12px] transition-colors ${
                           completion === "中途放弃"
-                            ? "border-amber-500 bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300"
-                            : "border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-amber-300"
+                            ? "border-gray-400 bg-gray-100 dark:bg-gray-700/60 text-ink dark:text-gray-200"
+                            : "border-line dark:border-gray-600 text-ink-2 dark:text-gray-400 hover:border-gray-400"
                         }`}
                       >
                         中途放弃
@@ -283,18 +300,18 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
 
               {/* 玩家输入 - 按模板动态切换 */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                  玩家 {tpl.inputType === "rank" && <span className="text-xs text-gray-400">（输入名次，并列输入相同数字）</span>}
+                <label className="block text-[11.5px] text-ink-2 dark:text-gray-400 mb-1.5">
+                  玩家 {tpl.inputType === "rank" && <span className="text-[10.5px] text-ink-3">（输入名次，并列输入相同数字）</span>}
                 </label>
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   {players.map((p, i) => {
                     const usedIds = players.filter((_, j) => j !== i).map((x) => x.id);
                     const available = allPlayers.filter((ap) => !usedIds.includes(ap.id));
 
                     return (
                       <div key={i} className="flex gap-2 items-center">
-                        <span className="w-6 h-6 flex-shrink-0 flex items-center justify-center rounded-full bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 text-xs font-bold">
-                          {tpl.inputType === "rank" ? (p.rank ?? "?") : tpl.inputType === "narrative" ? "👤" : ""}
+                        <span className="tnum w-6 h-6 flex-shrink-0 flex items-center justify-center rounded bg-gray-100 dark:bg-gray-700 text-ink-2 dark:text-gray-300 text-[11px]">
+                          {tpl.inputType === "rank" ? (p.rank ?? "–") : tpl.inputType === "narrative" ? i + 1 : i + 1}
                         </span>
                         <CustomSelect
                           value={p.id}
@@ -311,7 +328,7 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
                             placeholder="分数"
                             value={p.score || ""}
                             onChange={(e) => updatePlayer(i, { score: Number(e.target.value) })}
-                            className="w-24 px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-violet-500/30 outline-none text-sm"
+                            className="w-24 px-3 py-1.5 rounded-md border border-line dark:border-gray-600 bg-white dark:bg-gray-800 text-ink dark:text-gray-100 focus:outline-none focus:border-accent-500 outline-none text-[12.5px]"
                           />
                         )}
 
@@ -336,7 +353,7 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
                             placeholder="名次"
                             value={p.rank ?? ""}
                             onChange={(e) => updatePlayer(i, { rank: e.target.value ? Number(e.target.value) : null })}
-                            className="w-20 px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-violet-500/30 outline-none text-sm"
+                            className="w-20 px-3 py-1.5 rounded-md border border-line dark:border-gray-600 bg-white dark:bg-gray-800 text-ink dark:text-gray-100 focus:outline-none focus:border-accent-500 outline-none text-[12.5px]"
                           />
                         )}
 
@@ -355,7 +372,7 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
                                   }))
                                 );
                               }}
-                              className="accent-violet-600"
+                              className="accent-accent-600"
                             />
                             赢家
                           </label>
@@ -375,44 +392,48 @@ export default function SessionForm({ gameTitle, gameSlug, allPlayers }: Props) 
                         )}
 
                         {players.length > 1 && (
-                          <button type="button" onClick={() => removePlayer(i)} className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20">✕</button>
+                          <button type="button" onClick={() => removePlayer(i)} className="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-md text-ink-3 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+                              <path strokeLinecap="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
                         )}
                       </div>
                     );
                   })}
                 </div>
-                <button type="button" onClick={addPlayer} className="mt-2 text-xs text-violet-600 dark:text-violet-400 hover:underline">
+                <button type="button" onClick={addPlayer} className="mt-1.5 text-[11.5px] text-accent-700 dark:text-accent-300 hover:underline">
                   + 添加玩家
                 </button>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">备注（选填）</label>
+                <label className="block text-[11.5px] text-ink-2 dark:text-gray-400 mb-1.5">备注（选填）</label>
                 <input
                   type="text"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  placeholder="例如：新手局、加扩..."
-                  className="r-input w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-violet-500/30 outline-none text-sm"
+                  placeholder="例如：新手局、加扩…"
+                  className="r-input w-full px-3 py-1.5 rounded-md border border-line dark:border-gray-600 bg-white dark:bg-gray-800 text-ink dark:text-gray-100 focus:outline-none focus:border-accent-500 outline-none text-[12.5px]"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">🔐 管理员密码</label>
+                <label className="block text-[11.5px] text-ink-2 dark:text-gray-400 mb-1.5">管理员密码</label>
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="输入密码确认操作"
-                  className="r-input w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-violet-500/30 outline-none text-sm"
+                  className="r-input w-full px-3 py-1.5 rounded-md border border-line dark:border-gray-600 bg-white dark:bg-gray-800 text-ink dark:text-gray-100 focus:outline-none focus:border-accent-500 outline-none text-[12.5px]"
                 />
               </div>
 
-              {message && <p className={`text-sm ${message.includes("失败") ? "text-red-500" : "text-emerald-500"}`}>{message}</p>}
+              {message && <p className={`text-[12px] ${message.includes("失败") ? "text-red-600 dark:text-red-400" : "text-accent-700 dark:text-accent-300"}`}>{message}</p>}
 
-              <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setOpen(false)} className="r-btn flex-1 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium text-sm">取消</button>
-                <button type="submit" disabled={loading} className="r-btn r-btn-primary flex-1 px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-medium text-sm shadow-lg shadow-violet-600/25 disabled:opacity-50">{loading ? "保存中..." : "保存"}</button>
+              <div className="flex gap-2 pt-1">
+                <button type="button" onClick={() => setOpen(false)} className="r-btn flex-1 px-4 py-1.5 rounded-md border border-line-strong dark:border-gray-600 text-ink-2 dark:text-gray-300 text-[12.5px]">取消</button>
+                <button type="submit" disabled={loading} className="r-btn r-btn-primary flex-1 px-4 py-1.5 rounded-md bg-accent-600 hover:bg-accent-700 text-white text-[12.5px] disabled:opacity-50">{loading ? "保存中…" : "保存"}</button>
               </div>
             </form>
           </div>

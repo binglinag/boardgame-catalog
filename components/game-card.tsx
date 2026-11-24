@@ -6,7 +6,7 @@ import Image from "next/image";
 import type { BoardGame } from "@/types/game";
 import { MeepleRow, BestPlayers } from "./retro-icons";
 
-/* ── 状态 Token ── */
+/* ── 状态标记 ── */
 function StatusBadge({ status }: { status: string[] }) {
   if (status.length === 0) return null;
   const first = status[0];
@@ -27,25 +27,20 @@ function StatusBadge({ status }: { status: string[] }) {
   );
 }
 
-/* ── 星级评分 ── */
-function StarRating({ rating }: { rating: number }) {
-  const full = Math.round(rating / 2); // 10分制转5星
-  const stars = [];
-  for (let i = 0; i < 5; i++) {
-    stars.push(
-      <div key={i} className={`rating-star ${i < full ? "filled" : "empty"}`} />
-    );
-  }
-  return <div className="rating-stars">{stars}</div>;
-}
-
-/* ── 重度条 ── */
-function WeightBar({ weight }: { weight: number }) {
-  const pct = Math.min((weight / 5) * 100, 100);
+/* ── 重度：五个圆点，比进度条更省空间也更好扫 ── */
+function WeightDots({ weight }: { weight: number }) {
+  const filled = Math.round(weight);
   return (
-    <div className="weight-bar w-10 sm:w-14 flex-shrink-0">
-      <div className="weight-bar-fill" style={{ width: `${pct}%` }} />
-    </div>
+    <span className="inline-flex items-center gap-[2px]" aria-label={`重度 ${weight}`}>
+      {Array.from({ length: 5 }, (_, i) => (
+        <i
+          key={i}
+          className={`block w-[5px] h-[5px] rounded-full ${
+            i < filled ? "bg-accent-600" : "bg-gray-300 dark:bg-gray-600"
+          }`}
+        />
+      ))}
+    </span>
   );
 }
 
@@ -58,88 +53,74 @@ export default function GameCard({ game, sessionCount, priority }: { game: Board
       href={`/${game.id}`}
       prefetch={true}
       onMouseEnter={() => router.prefetch(`/${game.id}`)}
-      className="group block [perspective:1000px]"
+      className="group block h-full"
     >
-      <article className="game-card card-shimmer animate-[card-deal]">
-        {/* ─ 封面图 ─ */}
-        <div className="relative aspect-[4/5] overflow-hidden bg-gradient-to-br from-violet-100 via-amber-50/30 to-emerald-50 dark:from-violet-950/20 dark:via-amber-950/5 dark:to-emerald-950/10">
+      <article className="game-card flex flex-col h-full">
+        {/* ─ 封面 ─ */}
+        <div className="relative aspect-[4/5] overflow-hidden border-b border-line dark:border-gray-700 bg-gray-100 dark:bg-gray-900">
           {game.coverUrl ? (
             <Image
               src={game.coverUrl}
               alt={game.title}
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
-              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
               priority={priority}
             />
           ) : (
-            <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-violet-100 via-amber-50 to-emerald-50 dark:from-violet-900/20 dark:via-amber-900/5 dark:to-emerald-900/10">
-              <span className="text-6xl font-black text-violet-300/40 dark:text-violet-700/25">
+            <div className="flex h-full w-full items-center justify-center">
+              <span className="font-serif text-5xl text-gray-300 dark:text-gray-700">
                 {game.title.charAt(0)}
               </span>
             </div>
           )}
 
-          {/* 悬浮遮罩 */}
-          <div className="absolute inset-0 bg-gradient-to-t from-violet-900/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-          {/* 评分 Token */}
+          {/* 评分：白底小黑字，跟封面形成对比但不抢眼 */}
           {game.rating !== null && (
-            <div className="absolute top-3 right-3 token token-amber">
+            <div className="token token-amber absolute top-2 right-2 bg-white/95 dark:bg-gray-800/95">
               {game.rating}
             </div>
           )}
         </div>
 
-        {/* ─ 信息区 ─ */}
-        <div className="p-4 pt-3.5 space-y-2">
-          <h3 className="font-semibold text-[0.92rem] text-gray-900 dark:text-white leading-snug line-clamp-2">
+        {/* ─ 信息 ─ */}
+        <div className="p-4 pt-3 flex-1 flex flex-col">
+          <h3 className="font-serif text-[0.9rem] font-semibold text-ink dark:text-gray-100 leading-snug line-clamp-2">
             {game.title}
           </h3>
 
           {game.nameEn && (
-            <p className="text-[0.68rem] text-gray-400 dark:text-gray-500 truncate -mt-1">
+            <p className="text-[0.66rem] text-ink-3 dark:text-gray-500 truncate mt-0.5">
               {game.nameEn}
             </p>
           )}
 
-          {/* ── 梦幻主题：Token 元数据 ── */}
-          <div className="dreamy-only space-y-2">
-            <div className="flex items-center gap-2 flex-wrap">
-              {game.players && (
-                <span className="token token-indigo text-[0.68rem] min-w-[auto] h-[1.35rem] px-1.5">
-                  {game.players}人
-                </span>
-              )}
-              {game.bestPlayers && (
-                <span className="token token-emerald text-[0.68rem] min-w-[auto] h-[1.35rem] px-1.5">
-                  最佳{game.bestPlayers}人
-                </span>
-              )}
+          {/* ── 默认主题 ── */}
+          <div className="dreamy-only mt-2.5 space-y-1">
+            {/* 单行紧凑排布：窄卡片里带「人数」「时长」标签会换行拆字 */}
+            <div className="flex items-center gap-1.5 text-[0.7rem] text-ink-2 dark:text-gray-400 whitespace-nowrap">
+              {game.players && <span className="tnum">{game.players} 人</span>}
               {game.playTime && (
-                <span className="inline-flex items-center text-[0.65rem] text-gray-400 dark:text-gray-500">
-                  {game.playTime}
-                </span>
+                <>
+                  <span className="text-gray-300 dark:text-gray-600">·</span>
+                  <span className="tnum">{game.playTime}</span>
+                </>
+              )}
+              {game.year && (
+                <>
+                  <span className="text-gray-300 dark:text-gray-600">·</span>
+                  <span className="tnum text-ink-3 dark:text-gray-500">{game.year}</span>
+                </>
               )}
             </div>
 
-            <div className="flex items-center justify-between gap-2">
-              {game.weight !== null && (
-                <div className="flex items-center gap-1.5 min-w-0">
-                  {/* 窄屏两列布局下，「重度」二字会被压成竖排，必须禁止换行 */}
-                  <span className="text-[0.66rem] font-medium text-violet-500/60 dark:text-violet-400/60 uppercase tracking-wider whitespace-nowrap flex-shrink-0">重度</span>
-                  <WeightBar weight={game.weight} />
-                  <span className="text-[0.66rem] font-semibold text-violet-600/80 dark:text-violet-300/80 tabular-nums flex-shrink-0">
-                    {game.weight.toFixed(1)}
-                  </span>
-                </div>
-              )}
-              {game.year && (
-                <span className="text-[0.62rem] text-gray-400 dark:text-gray-500 flex-shrink-0">
-                  {game.year}
-                </span>
-              )}
-            </div>
+            {game.weight !== null && (
+              <div className="flex items-center gap-1.5 text-[0.7rem] text-ink-2 dark:text-gray-400">
+                <span className="text-ink-3 dark:text-gray-500">重度</span>
+                <WeightDots weight={game.weight} />
+                <span className="tnum">{game.weight.toFixed(1)}</span>
+              </div>
+            )}
           </div>
 
           {/* ── 复古主题：米宝（重度）+ 骰子（最佳人数）+ 时长 ── */}
@@ -170,12 +151,12 @@ export default function GameCard({ game, sessionCount, priority }: { game: Board
             )}
           </div>
 
-          {/* 底部：状态 + 游玩次数 */}
-          <div className="flex items-center justify-between pt-1">
+          {/* ─ 底部：状态 + 局数 ─ */}
+          <div className="flex items-end justify-between gap-2 mt-auto pt-2.5 border-t border-line dark:border-gray-700">
             <StatusBadge status={game.status} />
             {plays > 0 && (
-              <span className="token token-violet text-[0.68rem] min-w-[auto] h-[1.35rem] px-2">
-                已玩{plays}次
+              <span className="token token-violet flex-shrink-0">
+                {plays} 局
               </span>
             )}
           </div>

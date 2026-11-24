@@ -120,7 +120,7 @@ function ScoreBoard({ sessions }: { sessions: PlaySession[] }) {
         <span key="n" className="font-semibold text-gray-900 dark:text-white">
           {r.name}
         </span>,
-        <b key="b" className="text-violet-600 dark:text-violet-400">
+        <b key="b" className="text-accent-700 dark:text-accent-300">
           {r.bestScore}
         </b>,
         Math.round(r.total / r.count),
@@ -185,11 +185,11 @@ function WinRateBoard({
         <span key="n" className="font-semibold text-gray-900 dark:text-white">
           {r.name}
         </span>,
-        <b key="rate" className="text-emerald-600 dark:text-emerald-400">
+        <b key="rate" className="text-ink dark:text-gray-100">
           {(r.rate * 100).toFixed(1)}%
         </b>,
         <span key="w" className="text-xs whitespace-nowrap">
-          <span className="text-emerald-600 dark:text-emerald-400">{r.wins}胜</span>
+          <span className="text-ink dark:text-gray-100">{r.wins}胜</span>
           {r.draws > 0 && (
             <span className="text-amber-600 dark:text-amber-400"> {r.draws}平</span>
           )}
@@ -248,7 +248,7 @@ function RankBoard({ sessions }: { sessions: PlaySession[] }) {
         <span key="n" className="font-semibold text-gray-900 dark:text-white">
           {r.name}
         </span>,
-        <b key="a" className="text-emerald-600 dark:text-emerald-400">
+        <b key="a" className="text-ink dark:text-gray-100">
           {r.avg.toFixed(2)}
         </b>,
         `#${r.bestRank}`,
@@ -340,7 +340,7 @@ function CampaignBoard({ sessions }: { sessions: PlaySession[] }) {
           {r.name}
         </span>,
         r.chapters,
-        <b key="c" className="text-emerald-600 dark:text-emerald-400">
+        <b key="c" className="text-ink dark:text-gray-100">
           {r.completed}
         </b>,
         <span key="a" className="text-amber-600 dark:text-amber-400">
@@ -356,28 +356,30 @@ function CampaignBoard({ sessions }: { sessions: PlaySession[] }) {
    ============================================================ */
 
 function RankCell({ index }: { index: number }) {
-  const medals = ["🥇", "🥈", "🥉"];
+  const isTop3 = index < 3;
   return (
-    <span className="inline-block w-6 text-center text-sm">
-      {medals[index] ?? (
-        <span className="text-xs font-medium text-gray-400 dark:text-gray-500">
-          {index + 1}
-        </span>
-      )}
+    <span
+      className={`inline-block w-6 text-center tnum ${
+        isTop3
+          ? "text-accent-700 dark:text-accent-300 font-medium"
+          : "text-[12px] text-ink-3 dark:text-gray-500"
+      }`}
+    >
+      {index + 1}
     </span>
   );
 }
 
 function Table({ head, rows }: { head: string[]; rows: React.ReactNode[][] }) {
   return (
-    <div className="r-table overflow-x-auto rounded-xl border border-gray-100 dark:border-gray-700/50">
-      <table className="w-full min-w-[300px] text-sm">
+    <div className="r-table overflow-x-auto rounded-lg border border-line dark:border-gray-700">
+      <table className="w-full min-w-[300px] text-[12.5px]">
         <thead>
-          <tr className="bg-gray-50 dark:bg-gray-800/50">
+          <tr className="bg-gray-50 dark:bg-gray-800/60 border-b border-line dark:border-gray-700">
             {head.map((h, i) => (
               <th
                 key={h}
-                className={`px-2 sm:px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 ${
+                className={`px-2 sm:px-4 py-2.5 text-[10.5px] font-medium tracking-wide text-ink-3 dark:text-gray-500 whitespace-nowrap ${
                   i === 0 ? "text-left w-14" : i === 1 ? "text-left" : "text-right"
                 }`}
               >
@@ -386,23 +388,21 @@ function Table({ head, rows }: { head: string[]; rows: React.ReactNode[][] }) {
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-100 dark:divide-gray-700/30">
+        <tbody className="divide-y divide-line dark:divide-gray-700/60">
           {rows.map((cells, ri) => (
             <tr
               key={ri}
-              className={`transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/30 ${
-                ri < 3 ? "bg-amber-50/30 dark:bg-amber-900/5" : ""
-              }`}
+              className="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/40"
             >
               {cells.map((cell, ci) => (
                 <td
                   key={ci}
-                  className={`px-2 sm:px-4 py-3 ${
+                  className={`px-2 sm:px-4 py-2.5 ${
                     ci === 0
                       ? "text-left"
                       : ci === 1
                         ? "text-left"
-                        : "text-right text-gray-600 dark:text-gray-400"
+                        : "text-right tnum text-ink-2 dark:text-gray-300"
                   }`}
                 >
                   {cell}
@@ -426,14 +426,14 @@ function Stat({
   tone?: "violet" | "emerald" | "red";
 }) {
   const map = {
-    violet: "text-violet-600 dark:text-violet-400",
-    emerald: "text-emerald-600 dark:text-emerald-400",
+    violet: "text-accent-700 dark:text-accent-300",
+    emerald: "text-ink dark:text-gray-100",
     red: "text-red-500 dark:text-red-400",
   };
   return (
-    <div className="rounded-xl bg-gray-50 dark:bg-gray-800/40 border border-gray-100 dark:border-gray-700/30 p-3">
-      <p className="text-[11px] text-gray-400 dark:text-gray-500 mb-1">{label}</p>
-      <p className={`text-xl font-bold ${tone ? map[tone] : "text-gray-800 dark:text-gray-100"}`}>
+    <div className="rounded-lg bg-white dark:bg-gray-800 border border-line dark:border-gray-700 px-3 py-2.5">
+      <p className="text-[10px] tracking-wide text-ink-3 dark:text-gray-500 mb-0.5">{label}</p>
+      <p className={`tnum text-[17px] font-medium leading-tight ${tone ? map[tone] : "text-ink dark:text-gray-100"}`}>
         {value}
       </p>
     </div>
@@ -442,6 +442,6 @@ function Stat({
 
 function Hint({ text }: { text: string }) {
   return (
-    <p className="text-center py-6 text-sm text-gray-400 dark:text-gray-500">{text}</p>
+    <p className="text-center py-6 text-[12px] text-ink-3 dark:text-gray-500">{text}</p>
   );
 }
