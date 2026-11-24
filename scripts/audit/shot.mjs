@@ -15,7 +15,7 @@ mkdirSync(dirname(out), { recursive: true });
 const browser = await chromium.launch({ channel: "chrome" });
 const ctx = await browser.newContext({
   viewport: { width, height },
-  deviceScaleFactor: 2,
+  deviceScaleFactor: Number(process.env.SCALE ?? 2),
   locale: "zh-CN",
 });
 // SKIN=retro 时先注入 localStorage，模拟用户已切换到复古皮肤

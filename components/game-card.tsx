@@ -102,13 +102,13 @@ export default function GameCard({ game, sessionCount, priority }: { game: Board
               {game.players && <span className="tnum">{game.players} 人</span>}
               {game.playTime && (
                 <>
-                  <span className="text-gray-300 dark:text-gray-600">·</span>
+                  <span aria-hidden="true" className="text-gray-300 dark:text-gray-600">·</span>
                   <span className="tnum">{game.playTime}</span>
                 </>
               )}
               {game.year && (
                 <>
-                  <span className="text-gray-300 dark:text-gray-600">·</span>
+                  <span aria-hidden="true" className="text-gray-300 dark:text-gray-600">·</span>
                   <span className="tnum text-ink-3 dark:text-gray-500">{game.year}</span>
                 </>
               )}

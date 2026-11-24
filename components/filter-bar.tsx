@@ -89,7 +89,8 @@ function FilterRow({
 }) {
   return (
     <div className="flex items-start gap-2.5">
-      <span className="w-9 shrink-0 pt-1 text-[11px] tracking-wide text-ink-3 dark:text-gray-500">
+      {/* 复古皮肤下这行字直接压在毡布上，需 r-on-felt-sub 提升对比度 */}
+      <span className="r-on-felt-sub w-9 shrink-0 pt-1 text-[11px] tracking-wide text-ink-3 dark:text-gray-500">
         {label}
       </span>
       <div className="flex flex-wrap gap-1.5">{children}</div>

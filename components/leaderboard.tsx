@@ -2,7 +2,6 @@ import type { PlaySession, PlayerScore, ScoringTemplate } from "@/types/session"
 import {
   getDominantTemplate,
   describeTemplateMix,
-  TEMPLATE_META,
 } from "@/lib/template-meta";
 
 /** 玩家聚合键：有 Notion ID 用 ID，老数据退回姓名 */
@@ -19,16 +18,17 @@ export default function Leaderboard({ sessions }: { sessions: PlaySession[] }) {
   if (sessions.length === 0) return null;
 
   const template = getDominantTemplate(sessions) ?? "标准计分";
-  const meta = TEMPLATE_META[template];
   const mixNote = describeTemplateMix(sessions);
 
   return (
     <div>
+      {/* 这两个标题在复古皮肤下直接落在毡布上，必须挂 r-on-felt 反白，
+          否则深墨字压深绿毡布只剩 1.8:1 */}
       <div className="flex items-baseline justify-between gap-3 mb-4 flex-wrap">
-        <h3 className="text-sm font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
-          {meta.emoji} {boardTitle(template)}
+        <h3 className="r-on-felt text-[12.5px] font-medium text-ink-3 dark:text-gray-500 tracking-wide">
+          {boardTitle(template)}
         </h3>
-        <span className="text-[11px] text-gray-400 dark:text-gray-600">{mixNote}</span>
+        <span className="r-on-felt-sub text-[11px] text-ink-3 dark:text-gray-600">{mixNote}</span>
       </div>
 
       {renderBoard(template, sessions)}
@@ -290,7 +290,7 @@ function CoopBoard({ sessions }: { sessions: PlaySession[] }) {
       <Stat label="合作成功" value={`${wins}`} tone="emerald" />
       <Stat label="合作失败" value={`${losses}`} tone="red" />
       <Stat label="成功率" value={`${rate.toFixed(0)}%`} tone="violet" />
-      <div className="col-span-2 sm:col-span-4 text-xs text-gray-400 dark:text-gray-500">
+      <div className="col-span-2 sm:col-span-4 text-[11.5px] text-ink-3 dark:text-gray-500">
         参与玩家：{Array.from(players).join(" · ") || "—"}
       </div>
     </div>

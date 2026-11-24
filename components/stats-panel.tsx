@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import type { BoardGame } from "@/types/game";
 import type { PlaySession } from "@/types/session";
@@ -63,13 +63,13 @@ export default function StatsPanel({ games, allSessions, sessionCountByGame }: P
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-10 animate-fade-in">
       {/* 总数 */}
-      <StatCard label="收藏桌游" value={games.length} suffix="款" color="violet" />
+      <StatCard label="收藏桌游" value={games.length} suffix="款" />
 
       {/* 总对局 */}
-      <StatCard label="总对局数" value={allSessions.length} suffix="场" color="indigo" />
+      <StatCard label="总对局数" value={allSessions.length} suffix="场" />
 
       {/* 有过对局的游戏 */}
-      <StatCard label="玩过桌游" value={gamesWithSessions} suffix="款" color="pink" />
+      <StatCard label="玩过桌游" value={gamesWithSessions} suffix="款" />
 
       {/* 平均评分 */}
       <StatCard
@@ -83,7 +83,6 @@ export default function StatsPanel({ games, allSessions, sessionCountByGame }: P
             : "-"
         }
         suffix="分"
-        color="amber"
       />
 
       {/* 平均重度 */}
@@ -98,32 +97,31 @@ export default function StatsPanel({ games, allSessions, sessionCountByGame }: P
             : "-"
         }
         suffix="/5"
-        color="emerald"
       />
 
       {/* 状态分布 */}
       <div className="col-span-2 sm:col-span-3 lg:col-span-5">
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {/* 评分分布 */}
-          <MiniBarCard title="评分分布" color="violet">
+          <MiniBarCard title="评分分布">
             {Object.entries(ratingBuckets).map(([label, count]) => (
-              <Bar key={label} label={label} count={count} max={maxRating} color="violet" />
+              <Bar key={label} label={label} count={count} max={maxRating} />
             ))}
           </MiniBarCard>
 
           {/* 重度分布 */}
-          <MiniBarCard title="重度分布" color="amber">
+          <MiniBarCard title="重度分布">
             {Object.entries(weightBuckets).map(([label, count]) => (
-              <Bar key={label} label={label} count={count} max={maxWeight} color="amber" />
+              <Bar key={label} label={label} count={count} max={maxWeight} />
             ))}
           </MiniBarCard>
 
           {/* Top 标签 */}
-          <MiniBarCard title="热门标签" color="pink">
+          <MiniBarCard title="热门标签">
             {topTags.map(([tag, count]) => (
-              <div key={tag} className="flex items-center justify-between text-xs">
-                <span className="text-gray-600 dark:text-gray-300 truncate mr-2">{tag}</span>
-                <span className="text-gray-400 dark:text-gray-500 font-medium">{count}</span>
+              <div key={tag} className="flex items-center justify-between text-[11.5px]">
+                <span className="text-ink-2 dark:text-gray-300 truncate mr-2">{tag}</span>
+                <span className="text-ink-3 dark:text-gray-500 tnum">{count}</span>
               </div>
             ))}
           </MiniBarCard>
@@ -133,39 +131,27 @@ export default function StatsPanel({ games, allSessions, sessionCountByGame }: P
   );
 }
 
+/**
+ * 统计小卡
+ *
+ * 原实现按用途给了五种渐变色（紫/靛/粉/琥珀/翠绿），一排五张卡就是一条彩虹。
+ * 数字本身是主角，颜色只会抢注意力，所以统一成纸卡 + 墨色数字。
+ */
 function StatCard({
   label,
   value,
   suffix,
-  color,
 }: {
   label: string;
   value: string | number;
   suffix: string;
-  color: string;
 }) {
-  const colorMap: Record<string, string> = {
-    violet: "from-violet-50 to-violet-100 dark:from-violet-950/20 dark:to-violet-900/10 border-violet-200/50 dark:border-violet-700/20",
-    indigo: "from-indigo-50 to-indigo-100 dark:from-indigo-950/20 dark:to-indigo-900/10 border-indigo-200/50 dark:border-indigo-700/20",
-    pink: "from-pink-50 to-pink-100 dark:from-pink-950/20 dark:to-pink-900/10 border-pink-200/50 dark:border-pink-700/20",
-    amber: "from-amber-50 to-amber-100 dark:from-amber-950/20 dark:to-amber-900/10 border-amber-200/50 dark:border-amber-700/20",
-    emerald: "from-emerald-50 to-emerald-100 dark:from-emerald-950/20 dark:to-emerald-900/10 border-emerald-200/50 dark:border-emerald-700/20",
-  };
-
-  const textColorMap: Record<string, string> = {
-    violet: "text-violet-700 dark:text-violet-300",
-    indigo: "text-indigo-700 dark:text-indigo-300",
-    pink: "text-pink-700 dark:text-pink-300",
-    amber: "text-amber-700 dark:text-amber-300",
-    emerald: "text-emerald-700 dark:text-emerald-300",
-  };
-
   return (
-    <div className={`r-card rounded-2xl bg-gradient-to-br ${colorMap[color] ?? colorMap.violet} border backdrop-blur-sm p-4`}>
-      <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{label}</p>
-      <p className={`text-2xl font-bold ${textColorMap[color] ?? ""}`}>
+    <div className="r-card rounded-lg bg-white dark:bg-gray-800 border border-line dark:border-gray-700 px-3 py-2.5">
+      <p className="text-[10.5px] tracking-wide text-ink-3 dark:text-gray-500 mb-0.5">{label}</p>
+      <p className="tnum text-[19px] font-medium leading-tight text-ink dark:text-gray-100">
         {value}
-        <span className="text-sm font-normal text-gray-400 dark:text-gray-500 ml-1">
+        <span className="text-[11px] font-normal text-ink-3 dark:text-gray-500 ml-1">
           {suffix}
         </span>
       </p>
@@ -175,25 +161,17 @@ function StatCard({
 
 function MiniBarCard({
   title,
-  color,
   children,
 }: {
   title: string;
-  color: string;
   children: React.ReactNode;
 }) {
-  const bgMap: Record<string, string> = {
-    violet: "from-violet-50/50 to-white dark:from-violet-950/10 dark:to-gray-800/20",
-    amber: "from-amber-50/50 to-white dark:from-amber-950/10 dark:to-gray-800/20",
-    pink: "from-pink-50/50 to-white dark:from-pink-950/10 dark:to-gray-800/20",
-  };
-
   return (
-    <div className={`rounded-2xl bg-gradient-to-br ${bgMap[color] ?? bgMap.violet} border border-white/50 dark:border-white/5 backdrop-blur-sm p-4`}>
-      <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
+    <div className="rounded-lg bg-white dark:bg-gray-800 border border-line dark:border-gray-700 px-3.5 py-3">
+      <h4 className="text-[11px] tracking-wide text-ink-3 dark:text-gray-500 mb-2.5">
         {title}
       </h4>
-      <div className="space-y-2">{children}</div>
+      <div className="space-y-1.5">{children}</div>
     </div>
   );
 }
@@ -202,29 +180,23 @@ function Bar({
   label,
   count,
   max,
-  color,
 }: {
   label: string;
   count: number;
   max: number;
-  color: string;
 }) {
   const width = max > 0 ? (count / max) * 100 : 0;
-  const barColor: Record<string, string> = {
-    violet: "bg-violet-400 dark:bg-violet-500",
-    amber: "bg-amber-400 dark:bg-amber-500",
-  };
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-xs text-gray-500 dark:text-gray-400 w-8 text-right">{label}</span>
-      <div className="flex-1 h-2 bg-gray-100 dark:bg-gray-700/50 rounded-full overflow-hidden">
+      <span className="text-[11px] text-ink-3 dark:text-gray-500 w-8 text-right">{label}</span>
+      <div className="flex-1 h-1.5 bg-gray-100 dark:bg-gray-700/60 rounded-sm overflow-hidden">
         <div
-          className={`h-full rounded-full ${barColor[color] ?? barColor.violet} transition-all duration-700`}
+          className="h-full rounded-sm bg-accent-600 transition-[width] duration-500"
           style={{ width: `${width}%` }}
         />
       </div>
-      <span className="text-xs text-gray-400 dark:text-gray-500 w-6">{count}</span>
+      <span className="text-[11px] text-ink-3 dark:text-gray-500 w-6 tnum">{count}</span>
     </div>
   );
 }

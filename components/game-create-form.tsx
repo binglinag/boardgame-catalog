@@ -266,7 +266,7 @@ export default function GameCreateForm({ fields }: { fields: FieldDef[] }) {
           >
             批量迁移封面图
           </Link>
-          <span className="text-line-strong dark:text-gray-700">·</span>
+          <span aria-hidden="true" className="text-line-strong dark:text-gray-700">·</span>
           <span>
             按 Notion 表结构生成 · {fields.length} 个字段
           </span>

@@ -1,43 +1,25 @@
 import type { PlaySession, ScoringTemplate } from "@/types/session";
 
-/** 模板的展示元信息 */
+/**
+ * 模板的展示元信息
+ *
+ * 原先每个模板配一种颜色（紫/蓝/绿/琥珀/玫红/靛蓝）再加一个 emoji，
+ * 六种模板排在一起就是一块调色板。现在统一成中性描边小标，
+ * 靠 label 文字区分——模板名本身已经足够表意。
+ */
+const NEUTRAL_BADGE =
+  "border-line-strong text-ink-2 dark:border-gray-600 dark:text-gray-400";
+
 export const TEMPLATE_META: Record<
   ScoringTemplate,
   { label: string; emoji: string; badge: string }
 > = {
-  标准计分: {
-    label: "标准计分",
-    emoji: "🔢",
-    badge:
-      "bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-200",
-  },
-  胜负记录: {
-    label: "胜负记录",
-    emoji: "⚔️",
-    badge: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-200",
-  },
-  排名顺序: {
-    label: "排名顺序",
-    emoji: "🏅",
-    badge:
-      "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200",
-  },
-  单一赢家: {
-    label: "单一赢家",
-    emoji: "👑",
-    badge: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-200",
-  },
-  合作胜负: {
-    label: "合作胜负",
-    emoji: "🤝",
-    badge: "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-200",
-  },
-  战役叙事: {
-    label: "战役叙事",
-    emoji: "📖",
-    badge:
-      "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-200",
-  },
+  标准计分: { label: "标准计分", emoji: "", badge: NEUTRAL_BADGE },
+  胜负记录: { label: "胜负记录", emoji: "", badge: NEUTRAL_BADGE },
+  排名顺序: { label: "排名顺序", emoji: "", badge: NEUTRAL_BADGE },
+  单一赢家: { label: "单一赢家", emoji: "", badge: NEUTRAL_BADGE },
+  合作胜负: { label: "合作胜负", emoji: "", badge: NEUTRAL_BADGE },
+  战役叙事: { label: "战役叙事", emoji: "", badge: NEUTRAL_BADGE },
 };
 
 /** 统计各模板出现次数 */

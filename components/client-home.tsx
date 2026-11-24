@@ -98,10 +98,11 @@ export default function ClientHome({
         <div className="mb-5 animate-fade-in">
           <div className="flex items-end justify-between flex-wrap gap-3">
             <div className="flex items-baseline gap-2 min-w-0">
-              <span className="tnum text-2xl font-medium text-ink dark:text-gray-100 leading-none">
+              {/* 复古皮肤下这块背景是深绿毡布，墨色数字只剩 1.57:1，必须反白 */}
+              <span className="r-on-felt tnum text-2xl font-medium text-ink dark:text-gray-100 leading-none">
                 {filteredGames.length}
               </span>
-              <span className="text-[12.5px] text-ink-3 dark:text-gray-500">
+              <span className="r-on-felt-sub text-[12.5px] text-ink-3 dark:text-gray-500">
                 {isSearching ? `个结果 · 搜索「${searchQuery}」` : "款桌游"}
                 {!isSearching && status !== "全部" && ` · ${status}`}
                 {!isSearching && tag && ` · #${tag}`}

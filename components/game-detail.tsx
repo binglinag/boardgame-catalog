@@ -115,7 +115,7 @@ export default function GameDetail({ game, sessions, allPlayers }: Props) {
                 <span className="r-on-felt-sub text-[11.5px] text-ink-3 dark:text-gray-500">/ 5 重度</span>
               </div>
             )}
-            <span className="text-line-strong dark:text-gray-700 text-[13px]">·</span>
+            <span aria-hidden="true" className="text-line-strong dark:text-gray-700 text-[13px]">·</span>
             {game.rating !== null && (
               <div className="flex items-baseline gap-1">
                 <span className="r-hero-num text-[22px] font-medium text-accent-700 dark:text-accent-300 leading-none">

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
@@ -62,8 +62,8 @@ export default function PlayerLeaderboard({ rankings, totalGames, totalSessions 
         </Link>
         <div className="flex items-start justify-between mb-4">
           <div>
-            <h1 className="font-serif text-[24px] font-semibold text-ink dark:text-gray-100 mb-1">玩家排行榜</h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">暂无玩家数据</p>
+            <h1 className="r-on-felt font-serif text-[24px] font-semibold text-ink dark:text-gray-100 mb-1">玩家排行榜</h1>
+            <p className="r-on-felt-sub text-sm text-gray-500 dark:text-gray-400">暂无玩家数据</p>
           </div>
           <PlayerForm />
         </div>
@@ -76,7 +76,7 @@ export default function PlayerLeaderboard({ rankings, totalGames, totalSessions 
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <Link href="/" className="inline-flex items-center gap-1.5 text-[12.5px] text-ink-3 dark:text-gray-500 hover:text-accent-700 dark:hover:text-accent-300 transition-colors mb-6 group">
+      <Link href="/" className="r-on-felt inline-flex items-center gap-1.5 text-[12.5px] text-ink-3 dark:text-gray-500 hover:text-accent-700 dark:hover:text-accent-300 transition-colors mb-6 group">
         <svg className="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
         </svg>
@@ -85,10 +85,10 @@ export default function PlayerLeaderboard({ rankings, totalGames, totalSessions 
 
       <div className="mb-8 flex items-start justify-between">
         <div>
-          <h1 className="font-serif text-[24px] font-semibold text-ink dark:text-gray-100 mb-1">
+          <h1 className="r-on-felt font-serif text-[24px] font-semibold text-ink dark:text-gray-100 mb-1">
             玩家排行榜
           </h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="r-on-felt-sub text-sm text-gray-500 dark:text-gray-400">
             {rankings.length} 位玩家 · {totalGames} 款桌游 · {totalSessions} 场对局
           </p>
         </div>
@@ -118,7 +118,7 @@ export default function PlayerLeaderboard({ rankings, totalGames, totalSessions 
       {/* 玩家筛选 */}
       <div className="mb-6">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs font-medium text-gray-400 dark:text-gray-500 mr-0.5">
+          <span className="r-on-felt-sub text-[11.5px] tracking-wide text-ink-3 dark:text-gray-500 mr-0.5">
             选择玩家
           </span>
 
@@ -155,7 +155,7 @@ export default function PlayerLeaderboard({ rankings, totalGames, totalSessions 
           })}
 
           {selected.size > 0 && (
-            <span className="text-xs text-gray-400 dark:text-gray-500 ml-1">
+            <span className="text-[11.5px] text-ink-3 dark:text-gray-500 ml-1">
               只看 {visible.length} 人
             </span>
           )}
@@ -168,13 +168,13 @@ export default function PlayerLeaderboard({ rankings, totalGames, totalSessions 
         <table className="w-full min-w-[320px] text-[12.5px]">
           <thead>
             <tr className="bg-gray-50 dark:bg-gray-800/60 border-b border-line dark:border-gray-700">
-              <th className="px-2 sm:px-4 py-2.5 text-left text-[10.5px] font-medium tracking-wide text-ink-3 dark:text-gray-500 w-14">排名</th>
-              <th className="px-2 sm:px-4 py-2.5 text-left text-[10.5px] font-medium tracking-wide text-ink-3 dark:text-gray-500">玩家</th>
-              <th className="px-2 sm:px-4 py-2.5 text-right text-[10.5px] font-medium tracking-wide text-ink-3 dark:text-gray-500 w-20">桌游度</th>
-              <th className="px-2 sm:px-4 py-2.5 text-right text-[10.5px] font-medium tracking-wide text-ink-3 dark:text-gray-500 w-24 hidden md:table-cell">竞技 · 战役</th>
-              <th className="px-2 sm:px-4 py-2.5 text-right text-[10.5px] font-medium tracking-wide text-ink-3 dark:text-gray-500 w-16 hidden sm:table-cell">款数</th>
-              <th className="px-2 sm:px-4 py-2.5 text-right text-[10.5px] font-medium tracking-wide text-ink-3 dark:text-gray-500 w-16 hidden sm:table-cell">场次</th>
-              <th className="px-2 sm:px-4 py-2.5 text-right text-[10.5px] font-medium tracking-wide text-ink-3 dark:text-gray-500 w-20 hidden lg:table-cell">均重度</th>
+              <th className="px-2 sm:px-4 py-2.5 text-left text-[10.5px] font-medium tracking-wide whitespace-nowrap text-ink-3 dark:text-gray-500 w-14">排名</th>
+              <th className="px-2 sm:px-4 py-2.5 text-left text-[10.5px] font-medium tracking-wide whitespace-nowrap text-ink-3 dark:text-gray-500">玩家</th>
+              <th className="px-2 sm:px-4 py-2.5 text-right text-[10.5px] font-medium tracking-wide whitespace-nowrap text-ink-3 dark:text-gray-500 w-20">桌游度</th>
+              <th className="px-2 sm:px-4 py-2.5 text-right text-[10.5px] font-medium tracking-wide whitespace-nowrap text-ink-3 dark:text-gray-500 w-28 hidden md:table-cell">竞技 · 战役</th>
+              <th className="px-2 sm:px-4 py-2.5 text-right text-[10.5px] font-medium tracking-wide whitespace-nowrap text-ink-3 dark:text-gray-500 w-16 hidden sm:table-cell">款数</th>
+              <th className="px-2 sm:px-4 py-2.5 text-right text-[10.5px] font-medium tracking-wide whitespace-nowrap text-ink-3 dark:text-gray-500 w-16 hidden sm:table-cell">场次</th>
+              <th className="px-2 sm:px-4 py-2.5 text-right text-[10.5px] font-medium tracking-wide whitespace-nowrap text-ink-3 dark:text-gray-500 w-20 hidden lg:table-cell">均重度</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-line dark:divide-gray-700/60">
@@ -223,7 +223,7 @@ export default function PlayerLeaderboard({ rankings, totalGames, totalSessions 
                   <td className="px-2 sm:px-4 py-3 text-right hidden md:table-cell">
                     <div className="flex items-center justify-end gap-1 text-[11.5px] tnum">
                       <span className="text-ink-2 dark:text-gray-300">{entry.compScore}</span>
-                      <span className="text-line-strong dark:text-gray-700">·</span>
+                      <span aria-hidden="true" className="text-line-strong dark:text-gray-700">·</span>
                       <span className="text-ink-2 dark:text-gray-300">{entry.campScore}</span>
                     </div>
                   </td>

@@ -18,26 +18,26 @@ export default function SessionRecord({ session }: { session: PlaySession }) {
 
   return (
     <div
-      className="rounded-xl bg-gray-50 dark:bg-gray-800/30
-        border border-gray-100 dark:border-gray-700/30 p-4
-        hover:border-gray-200 dark:hover:border-gray-600/50
-        transition-all duration-200"
+      className="rounded-lg bg-white dark:bg-gray-800
+        border border-line dark:border-gray-700 px-3.5 py-3
+        hover:border-line-strong dark:hover:border-gray-600
+        transition-colors"
     >
-      <div className="flex items-center justify-between gap-3 mb-3 flex-wrap">
+      <div className="flex items-center justify-between gap-3 mb-2.5 flex-wrap">
         <div className="flex items-center gap-2 min-w-0">
-          <span className="text-sm font-medium text-gray-900 dark:text-white">
+          <span className="text-[12.5px] font-medium text-ink dark:text-gray-100 tnum">
             {formatDate(session.date)}
           </span>
           {session.notes && (
-            <span className="text-xs text-gray-400 dark:text-gray-500 italic truncate">
+            <span className="text-[11px] text-ink-3 dark:text-gray-500 truncate">
               {session.notes}
             </span>
           )}
         </div>
         <span
-          className={`px-2 py-0.5 rounded-lg text-[11px] font-medium flex-shrink-0 ${meta.badge}`}
+          className={`px-1.5 py-0.5 rounded border text-[10.5px] tracking-wide flex-shrink-0 ${meta.badge}`}
         >
-          {meta.emoji} {meta.label}
+          {meta.label}
         </span>
       </div>
 
@@ -68,19 +68,24 @@ function ScoreBody({ players }: { players: PlayerScore[] }) {
   if (players.length === 0) return <Empty />;
 
   const list = [...players].sort((a, b) => b.score - a.score);
-  const medals = ["🥇", "🥈", "🥉"];
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-1.5">
       {list.map((p, i) => (
         <div key={`${p.name}-${i}`} className="flex items-center gap-2">
-          <span className="w-6 text-center text-xs font-bold text-gray-400 dark:text-gray-500">
-            {medals[i] ?? `#${i + 1}`}
+          <span
+            className={`tnum w-6 text-center text-[11.5px] ${
+              i < 3
+                ? "text-accent-700 dark:text-accent-300 font-medium"
+                : "text-ink-3 dark:text-gray-500"
+            }`}
+          >
+            {i + 1}
           </span>
-          <span className="text-sm text-gray-700 dark:text-gray-300">
+          <span className="text-[12.5px] text-ink-2 dark:text-gray-300">
             {p.name || "未命名"}
           </span>
-          <span className="ml-auto text-sm font-semibold text-gray-900 dark:text-white">
+          <span className="ml-auto text-[12.5px] tnum text-ink dark:text-gray-100">
             {p.score}
           </span>
         </div>
@@ -117,16 +122,17 @@ function WinLossBody({ players }: { players: PlayerScore[] }) {
 }
 
 function ResultBadge({ result }: { result: PlayerScore["result"] }) {
+  // 胜 / 平 / 负 靠边框与字重区分，不用三种色块
   const map: Record<string, string> = {
-    胜: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200",
-    平: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-200",
-    负: "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-200",
+    胜: "border-accent-300 text-accent-700 dark:border-accent-800 dark:text-accent-300 font-medium",
+    平: "border-line-strong text-ink-2 dark:border-gray-600 dark:text-gray-400",
+    负: "border-gray-300 text-ink-3 dark:border-gray-700 dark:text-gray-500",
   };
   const label = result ?? "未记录";
-  const cls = map[label] ?? "bg-gray-100 text-gray-500 dark:bg-gray-700/40 dark:text-gray-400";
+  const cls = map[label] ?? "border-line text-ink-3 dark:border-gray-700 dark:text-gray-500";
 
   return (
-    <span className={`px-2 py-0.5 rounded-lg text-xs font-medium ${cls}`}>
+    <span className={`px-1.5 py-0.5 rounded border text-[10.5px] tracking-wide ${cls}`}>
       {label}
     </span>
   );
@@ -141,13 +147,13 @@ function RankBody({ players }: { players: PlayerScore[] }) {
   );
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-1.5">
       {list.map((p, i) => (
         <div key={`${p.name}-${i}`} className="flex items-center gap-2">
-          <span className="w-8 text-center text-xs font-bold text-gray-400 dark:text-gray-500">
+          <span className="tnum w-7 text-[11.5px] text-ink-3 dark:text-gray-500">
             {p.rank != null ? `#${p.rank}` : "—"}
           </span>
-          <span className="text-sm text-gray-700 dark:text-gray-300">
+          <span className="text-[12.5px] text-ink-2 dark:text-gray-300">
             {p.name || "未命名"}
           </span>
         </div>
@@ -156,7 +162,7 @@ function RankBody({ players }: { players: PlayerScore[] }) {
   );
 }
 
-/** 单一赢家：赢家置顶带皇冠，其余标「参与」 */
+/** 单一赢家：赢家置顶，其余标「参与」 */
 function WinnerBody({ players }: { players: PlayerScore[] }) {
   if (players.length === 0) return <Empty />;
 
@@ -164,23 +170,23 @@ function WinnerBody({ players }: { players: PlayerScore[] }) {
   const others = players.filter((p) => p.result !== "胜");
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-1.5">
       {winners.map((p, i) => (
         <div key={`w-${p.name}-${i}`} className="flex items-center gap-2">
-          <span className="w-6 text-center">👑</span>
-          <span className="text-sm font-semibold text-amber-600 dark:text-amber-400">
+          <span className="w-7 text-[10.5px] tracking-wide text-accent-700 dark:text-accent-300">胜</span>
+          <span className="text-[12.5px] font-medium text-ink dark:text-gray-100">
             {p.name || "未命名"}
           </span>
-          <span className="ml-auto text-xs text-amber-500 dark:text-amber-500">获胜</span>
+          <span className="ml-auto text-[10.5px] text-accent-700 dark:text-accent-300">获胜</span>
         </div>
       ))}
       {others.map((p, i) => (
         <div key={`o-${p.name}-${i}`} className="flex items-center gap-2">
-          <span className="w-6" />
-          <span className="text-sm text-gray-500 dark:text-gray-400">
+          <span className="w-7" />
+          <span className="text-[12.5px] text-ink-3 dark:text-gray-400">
             {p.name || "未命名"}
           </span>
-          <span className="ml-auto text-xs text-gray-400 dark:text-gray-600">参与</span>
+          <span className="ml-auto text-[10.5px] text-ink-3 dark:text-gray-600">参与</span>
         </div>
       ))}
     </div>
@@ -197,17 +203,17 @@ function CoopBody({ players }: { players: PlayerScore[] }) {
   const won = verdict === "合作胜";
 
   return (
-    <div className="space-y-2.5">
+    <div className="space-y-2">
       <div
-        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-sm font-semibold ${
+        className={`inline-flex items-center px-1.5 py-0.5 rounded border text-[10.5px] tracking-wide ${
           won
-            ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200"
-            : "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-200"
+            ? "border-accent-300 text-accent-700 dark:border-accent-800 dark:text-accent-300"
+            : "border-gray-300 text-ink-3 dark:border-gray-700 dark:text-gray-500"
         }`}
       >
-        {won ? "🤝 合作成功" : "💔 合作失败"}
+        {won ? "合作成功" : "合作失败"}
       </div>
-      <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-gray-600 dark:text-gray-400">
+      <div className="flex flex-wrap gap-x-3 gap-y-1 text-[12px] text-ink-2 dark:text-gray-400">
         {players.map((p, i) => (
           <span key={`${p.name}-${i}`}>{p.name || "未命名"}</span>
         ))}
@@ -218,12 +224,12 @@ function CoopBody({ players }: { players: PlayerScore[] }) {
 
 const COMPLETION_META: Record<string, { label: string; cls: string }> = {
   完整通关: {
-    label: "✅ 完整通关",
-    cls: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200",
+    label: "完整通关",
+    cls: "border-accent-300 text-accent-700 dark:border-accent-800 dark:text-accent-300",
   },
   中途放弃: {
-    label: "⏸ 中途放弃",
-    cls: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-200",
+    label: "中途放弃",
+    cls: "border-gray-300 text-ink-3 dark:border-gray-700 dark:text-gray-500",
   },
 };
 
@@ -234,19 +240,19 @@ function CampaignBody({ session }: { session: PlaySession }) {
     : null;
 
   return (
-    <div className="space-y-2.5">
+    <div className="space-y-2">
       <div className="flex items-center gap-2 flex-wrap">
         {session.scenario && (
-          <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
-            📍 {session.scenario}
+          <span className="font-serif text-[13px] text-ink dark:text-gray-200">
+            {session.scenario}
           </span>
         )}
         {completion ? (
-          <span className={`px-2 py-0.5 rounded-lg text-[11px] font-medium ${completion.cls}`}>
+          <span className={`px-1.5 py-0.5 rounded border text-[10.5px] tracking-wide ${completion.cls}`}>
             {completion.label}
           </span>
         ) : (
-          <span className="px-2 py-0.5 rounded-lg text-[11px] font-medium bg-gray-100 text-gray-500 dark:bg-gray-700/40 dark:text-gray-400">
+          <span className="px-1.5 py-0.5 rounded border border-line text-[10.5px] tracking-wide text-ink-3 dark:border-gray-700 dark:text-gray-500">
             未标记完成
           </span>
         )}
@@ -254,18 +260,18 @@ function CampaignBody({ session }: { session: PlaySession }) {
 
       {session.narrative && (
         <details className="group">
-          <summary className="cursor-pointer text-xs text-violet-600 dark:text-violet-400 hover:underline list-none">
+          <summary className="cursor-pointer text-[11.5px] text-accent-700 dark:text-accent-300 hover:underline list-none">
             <span className="group-open:hidden">展开叙事记录 ▾</span>
             <span className="hidden group-open:inline">收起叙事记录 ▴</span>
           </summary>
-          <div className="mt-2 text-sm text-gray-600 dark:text-gray-400 leading-relaxed whitespace-pre-wrap border-l-2 border-violet-200 dark:border-violet-800 pl-3 max-h-72 overflow-y-auto">
+          <div className="mt-1.5 text-[12px] text-ink-2 dark:text-gray-400 leading-relaxed whitespace-pre-wrap border-l border-line-strong dark:border-gray-600 pl-3 max-h-72 overflow-y-auto">
             {session.narrative}
           </div>
         </details>
       )}
 
-      <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-gray-500 dark:text-gray-500">
-        <span className="text-gray-400 dark:text-gray-600">参与：</span>
+      <div className="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-ink-3 dark:text-gray-500">
+        <span className="text-ink-3 dark:text-gray-600">参与：</span>
         {session.players.map((p, i) => (
           <span key={`${p.name}-${i}`}>{p.name || "未命名"}</span>
         ))}
@@ -275,5 +281,5 @@ function CampaignBody({ session }: { session: PlaySession }) {
 }
 
 function Empty() {
-  return <p className="text-xs text-gray-400 dark:text-gray-500">没有玩家记录</p>;
+  return <p className="text-[11.5px] text-ink-3 dark:text-gray-500">没有玩家记录</p>;
 }
