@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import PlayerForm from "./player-form";
+import PlayerFilter from "./player-filter";
 import type { Player } from "@/types/player";
 import type { PlaySession } from "@/types/session";
 import {
@@ -156,43 +157,12 @@ export default function PlayerLeaderboard({
       {/* 玩家筛选 */}
       <div className="mb-6">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="r-on-felt-sub text-[11.5px] tracking-wide text-ink-3 dark:text-gray-500 mr-0.5">
-            选择玩家
-          </span>
-
-          <button
-            type="button"
-            onClick={clearSelection}
-            aria-pressed={selected.size === 0}
-            className={`r-chip-sm px-2.5 py-1 rounded text-[12.5px] border transition-colors ${
-              selected.size === 0
-                ? "bg-accent-600 text-white border-accent-600"
-                : "bg-transparent text-ink-2 dark:text-gray-400 border-line-strong dark:border-gray-600 hover:border-accent-500 hover:text-accent-700 dark:hover:text-accent-300"
-            }`}
-          >
-            全部
-          </button>
-
-          {/* 按玩家表顺序渲染，选中时按钮不会因为重算分数而跳位置 */}
-          {players.map((p) => {
-            const active = selected.has(p.id);
-            return (
-              <button
-                key={p.id}
-                type="button"
-                onClick={() => toggle(p.id)}
-                aria-pressed={active}
-                className={`r-chip-sm px-2.5 py-1 rounded text-[12.5px] border transition-colors ${
-                  active
-                    ? "bg-accent-600 text-white border-accent-600"
-                    : "bg-transparent text-ink-2 dark:text-gray-400 border-line-strong dark:border-gray-600 hover:border-accent-500 hover:text-accent-700 dark:hover:text-accent-300"
-                }`}
-              >
-                {p.name}
-              </button>
-            );
-          })}
-
+          <PlayerFilter
+            players={players}
+            selected={selected}
+            onToggle={toggle}
+            onClear={clearSelection}
+          />
           {selected.size > 0 && !noSharedSessions && (
             <span className="r-on-felt-sub text-[11.5px] text-ink-3 dark:text-gray-500 ml-1 tnum">
               共同对局 {scopedSessions.length} 场 · {participantCount} 人参与
@@ -294,6 +264,33 @@ export default function PlayerLeaderboard({
           </table>
         </div>
       )}
+
+      {/* 底部：跳转到对局记录。选中玩家时带着 id 过去，那边自动接着筛选 */}
+      <div className="mt-5 flex items-center justify-between gap-3 flex-wrap">
+        <p className="text-[11.5px] text-ink-3 dark:text-gray-500">
+          {selected.size > 0
+            ? `当前统计范围 ${scopedSessions.length} 场对局`
+            : `共 ${totalSessions} 场对局`}
+        </p>
+        <Link
+          href={
+            selected.size > 0
+              ? `/sessions?players=${[...selected].join(",")}`
+              : "/sessions"
+          }
+          className="r-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-line-strong dark:border-gray-600
+            text-[12.5px] text-ink-2 dark:text-gray-400
+            hover:border-accent-500 hover:text-accent-700
+            dark:hover:border-accent-600 dark:hover:text-accent-300
+            transition-colors"
+        >
+          {selected.size > 0 ? "浏览这批对局" : "浏览所有对局"}
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+            <path d="M5 12h14" />
+            <path d="M13 6l6 6-6 6" />
+          </svg>
+        </Link>
+      </div>
     </div>
   );
 }

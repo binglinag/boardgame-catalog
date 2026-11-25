@@ -12,8 +12,18 @@ function formatDate(dateStr: string): string {
   });
 }
 
-/** 一条对局记录，按模板切换渲染方式 */
-export default function SessionRecord({ session }: { session: PlaySession }) {
+/**
+ * 一条对局记录，按模板切换渲染方式
+ *
+ * showGame：在头部显示桌游名（对局列表页需要，详情页不用，那里上下文已经有了）
+ */
+export default function SessionRecord({
+  session,
+  showGame = false,
+}: {
+  session: PlaySession;
+  showGame?: boolean;
+}) {
   const meta = TEMPLATE_META[session.template] ?? TEMPLATE_META.标准计分;
 
   return (
@@ -24,8 +34,19 @@ export default function SessionRecord({ session }: { session: PlaySession }) {
         transition-colors"
     >
       <div className="flex items-center justify-between gap-3 mb-2.5 flex-wrap">
-        <div className="flex items-center gap-2 min-w-0">
-          <span className="text-[12.5px] font-medium text-ink dark:text-gray-100 tnum">
+        <div className="flex items-baseline gap-2 min-w-0 flex-wrap">
+          {showGame && session.gameTitle && (
+            <span className="text-[13px] font-medium text-ink dark:text-gray-100 truncate">
+              {session.gameTitle}
+            </span>
+          )}
+          <span
+            className={`tnum ${
+              showGame
+                ? "text-[11.5px] text-ink-3 dark:text-gray-500"
+                : "text-[12.5px] font-medium text-ink dark:text-gray-100"
+            }`}
+          >
             {formatDate(session.date)}
           </span>
           {session.notes && (
