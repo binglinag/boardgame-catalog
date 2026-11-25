@@ -8,12 +8,24 @@ import GameDetail from "@/components/game-detail";
 export const runtime = "edge";
 export const revalidate = 60;
 
+/**
+ * Notion page id 是 36 位 UUID。
+ *
+ * 不做这个校验的话，/[slug] 会把任何路径都接住去查 Notion：
+ * /get_status、/favicon.ico、爬虫试探的路径全都会发一次 pages.retrieve，
+ * 既白烧 API 配额，也让 404 变慢（本地日志里 19 小时攒了 1167 次无效查询）。
+ */
+const NOTION_ID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 interface Props {
   params: Promise<{ slug: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
+  if (!NOTION_ID_RE.test(slug)) return { title: "未找到" };
+
   const game = await getGameBySlug(slug);
 
   if (!game) {
@@ -40,6 +52,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function GamePage({ params }: Props) {
   const { slug } = await params;
+  if (!NOTION_ID_RE.test(slug)) notFound();
+
   const [game, allPlayers] = await Promise.all([
     getGameBySlug(slug),
     getAllPlayers(),
