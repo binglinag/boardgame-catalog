@@ -486,7 +486,10 @@
 /* ---------- 表单控件 ---------- */
 [data-skin="retro"] .r-input {
   width: 100%;
-  padding: 10px 14px;
+  /* 这里不能再写 padding 简写：它的特异性高于 Tailwind 的 pl-9 这类工具类，
+     会把搜索框的左内边距盖成 14px，放大镜图标直接压在文字上。
+     横向交给组件自己的 px，纵向用 padding-block 补一点，跟木牌按钮齐高。 */
+  padding-block: 8px;
   border-radius: 5px !important;
   border: 1.5px solid var(--edge-3) !important;
   background: var(--paper) !important;
@@ -578,6 +581,13 @@
 /* 藏书票里的编号：砖红压在毡布上没有对比度，用米白 */
 [data-skin="retro"] .colophon-no {
   color: var(--paper) !important;
+}
+
+/* 下拉选中项：默认的淡砖红底在复古纸面上几乎看不见，
+   换成更深一档的纸 + 印章红，整行也压得住 */
+[data-skin="retro"] .r-panel button[aria-selected="true"] {
+  background: var(--paper-2) !important;
+  color: var(--red) !important;
 }
 
 /* 状态徽章：纸上墨色，去掉梦幻主题的彩色底与发光圆点 */
